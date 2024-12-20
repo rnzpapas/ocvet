@@ -26,7 +26,7 @@ function UserNav() {
         {/* navlinks */}
         <section className="
         absolute w-full h-full bg-linen flex flex-col items-center justify-center gap-5 
-        md:relative md:flex-row md:bg-transparent md:w-fit
+        md:relative md:flex-row md:bg-transparent md:w-auto
         ">
           <NavLink navTitle={"HOME"}/>
           <NavLink navTitle={"PETS"}/>
