@@ -6,7 +6,6 @@ function Modal({headline, fields, isActive, img}) {
     const exitModal = () => {
         setIsModalActive(!isModalActive)
     }   
-    const onChangeVal = () => {}
     return (
         <>
             {isModalActive ? 
@@ -24,11 +23,11 @@ function Modal({headline, fields, isActive, img}) {
                                         <section className="flex justify-center">
                                             <img 
                                                 className="bg-fire-engine-red w-[100px] h-[100px] rounded-full" 
-                                                src={img}
+                                                src={field.imgSrc}
                                             />
                                         </section>
                                         :
-                                        <InputField type={field.type} isReadOnly={true} value={field.txtContent} name={field.headers} onChangeFunc={onChangeVal}/>
+                                        <InputField type={field.type} isReadOnly={true} value={field.txtContent} name={field.headers} onChangeFunc={(e) => {}}/>
                                     }
                                 </section>
                             ))}
