@@ -1,5 +1,5 @@
 
-function InputField({type, placeholder, style, isReadOnly = false, value, onChangeFunc}) {
+function InputField({type, placeholder, style, isReadOnly = false, value, onChangeFunc, name}) {
   const readOnlyStyle = "bg-[#DFDFDF]"
   const defaultStyle = ""
   return (
@@ -9,6 +9,7 @@ function InputField({type, placeholder, style, isReadOnly = false, value, onChan
         placeholder={placeholder}
         value={value}
         onChange = {onChangeFunc}
+        name = {name}
     />
   )
 }

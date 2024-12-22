@@ -10,6 +10,7 @@ import Link from "./components/Link"
 import Modal from "./components/Modal"
 import Doggy from "./assets/doggy.png"
 import Table from "./components/Table"
+import UserLogin from "./pages/user/UserLogin"
 
 function App() {
   const checkBtn = () => {
@@ -76,6 +77,8 @@ function App() {
   ]
   return (
     <>
+      <UserLogin />
+
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 
@@ -87,10 +90,9 @@ function App() {
         {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
         {/* <Link txtContent={"Already have an account?"}/> */}
         {/* <Modal headline={"Pet Information"} isActive={true} fields={fields} img={Doggy}/> */}
-        <Table headers={headers} data={data}/>
+        {/* <Table headers={headers} data={data}/> */}
       </div>
-
-    </>
+    </> 
   )
 }
 
