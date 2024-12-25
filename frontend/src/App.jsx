@@ -11,11 +11,13 @@ import Modal from "./components/Modal"
 import Doggy from "./assets/doggy.png"
 import Table from "./components/Table"
 import UserLogin from "./pages/user/UserLogin"
+import UserRegister from "./pages/user/UserRegister"
 
 function App() {
   const checkBtn = () => {
     alert("it is working")
   }
+  // modal fields
   const fields = [
     {
       "headers": "Pet Photo",
@@ -34,7 +36,7 @@ function App() {
       "type": "text"
     }
   ]
-
+  // table headers
   const headers = [
     {
       "title": "No.",
@@ -61,6 +63,7 @@ function App() {
       "isSortable": false
     },
   ]
+  // table data
   const data = [
     {
       "number" : "1",
@@ -77,8 +80,8 @@ function App() {
   ]
   return (
     <>
-      <UserLogin />
-
+      {/* <UserLogin /> */}
+      {/* <UserRegister /> */}
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 
