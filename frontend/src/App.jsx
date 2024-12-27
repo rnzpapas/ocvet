@@ -12,6 +12,8 @@ import Doggy from "./assets/doggy.png"
 import Table from "./components/Table"
 import UserLogin from "./pages/user/UserLogin"
 import UserRegister from "./pages/user/UserRegister"
+import ForgotPassword from "./pages/common/ForgotPassword"
+import OTPVerification from "./pages/common/OTPVerification"
 
 function App() {
   const checkBtn = () => {
@@ -82,6 +84,8 @@ function App() {
     <>
       {/* <UserLogin /> */}
       {/* <UserRegister /> */}
+      {/* <ForgotPassword /> */}
+      <OTPVerification />
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 

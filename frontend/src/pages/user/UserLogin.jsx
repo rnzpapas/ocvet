@@ -23,9 +23,9 @@ function UserLogin() {
 
     }
     return (
-        <section className="flex">
-            <SideLogo style={"h-screen w-[45%]"}/>
-            <section className="flex flex-col gap-5 items-center justify-center w-[65%]">
+        <section className="flex w-screen">
+            <SideLogo style={"h-screen w-6/12"}/>
+            <section className="flex flex-col gap-5 items-center justify-center w-6/12">
                 <h5 className="font-instrument-sans text-headline-lrg font-bold"> Sign In</h5>
                 <form className="flex flex-col gap-3 w-[40%] relative">
                     <section className="flex flex-col gap-1">
