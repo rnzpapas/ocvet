@@ -17,6 +17,7 @@ import OTPVerification from "./pages/common/OTPVerification"
 import ChangePassword from "./pages/common/ChangePassword"
 import PetCard from "./components/PetCard"
 import UserPetPage from "./pages/user/UserPetPage"
+import UserPetRegistration from "./pages/user/UserPetRegistration"
 
 function App() {
   const checkBtn = () => {
@@ -91,6 +92,7 @@ function App() {
       {/* <OTPVerification /> */}
       {/* <ChangePassword /> */}
       {/* <UserPetPage /> */}
+      <UserPetRegistration />
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 

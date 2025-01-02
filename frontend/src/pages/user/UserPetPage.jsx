@@ -14,8 +14,23 @@ function UserPetPage() {
         <>
             <UserNav />
             <section className="flex px-5 py-5">
-                <section className="w-[20%]">
-                    <p>side logo</p>
+                <section className="w-[20%] flex flex-col gap-8">
+                    <section>
+                        <h5 className="font-instrument-sans font-semibold uppercase text-content-sm mb-2.5">Recently Vaccinated Pets</h5>
+                        <section className="flex gap-2">
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                        </section>
+                    </section>
+                    <section>
+                        <h5 className="font-instrument-sans font-semibold uppercase text-content-sm mb-2.5">Recently Dewormed Pets</h5>
+                        <section className="flex gap-2">
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                        </section>
+                    </section>
                 </section>
                 <section className="w-[80%]">
                     <section className="flex gap-10">
