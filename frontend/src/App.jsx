@@ -14,6 +14,9 @@ import UserLogin from "./pages/user/UserLogin"
 import UserRegister from "./pages/user/UserRegister"
 import ForgotPassword from "./pages/common/ForgotPassword"
 import OTPVerification from "./pages/common/OTPVerification"
+import ChangePassword from "./pages/common/ChangePassword"
+import PetCard from "./components/PetCard"
+import UserPetPage from "./pages/user/UserPetPage"
 
 function App() {
   const checkBtn = () => {
@@ -85,7 +88,9 @@ function App() {
       {/* <UserLogin /> */}
       {/* <UserRegister /> */}
       {/* <ForgotPassword /> */}
-      <OTPVerification />
+      {/* <OTPVerification /> */}
+      {/* <ChangePassword /> */}
+      {/* <UserPetPage /> */}
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 
@@ -98,6 +103,7 @@ function App() {
         {/* <Link txtContent={"Already have an account?"}/> */}
         {/* <Modal headline={"Pet Information"} isActive={true} fields={fields} img={Doggy}/> */}
         {/* <Table headers={headers} data={data}/> */}
+        {/* <PetCard petName={"Ora"}/>  */}
       </div>
     </> 
   )
