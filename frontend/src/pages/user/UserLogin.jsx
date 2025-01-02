@@ -2,6 +2,7 @@ import { useState } from "react"
 import Button from "../../components/button"
 import InputField from "../../components/InputField"
 import SideLogo from "../../components/SideLogo"
+import Link from "../../components/Link";
 function UserLogin() {
     const [isHiddenPassword, setIsHiddenPassword] = useState(false);
     const [username, setUsername] = useState("");
@@ -27,7 +28,7 @@ function UserLogin() {
             <SideLogo style={"h-screen w-6/12"}/>
             <section className="flex flex-col gap-5 items-center justify-center w-6/12">
                 <h5 className="font-instrument-sans text-headline-lrg font-bold"> Sign In</h5>
-                <form className="flex flex-col gap-3 w-[40%] relative">
+                <form className="flex flex-col gap-3 w-[60%] relative">
                     <section className="flex flex-col gap-1">
                         <label htmlFor="username" className="font-instrument-sans text-headline-md font-semibold"> Username </label>
                         <InputField type="text" placeholder={"yourusername123"} name="username" onChangeFunc={onChangeUsername}/>
@@ -44,7 +45,7 @@ function UserLogin() {
                             </svg>
                         </section>
                     </section>
-                    <h5 className="flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer">Forgot Password?</h5>
+                    <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer"}/>
                     <Button txtContent={"sign in"}/>
                 </form>
                 <section className="flex items-center justify-center gap-2">
@@ -52,7 +53,7 @@ function UserLogin() {
                     <h5 className="uppercase font-lato text-raisin-black"> or </h5>
                     <div className="w-[200px] h-[2px] bg-raisin-black"></div>
                 </section>
-                <Button txtContent={"sign up"} style={"w-[40%]"} isActive={false} />
+                <Button txtContent={"sign up"} style={"w-[60%]"} isActive={false} />
             </section>
         </section>
     )

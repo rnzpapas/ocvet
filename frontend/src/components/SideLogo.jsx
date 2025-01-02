@@ -2,7 +2,7 @@ import OcvetLogo from "../assets/logo_img.png"
 
 function SideLogo({style}) {
   return (
-    <section className={`bg-linen w-full flex flex-col items-center justify-center gap-10 py-10 ${style}`}>
+    <section className={`bg-linen flex flex-col items-center justify-center gap-10 py-10 ${style}`}>
       <img 
         src={OcvetLogo} alt="ocvetlogo" 
         className="md:w-[100px] md:h-[100px] xl:w-[120px] xl:h-[120px] xxl:w-[150px] xxl:h-[150px]"

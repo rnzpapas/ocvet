@@ -38,7 +38,7 @@ function UserRegister() {
             <SideLogo style={"h-screen w-6/12"}/>
             <section className="flex flex-col gap-5 items-center justify-center w-6/12">
                 <h5 className="font-instrument-sans text-headline-lrg font-bold"> Sign Up</h5>
-                <form className="flex flex-col gap-3 w-[40%]">
+                <form className="flex flex-col gap-3 w-[60%]">
                     <section className="flex flex-col gap-1">
                         <label htmlFor="email" className="font-instrument-sans text-headline-md font-semibold"> E-Mail </label>
                         <InputField type="email" placeholder={"youremail@gmail.com"} name="email" onChangeFunc={onChangeEmail}/>

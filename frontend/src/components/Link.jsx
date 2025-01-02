@@ -1,13 +1,13 @@
 
 function Link({txtContent, style, onClickFunc}) {
   return (
-    <a 
+    <h5 
         href=""
         className={`font-lato text-azure font-semibold hover:underline ${style}`}
         onClick={onClickFunc}
     > 
         {txtContent} 
-    </a>
+    </h5>
   )
 }
 

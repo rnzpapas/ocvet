@@ -20,7 +20,7 @@ module.exports = {
       'azure': '#357DED',
       'silver': '#CCCCCC',
       'fire-engine-red': '#C82123',
-      'raisin-black-light': '#251E29',
+      'raisin-black-light': '#2D2532',
       'lime-green': '#2CC821',
       'linen': '#F5E9E2'
     },
