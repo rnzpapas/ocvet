@@ -2,7 +2,7 @@ import OcvetLogo from "../assets/logo_img.png"
 
 function Footer() {
   return (
-    <footer className="bg-raisin-black w-full lg:h-[250px] z-1 absolute lg:absolute left-0 bottom-0 ">
+    <footer className="bg-raisin-black w-full lg:h-[250px] z-1">
       {/* footer contents */}
       <section className="w-full h-[90%] flex flex-col gap-5 lg:flex-row items-center lg:justify-center xl:gap-20 text-wrap">
         <img 

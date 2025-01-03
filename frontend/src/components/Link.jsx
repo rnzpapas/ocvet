@@ -2,8 +2,7 @@
 function Link({txtContent, style, onClickFunc}) {
   return (
     <h5 
-        href=""
-        className={`font-lato text-azure font-semibold hover:underline ${style}`}
+        className={`font-lato text-azure font-semibold cursor-pointer hover:underline ${style}`}
         onClick={onClickFunc}
     > 
         {txtContent} 

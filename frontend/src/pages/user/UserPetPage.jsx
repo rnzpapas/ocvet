@@ -13,7 +13,7 @@ function UserPetPage() {
     return (
         <>
             <UserNav />
-            <section className="flex px-5 py-5">
+            <section className="flex px-5 py-5 h-dvh">
                 <section className="w-[20%] flex flex-col gap-8">
                     <section>
                         <h5 className="font-instrument-sans font-semibold uppercase text-content-sm mb-2.5">Recently Vaccinated Pets</h5>

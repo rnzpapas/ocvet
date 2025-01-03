@@ -18,6 +18,7 @@ import ChangePassword from "./pages/common/ChangePassword"
 import PetCard from "./components/PetCard"
 import UserPetPage from "./pages/user/UserPetPage"
 import UserPetRegistration from "./pages/user/UserPetRegistration"
+import UserPetEditInfo from "./pages/user/UserPetEditInfo"
 
 function App() {
   const checkBtn = () => {
@@ -40,33 +41,38 @@ function App() {
       "headers": "Breed",
       "txtContent": "Golden Retriever",
       "type": "text"
+    },
+    {
+      "headers": "Password",
+      "txtContent": "Golden Retriever",
+      "type": "password"
     }
   ]
   // table headers
   const headers = [
     {
-      "title": "No.",
+      "key": "No.",
       "isSortable": true,
       "isSorted": false
     },
     {
-      "title": "Client",
+      "key": "Client",
       "isSortable": true,
       "isSorted": false
     },
     {
-      "title": "Date",
+      "key": "Date",
       "isSortable": true,
       "isSorted": false
     },
     {
-      "title": "Time",
+      "key": "Time",
       "isSortable": true,
       "isSorted": false
     },
     {
-      "title": "Status",
-      "isSortable": false
+      "key": "Status",
+      "isSortable": false,
     },
   ]
   // table data
@@ -75,13 +81,16 @@ function App() {
       "number" : "1",
       "client_name": "John Doe",
       "date_of_transaction": "12/02/2024",
-      "time_of_transaction": "03:13 PM"
+      "time_of_transaction": "03:13 PM",
+      "withCheckboxes" : true
     },
     {
       "number" : "2",
       "client_name": "Jane Doe",
       "date_of_transaction": "12/08/2024",
-      "time_of_transaction": "05:13 PM"
+      "time_of_transaction": "05:13 PM",
+      "withCheckboxes" : true
+
     },
   ]
   return (
@@ -92,7 +101,9 @@ function App() {
       {/* <OTPVerification /> */}
       {/* <ChangePassword /> */}
       {/* <UserPetPage /> */}
-      <UserPetRegistration />
+      {/* <UserPetRegistration /> */}
+      {/* <UserPetEditInfo /> */}
+
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 
@@ -103,12 +114,21 @@ function App() {
         <MngrNav /> */}
         {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
         {/* <Link txtContent={"Already have an account?"}/> */}
-        {/* <Modal headline={"Pet Information"} isActive={true} fields={fields} img={Doggy}/> */}
-        {/* <Table headers={headers} data={data}/> */}
+        {/* <Modal 
+          headline={"Pet Information"} 
+          isActive={true} 
+          fields={fields} 
+          img={Doggy} 
+          isReadOnly={true} 
+          inputStyle={"cursor-default"} 
+          button={{txtContent : "Update Password", isDisplayed: true}}
+          link={{txtContent : "Update Password", isDisplayed: true}}
+        /> */}
+        <Table headers={headers} data={data}/>
         {/* <PetCard petName={"Ora"}/>  */}
       </div>
     </> 
   )
 }
-
+  
 export default App

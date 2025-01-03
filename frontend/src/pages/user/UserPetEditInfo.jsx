@@ -3,12 +3,12 @@ import Footer from "../../components/Footer"
 import InputField from "../../components/InputField"
 import UserNav from "../../components/navbars/UserNav"
 
-function UserPetRegistration() {
+function UserPetEditInfo() {
   return (
     <>
         <UserNav />
         <section className="h-dvh flex items-center flex-col">
-            <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Pet Registration</h5>
+            <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Edit Pet Information</h5>
             <form action="" className="w-[400px] flex flex-col gap-8">
                 <section className="flex flex-col gap-3">
                     <label htmlFor="photo" className="font-instrument-sans text-headline-sm font-semibold">Pet Photo</label>
@@ -31,7 +31,7 @@ function UserPetRegistration() {
                     <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Breed</label>
                     <InputField type={"text"} placeholder={"E.g. Dog"} name={"pet_breed"}/>
                 </section>
-                <Button txtContent={"Register Pet"}/>                
+                <Button txtContent={"Update Pet Information"}/>                
             </form>
         </section>
         <Footer />
@@ -39,4 +39,4 @@ function UserPetRegistration() {
   )
 }
 
-export default UserPetRegistration
+export default UserPetEditInfo
