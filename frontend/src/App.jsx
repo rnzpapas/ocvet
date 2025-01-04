@@ -70,10 +70,14 @@ function App() {
       "isSortable": true,
       "isSorted": false
     },
+    // {
+    //   "key": "Status",
+    //   "isSortable": false,
+    // },
     {
       "key": "Status",
-      "isSortable": false,
-    },
+      "isSortable": true
+    }
   ]
   // table data
   const data = [
@@ -82,15 +86,20 @@ function App() {
       "client_name": "John Doe",
       "date_of_transaction": "12/02/2024",
       "time_of_transaction": "03:13 PM",
-      "withCheckboxes" : true
+      "status": {
+        "isFinished": false,
+        "withCheckboxes" : false,
+      }
     },
     {
       "number" : "2",
       "client_name": "Jane Doe",
       "date_of_transaction": "12/08/2024",
       "time_of_transaction": "05:13 PM",
-      "withCheckboxes" : true
-
+      "status": {
+        "isFinished": true,
+        "withCheckboxes" : false,
+      }
     },
   ]
   return (
@@ -103,7 +112,6 @@ function App() {
       {/* <UserPetPage /> */}
       {/* <UserPetRegistration /> */}
       {/* <UserPetEditInfo /> */}
-
       <div className="flex items-center justify-center w-full h-screen">
         {/* <UserNav/>
         <Footer /> 
