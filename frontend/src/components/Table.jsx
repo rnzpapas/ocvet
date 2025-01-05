@@ -4,7 +4,7 @@ function Table({headers, data}) {
     const [sorted, setIsSorted] = useState({keyToSort: "Client", sortMode: "asc"});
     const [isMarkedChecked, setIsMarkedChecked] = useState(false);
     const [isMarkedX, setIsMarkedX] = useState(false)
-    const [totalPages, setTotalPages] = useState(1);
+    const [totalPages, setTotalPages] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
 
     const sortCol = (key) => {
@@ -21,20 +21,19 @@ function Table({headers, data}) {
         // isMarkedChecked ? setIsMarkedChecked(false) : setIsMarkedChecked(true)
         // isMarkedChecked ? setIsMarkedX(true) : setIsMarkedX(false)
     }
-
     const toggleX = (el) => {
         el.target.classList.add("fill-raisin-black");
         // isMarkedX ? setIsMarkedX(false) : setIsMarkedX(true)
         // isMarkedX ? setIsMarkedChecked(true) : setIsMarkedChecked(false)
     }
 
-    const goToNextPage = () => {}
-    const goToPrevPage = () => {}
-    const goToFirstPage = () => {}
-    const goToLastPage = () => {}
+    const goToNextPage = () => {if (currentPage < totalPages) setCurrentPage((n) => n+1)};
+    const goToPrevPage = () => {if (currentPage > 1) setCurrentPage((n) => n-1)};
+    const goToFirstPage = () => {setCurrentPage((n) => n = 1)};
+    const goToLastPage = () => {setCurrentPage((n) => n = totalPages)};
 
     return (
-        <section>
+        <section className="flex flex-col">
             <table> 
                 <thead className="bg-raisin-black">
                     <tr className=" rounded-[10px]">
@@ -109,12 +108,12 @@ function Table({headers, data}) {
                         <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/>
                     </svg>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToNextPage}
+                        onClick={goToPrevPage}
                     >
                         <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
                     </svg>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToPrevPage}
+                        onClick={goToNextPage}
                     >
                         <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
                     </svg>
@@ -124,7 +123,7 @@ function Table({headers, data}) {
                         <path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/>
                     </svg>
                 </section>
-                <p className="absolute right-0">Page {currentPage} of {totalPages} </p>
+                <p className="absolute right-0">Page {currentPage} of {totalPages}</p>
             </section>        
         </section>
     )

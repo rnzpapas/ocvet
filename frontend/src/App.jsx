@@ -19,6 +19,8 @@ import PetCard from "./components/PetCard"
 import UserPetPage from "./pages/user/UserPetPage"
 import UserPetRegistration from "./pages/user/UserPetRegistration"
 import UserPetEditInfo from "./pages/user/UserPetEditInfo"
+import UserPetInformation from "./pages/user/UserPetInformation"
+import UserInformation from "./pages/user/UserInformation"
 
 function App() {
   const checkBtn = () => {
@@ -112,31 +114,32 @@ function App() {
       {/* <UserPetPage /> */}
       {/* <UserPetRegistration /> */}
       {/* <UserPetEditInfo /> */}
-      <div className="flex items-center justify-center w-full h-screen">
-        {/* <UserNav/>
-        <Footer /> 
-        <SideLogo style={""}/>
-        <Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
-        <StaffNav />
-        <SuperAdminNav />
-        <MngrNav /> */}
-        {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
-        {/* <Link txtContent={"Already have an account?"}/> */}
-        {/* <Modal 
-          headline={"Pet Information"} 
-          isActive={true} 
-          fields={fields} 
-          img={Doggy} 
-          isReadOnly={true} 
-          inputStyle={"cursor-default"} 
-          button={{txtContent : "Update Password", isDisplayed: true}}
-          link={{txtContent : "Update Password", isDisplayed: true}}
-        /> */}
-        <Table headers={headers} data={data}/>
-        {/* <PetCard petName={"Ora"}/>  */}
-      </div>
+      {/* <UserPetInformation /> */}
+      {/* <UserInformation /> */}
     </> 
   )
 }
-  
+<div className="flex items-center justify-center w-full h-screen">
+{/* <UserNav/>
+<Footer /> 
+<SideLogo style={""}/>
+<Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
+<StaffNav />
+<SuperAdminNav />
+<MngrNav /> */}
+{/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
+{/* <Link txtContent={"Already have an account?"}/> */}
+{/* <Modal 
+  headline={"Pet Information"} 
+  isActive={true} 
+  fields={fields} 
+  img={Doggy} 
+  isReadOnly={true} 
+  inputStyle={"cursor-default"} 
+  button={{txtContent : "Update Password", isDisplayed: true}}
+  link={{txtContent : "Update Password", isDisplayed: true}}
+/> */}
+{/* <Table headers={headers} data={data}/> */}
+{/* <PetCard petName={"Ora"}/>  */}
+</div>
 export default App
