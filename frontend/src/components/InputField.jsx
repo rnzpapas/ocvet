@@ -9,6 +9,7 @@ function InputField({type, placeholder, style, isReadOnly = false, isDisabled = 
         placeholder={placeholder}
         value={value}
         onChange = {onChangeFunc}
+        readOnly = {isReadOnly}
         disabled = {isDisabled}
         name = {name}
     />

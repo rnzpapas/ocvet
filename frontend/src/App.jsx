@@ -21,6 +21,8 @@ import UserPetRegistration from "./pages/user/UserPetRegistration"
 import UserPetEditInfo from "./pages/user/UserPetEditInfo"
 import UserPetInformation from "./pages/user/UserPetInformation"
 import UserInformation from "./pages/user/UserInformation"
+import AdminLogin from "./pages/common/AdminLogin"
+import Emails from "./components/Emails"
 
 function App() {
   const checkBtn = () => {
@@ -104,6 +106,30 @@ function App() {
       }
     },
   ]
+  // mails
+  const emails = [
+    {
+      "id": "MAIL100",
+      "recipient": "OCVET_EMPLOYEES",
+      "subject": "Medical Allowance 2025",
+      "body": "We are pleased to announce that the company will now be offering a medical allowance to all eligible employees to help cover healthcare expenses. Further details on eligibility and the application process will be shared shortly. We encourage everyone to take advantage of this benefit for their well-being.",
+      "date_sent": "Jan 12"
+    },
+    {
+      "id": "MAIL101",
+      "recipient": "OCVET_EMPLOYEES",
+      "subject": "Raffle Winners",
+      "body": "We are excited to announce the winners of our recent raffle! Congratulations to all winners! – please stay tuned for more details on how to claim your prizes.",
+      "date_sent": "Dec 29"
+    },
+    {
+      "id": "MAIL102",
+      "recipient": "OCVET_EMPLOYEES",
+      "subject": "13th Month Pay Announcement",
+      "body": "We are pleased to inform you that the 13th month pay will be distributed today latest at 8PM. Please feel free to reach out if you have any questions regarding this payment.",
+      "date_sent": "Dec 14"
+    },
+  ]
   return (
     <>
       {/* <UserLogin /> */}
@@ -116,30 +142,33 @@ function App() {
       {/* <UserPetEditInfo /> */}
       {/* <UserPetInformation /> */}
       {/* <UserInformation /> */}
+      {/* <AdminLogin /> */}
+      <div className="flex items-center justify-center w-full h-screen">
+        {/* <UserNav/>
+        <Footer /> 
+        <SideLogo style={""}/>
+        <Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
+        <StaffNav />
+        <SuperAdminNav />
+        <MngrNav /> */}
+        {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
+        {/* <Link txtContent={"Already have an account?"}/> */}
+        {/* <Modal 
+          headline={"Pet Information"} 
+          isActive={true} 
+          fields={fields} 
+          img={Doggy} 
+          isReadOnly={true} 
+          inputStyle={"cursor-default"} 
+          button={{txtContent : "Update Password", isDisplayed: true}}
+          link={{txtContent : "Update Password", isDisplayed: true}}
+        /> */}
+        {/* <Table headers={headers} data={data}/> */}
+        {/* <PetCard petName={"Ora"}/>  */}
+        <Emails mails={emails} isBodyIncluded={false}/>
+      </div>
     </> 
   )
 }
-<div className="flex items-center justify-center w-full h-screen">
-{/* <UserNav/>
-<Footer /> 
-<SideLogo style={""}/>
-<Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
-<StaffNav />
-<SuperAdminNav />
-<MngrNav /> */}
-{/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
-{/* <Link txtContent={"Already have an account?"}/> */}
-{/* <Modal 
-  headline={"Pet Information"} 
-  isActive={true} 
-  fields={fields} 
-  img={Doggy} 
-  isReadOnly={true} 
-  inputStyle={"cursor-default"} 
-  button={{txtContent : "Update Password", isDisplayed: true}}
-  link={{txtContent : "Update Password", isDisplayed: true}}
-/> */}
-{/* <Table headers={headers} data={data}/> */}
-{/* <PetCard petName={"Ora"}/>  */}
-</div>
+
 export default App
