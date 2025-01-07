@@ -7,7 +7,7 @@ function UserInformation() {
     <>
         <UserNav />
         <section className="h-dvh px-5 py-5">
-            <AccountInfo />
+            <AccountInfo style={"px-48"}/>
         </section>
         <Footer />
     </>

@@ -23,6 +23,17 @@ import UserPetInformation from "./pages/user/UserPetInformation"
 import UserInformation from "./pages/user/UserInformation"
 import AdminLogin from "./pages/common/AdminLogin"
 import Emails from "./components/Emails"
+import StaffHome from "./pages/staff/StaffHome"
+import StaffPetOwners from "./pages/staff/StaffPetOwners"
+import StaffPetList from "./pages/staff/StaffPetList"
+import StaffAppointments from "./pages/staff/StaffAppointments"
+import StaffUserInfo from "./pages/staff/StaffUserInfo"
+import MngrHome from "./pages/manager/MngrHome"
+import MngrPetList from "./pages/manager/MngrPetList"
+import MngrPetOwners from "./pages/manager/MngrPetOwners"
+import MngrUserInfo from "./pages/manager/MngrUserInfo"
+import MngrAppointments from "./pages/manager/MngrAppointments"
+import MngrAnnouncements from "./pages/manager/MngrAnnouncements"
 
 function App() {
   const checkBtn = () => {
@@ -143,32 +154,42 @@ function App() {
       {/* <UserPetInformation /> */}
       {/* <UserInformation /> */}
       {/* <AdminLogin /> */}
-      <div className="flex items-center justify-center w-full h-screen">
-        {/* <UserNav/>
-        <Footer /> 
-        <SideLogo style={""}/>
-        <Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
-        <StaffNav />
-        <SuperAdminNav />
-        <MngrNav /> */}
-        {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
-        {/* <Link txtContent={"Already have an account?"}/> */}
-        {/* <Modal 
-          headline={"Pet Information"} 
-          isActive={true} 
-          fields={fields} 
-          img={Doggy} 
-          isReadOnly={true} 
-          inputStyle={"cursor-default"} 
-          button={{txtContent : "Update Password", isDisplayed: true}}
-          link={{txtContent : "Update Password", isDisplayed: true}}
-        /> */}
-        {/* <Table headers={headers} data={data}/> */}
-        {/* <PetCard petName={"Ora"}/>  */}
-        <Emails mails={emails} isBodyIncluded={false}/>
-      </div>
+      {/* <StaffHome /> */}
+      {/* <StaffPetOwners /> */}
+      {/* <StaffPetList /> */}
+      {/* <StaffAppointments /> */}
+      {/* <StaffUserInfo /> */}
+      {/* <MngrHome /> */}
+      {/* <MngrPetList /> */}
+      {/* <MngrPetOwners /> */}
+      {/* <MngrUserInfo /> */}
+      {/* <MngrAppointments /> */}
+      <MngrAnnouncements />
     </> 
   )
 }
-
+<div className="flex items-center justify-center w-full h-screen">
+    {/* <UserNav/>
+    <Footer /> 
+    <SideLogo style={""}/>
+    <Button txtContent={"Sign Up"} onClickFunc={checkBtn}/>
+    <StaffNav />
+    <SuperAdminNav />
+    <MngrNav /> */}
+    {/* <InputField type={"password"} placeholder={"myusername123"} style={"w-[500px]"}/> */}
+    {/* <Link txtContent={"Already have an account?"}/> */}
+    {/* <Modal 
+      headline={"Pet Information"} 
+      isActive={true} 
+      fields={fields} 
+      img={Doggy} 
+      isReadOnly={true} 
+      inputStyle={"cursor-default"} 
+      button={{txtContent : "Update Password", isDisplayed: true}}
+      link={{txtContent : "Update Password", isDisplayed: true}}
+    /> */}
+    {/* <Table headers={headers} data={data}/> */}
+    {/* <PetCard petName={"Ora"}/>  */}
+    {/* <Emails mails={emails} isBodyIncluded={false}/> */}
+</div>
 export default App

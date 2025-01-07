@@ -46,7 +46,7 @@ function UserPetPage() {
                         <Button txtContent={"Register Pet"} style={"ml-20"}/>
                     </section>
                     <section className="mt-5">
-                        <PetCard petName={"Marian"}/>
+                        <PetCard petName={"Marian"} img={"doggy.png"} />
                     </section>
 
                 </section>

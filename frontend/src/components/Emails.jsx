@@ -43,7 +43,11 @@ function Emails({mails = {}, isBodyIncluded = true}) {
             evt.target.parentElement.children[1].children[1].classList.add("text-white-smoke");
             evt.target.parentElement.children[1].children[2].classList.add("text-white-smoke");
             evt.target.parentElement.children[1].children[3].classList.add("text-white-smoke");
-            emailsIDSelected.push(evt.target.id);
+            setEmailsIdSelected((ids) => {
+                let newIdsArr = [...ids];
+                newIdsArr.push(evt.target.id);
+                return newIdsArr;
+            });
             setNumberOfEmail(num => num + 1);
         }else{
             evt.target.parentElement.classList.remove('bg-raisin-black');
@@ -51,11 +55,12 @@ function Emails({mails = {}, isBodyIncluded = true}) {
             evt.target.parentElement.children[1].children[1].classList.remove("text-white-smoke");
             evt.target.parentElement.children[1].children[2].classList.remove("text-white-smoke");
             evt.target.parentElement.children[1].children[3].classList.remove("text-white-smoke");
-            // let newEmailIDSet =
-            setEmailsIdSelected((ids) => ids = emailsIDSelected.filter((id) => id !== evt.target.id))
+            setEmailsIdSelected((ids) =>{ 
+                let newFilteredIds = ids.filter((id) => id !== evt.target.id);
+                return newFilteredIds;
+            })
             setNumberOfEmail(num => num - 1);
         }
-        console.log(emailsIDSelected)
     }
     
     useEffect(() => {},[isModalActive,emailSelected]);
