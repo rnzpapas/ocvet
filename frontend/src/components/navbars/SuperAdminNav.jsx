@@ -4,28 +4,27 @@ function SuperAdminNav() {
     const superAdminLinks = [
         {
             "txtContent": "Dashboard",
-            "targetElement": ""
+            "targetElement": "/sadm/dashboard"
         },
-        ,
         {
             "txtContent": "Administrators",
-            "targetElement": ""
+            "targetElement": "/sadm/admins"
         },
         {
             "txtContent": "Clients",
-            "targetElement": ""
+            "targetElement": "/sadm/owners"
         },
         {
             "txtContent": "Pets",
-            "targetElement": ""
+            "targetElement": "/sadm/pets"
         },
         {
             "txtContent": "Appointments",
-            "targetElement": ""
+            "targetElement": "/sadm/appointments"
         },
         {
             "txtContent": "Account",
-            "targetElement": ""
+            "targetElement": "/sadm/account"
         },
 
     ]

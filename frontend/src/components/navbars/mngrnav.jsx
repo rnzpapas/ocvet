@@ -4,27 +4,27 @@ function MngrNav() {
     const mngrLinks = [
         {
             "txtContent": "Dashboard",
-            "targetElement": ""
+            "targetElement": "/mngr/dashboard"
         },
         {
             "txtContent": "Clients",
-            "targetElement": ""
+            "targetElement": "/mngr/owners"
         },
         {
             "txtContent": "Pets",
-            "targetElement": ""
+            "targetElement": "/mngr/pets"
         },
         {
             "txtContent": "Appointments",
-            "targetElement": ""
+            "targetElement": "/mngr/appointments"
         },
         {
             "txtContent": "Announcements",
-            "targetElement": ""
+            "targetElement": "/mngr/announcements"
         },,
         {
             "txtContent": "Account",
-            "targetElement": ""
+            "targetElement": "/mngr/account"
         },
 
     ]

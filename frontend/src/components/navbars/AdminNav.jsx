@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import OcvetLogo from "../../assets/logo_img.png"
 
 function AdminNav({navLinks}) {
@@ -8,9 +9,11 @@ function AdminNav({navLinks}) {
         </section>
         <section className="w-full h-[60%] flex flex-col gap-3">
             {navLinks.map((navLink, index) => (
-                <section id={index} className="w-full flex justify-end px-5 py-3 hover:bg-raisin-black-light cursor-pointer"> 
-                    <h5 className=" font-instrument-sans text-headline-md font-semibold text-white-smoke uppercase cursor-pointer">{navLink.txtContent} </h5>
-                </section>
+                <Link to={navLink.targetElement} key={index}>
+                    <section id={index} className="w-full flex justify-end px-5 py-3 hover:bg-raisin-black-light cursor-pointer"> 
+                            <h5 className=" font-instrument-sans text-headline-md font-semibold text-white-smoke uppercase cursor-pointer">{navLink.txtContent}</h5>
+                    </section>
+                </Link>
             ))}
         </section>
         <section className="h-[10%] flex gap-2 items-center justify-center cursor-pointer">

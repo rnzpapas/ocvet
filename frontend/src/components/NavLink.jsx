@@ -1,9 +1,10 @@
+import { Link } from "react-router"
 
-function NavLink({navTitle}) {
+function NavLink({navTitle, toPage}) {
     return (
-        <h5 className="text-content-xtralrg hover:font-semibold cursor-pointer md:text-content-md lg:text-content-lrg"> 
+        <Link to={toPage} className="text-content-xtralrg hover:font-semibold cursor-pointer md:text-content-md lg:text-content-lrg"> 
           {navTitle} 
-        </h5>
+        </Link>
     )
 }
 

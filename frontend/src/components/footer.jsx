@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import OcvetLogo from "../assets/logo_img.png"
 
 function Footer() {
@@ -25,10 +26,10 @@ function Footer() {
         {/* Site Links */}
         <section className="h-[100%] lg:pt-[20px] flex flex-col items-center">
             <h5 className="font-instrument-sans md:text-headline-sm xxl:text-headline-md text-white-smoke font-bold"> Site Links </h5>
-            <section>
-              <p className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Home</p>
-              <p className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Pets</p>
-              <p className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Accounts</p>
+            <section className="flex flex-col">
+              <Link to={"/user/home"} className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Home</Link>
+              <Link to={"/user/pets"} className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Pets</Link>
+              <Link to={"/user/account/1"} className="font-lato md:text-content-sm xxl:text-content-md text-white-smoke hover:underline hover:cursor-pointer">Accounts</Link>
             </section>
         </section>
         {/* Contact Us */}

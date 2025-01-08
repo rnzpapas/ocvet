@@ -4,23 +4,23 @@ function StaffNav() {
     const staffLinks = [
         {
             "txtContent": "Dashboard",
-            "targetElement": ""
+            "targetElement": "/staff/dashboard"
         },
         {
             "txtContent": "Clients",
-            "targetElement": ""
+            "targetElement": "/staff/owners"
         },
         {
             "txtContent": "Pets",
-            "targetElement": ""
+            "targetElement": "/staff/pets"
         },
         {
             "txtContent": "Appointments",
-            "targetElement": ""
+            "targetElement": "/staff/appointments"
         },
         {
             "txtContent": "Account",
-            "targetElement": ""
+            "targetElement": "/staff/account"
         },
 
     ]

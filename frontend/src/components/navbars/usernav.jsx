@@ -28,9 +28,9 @@ function UserNav() {
         absolute w-full h-full bg-linen flex flex-col items-center justify-center gap-5 
         md:relative md:flex-row md:bg-transparent md:w-auto
         ">
-          <NavLink navTitle={"HOME"}/>
-          <NavLink navTitle={"PETS"}/>
-          <NavLink navTitle={"ACCOUNT"}/>
+          <NavLink navTitle={"HOME"} toPage={"/user/home"}/>
+          <NavLink navTitle={"PETS"} toPage={"/user/pets"}/>
+          <NavLink navTitle={"ACCOUNT"} toPage={"/user/account/1"}/>
         </section>
     </nav>
   )
