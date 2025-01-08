@@ -1,12 +1,13 @@
+import {Link as RouterLink} from "react-router";
 
-function Link({txtContent, style, onClickFunc}) {
+function Link({txtContent, style, onClickFunc, toPage}) {
   return (
-    <h5 
+    <RouterLink to={toPage}
         className={`font-lato text-azure font-semibold cursor-pointer hover:underline ${style}`}
         onClick={onClickFunc}
     > 
         {txtContent} 
-    </h5>
+    </RouterLink>
   )
 }
 
