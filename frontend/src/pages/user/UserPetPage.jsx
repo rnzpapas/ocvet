@@ -4,7 +4,20 @@ import UserNav from "../../components/navbars/UserNav";
 import Footer from "../../components/Footer";
 import Button from "../../components/button";
 import PetCard from "../../components/PetCard";
+import { Link } from "react-router";
 
+const PETS = [
+    {
+        "petid": "PET127",
+        "petName": "Marian",
+        "img": "doggy.png"
+    },
+    {
+        "petid": "PET138",
+        "petName": "Rolando",
+        "img": "doggy.png"
+    },
+]
 function UserPetPage() {
     const [search, setSearch] = useState("");
 
@@ -43,10 +56,16 @@ function UserPetPage() {
                             </section>
                         </section>
                         <Button txtContent={"Search"} isActive={true} />
-                        <Button txtContent={"Register Pet"} style={"ml-20"}/>
+                        <Link to="/user/pets/register">
+                            <Button txtContent={"Register Pet"} style={"ml-20"}/>
+                        </Link>
                     </section>
-                    <section className="mt-5">
-                        <PetCard petName={"Marian"} img={"doggy.png"} />
+                    <section className="mt-5 flex flex-wrap gap-5">
+                        {PETS.map((pet, index) => (
+                            <Link to={`/user/pets/view/${pet.petid}`} key={index}>
+                                <PetCard petName={pet.petName} img={pet.img} />
+                            </Link>
+                        ))}
                     </section>
 
                 </section>

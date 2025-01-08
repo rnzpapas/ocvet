@@ -2,7 +2,8 @@ import { useState } from "react"
 import Button from "../../components/button"
 import InputField from "../../components/InputField"
 import SideLogo from "../../components/SideLogo"
-import Link from "../../components/Link";
+import { Link as RouterLink} from "react-router";
+import Link from "../../components/Link"
 function UserLogin() {
     const [isHiddenPassword, setIsHiddenPassword] = useState(false);
     const [username, setUsername] = useState("");
@@ -45,7 +46,7 @@ function UserLogin() {
                             </svg>
                         </section>
                     </section>
-                    <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer"}/>
+                    <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer"} toPage={"/account-recovery/forgot-password"}/>
                     <Button txtContent={"sign in"}/>
                 </form>
                 <section className="flex items-center justify-center gap-2">
@@ -53,7 +54,9 @@ function UserLogin() {
                     <h5 className="uppercase font-lato text-raisin-black"> or </h5>
                     <div className="w-[200px] h-[2px] bg-raisin-black"></div>
                 </section>
-                <Button txtContent={"sign up"} style={"w-[60%]"} isActive={false} />
+                <RouterLink to="/user/register" className="w-[60%]">
+                    <Button txtContent={"sign up"} style={"w-[100%]"} isActive={false} />
+                </RouterLink>
             </section>
         </section>
     )

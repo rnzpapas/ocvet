@@ -2,6 +2,7 @@ import { useState } from "react";
 import InputField from "../../components/InputField";
 import Button from "../../components/button"
 import SideLogo from "../../components/SideLogo"
+import { Link } from "react-router";
 
 function UserRegister() {
     const [isHiddenPassword, setIsHiddenPassword] = useState(false);
@@ -71,7 +72,9 @@ function UserRegister() {
                             </svg>
                         </section>
                     </section>
-                    <h5 className="flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer">Already have an account?</h5>
+                    <Link to={"/user/login"}>
+                        <h5 className="flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer">Already have an account?</h5>
+                    </Link>
                     <Button txtContent={"sign up"}/>
                 </form>
             </section>
