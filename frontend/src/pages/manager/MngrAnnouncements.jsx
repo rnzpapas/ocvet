@@ -50,19 +50,19 @@ function MngrAnnouncements() {
                 <section className="flex flex-col gap-2 h-[50%]">
                     <section className="flex gap-2 border-b border-b-silver py-2">
                         <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">To:</label>
-                        <input type="text" placeholder="hey" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
+                        <input type="text" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
                     </section>
                     <section className="flex gap-2 border-b border-b-silver py-2">
                         <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">Subject:</label>
-                        <input type="text" placeholder="hey" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
+                        <input type="text" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
                     </section>
                     <section className="">
                         <section className="flex justify-between mb-1">
                             <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">Message:</label>
                             <p className={`font-lato ${isMaxCharReached ? 'text-fire-engine-red' : 'text-raisin-black'}`}>{numOfChar} / {MAX_CHARACTERS} characters</p>
                         </section>
-                        <textarea onChange={(el) => onMessageChange(el)} name="" id="" className="px-2 w-full h-[150%] border border-silver resize-none" placeholder="Announcement here..."></textarea>
-                        <section className="relative w-fit">
+                        <textarea onChange={(el) => onMessageChange(el)} name="" id="" className="px-2 w-full h-[150%] border border-silver resize-none font-lato text-content-lrg"></textarea>
+                        <section className="relative w-fit mt-1">
                             <Button txtContent={"send message"} />
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[16px] fill-white-smoke absolute top-2 right-3">
                                 <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480l0-83.6c0-4 1.5-7.8 4.2-10.8L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/>
@@ -70,7 +70,7 @@ function MngrAnnouncements() {
                         </section>
                     </section>
                 </section>
-                <section className="flex justify-between">
+                <section className="flex justify-between mt-5">
                     <section className="flex flex-col gap-5">
                         <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">announcements</h5>
                         <Emails mails={emails} isBodyIncluded={true}/>
