@@ -35,9 +35,9 @@ function Table({headers, data, tableW, tableH}) {
     return (
         <section className={`flex flex-col ${tableW} ${tableH}`}>
             <section className="overflow-y-auto overflow-x-auto">
-                <table> 
+                <table className="w-full"> 
                     <thead className="bg-raisin-black">
-                        <tr className=" rounded-[10px]">
+                        <tr>
                             {headers.map((header, index) => (
                                 <th key={`${index+1}-${header.key}`} className={`text-white-smoke font-lato text-content-md py-2 px-14 ${header.isSortable ? 'cursor-pointer' : ''}`} onClick={() => sortCol(header.key)}> 
                                     <section className="flex gap-2 items-center justify-center relative">
@@ -102,7 +102,7 @@ function Table({headers, data, tableW, tableH}) {
                     </tbody>
                 </table>
             </section>
-            <section className="relative flex items-center justify-center mt-3">
+            <section className={`relative flex items-center justify-center mt-3 ${tableW}`}>
                 <section className="flex gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
                         onClick={goToFirstPage}
