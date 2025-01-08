@@ -34,6 +34,15 @@ import MngrPetOwners from "./pages/manager/MngrPetOwners"
 import MngrUserInfo from "./pages/manager/MngrUserInfo"
 import MngrAppointments from "./pages/manager/MngrAppointments"
 import MngrAnnouncements from "./pages/manager/MngrAnnouncements"
+import SAdminAppointments from "./pages/superadmin/SAdminAppointments"
+import SAdminHome from "./pages/superadmin/SAdminHome"
+import SAdminPetList from "./pages/superadmin/SAdminPetList"
+import SAdminPetOwners from "./pages/superadmin/SAdminPetOwners"
+import SAdminUserInfo from "./pages/superadmin/SAdminUserInfo"
+import SAdminListAdmin from "./pages/superadmin/SAdminListAdmin"
+import { Route, Routes } from "react-router"
+import UserHome from "./pages/user/UserHome"
+import NotFound from "./pages/NotFound"
 
 function App() {
   const checkBtn = () => {
@@ -164,7 +173,68 @@ function App() {
       {/* <MngrPetOwners /> */}
       {/* <MngrUserInfo /> */}
       {/* <MngrAppointments /> */}
-      <MngrAnnouncements />
+      {/* <MngrAnnouncements /> */}
+      {/* <SAdminAppointments /> */}
+      {/* <SAdminHome /> */}
+      {/* <SAdminPetList /> */}
+      {/* <SAdminPetOwners /> */}
+      {/* <SAdminUserInfo /> */}
+      {/* <SAdminListAdmin /> */}
+
+      <Routes>
+        {/* user routes */}
+        <Route path="/user/">
+          <Route path="login" element={<UserLogin />}/>
+          <Route path="register" element={<UserRegister />}/>
+          <Route path="home" element={<UserHome />}/>
+          <Route path="pets/">
+            <Route path="" element={<UserPetPage />}/>
+            <Route path="register" element={<UserPetRegistration />}/>
+            <Route path="view/:id" element={<UserPetInformation />}/>
+            <Route path="edit/:id" element={<UserPetEditInfo />}/>
+          </Route>
+          <Route path="account/:id" element={<UserInformation />}/>
+        </Route>
+        {/* staff routes */}
+        <Route path="/staff/">
+          <Route path="dashboard" element={<StaffHome />}/>
+          <Route path="pets" element={<StaffPetList />}/>
+          <Route path="owners" element={<StaffPetOwners />}/>
+          <Route path="appointments" element={<StaffAppointments />}/>
+          <Route path="account" element={<StaffUserInfo />}/>
+        </Route>
+        {/* mngr routes */}
+        <Route path="/mngr/">
+          <Route path="dashboard" element={<MngrHome />}/>
+          <Route path="pets" element={<MngrPetList />}/>
+          <Route path="owners" element={<MngrPetOwners />}/>
+          <Route path="appointments" element={<MngrAppointments />}/>
+          <Route path="announcements" element={<MngrAnnouncements />}/>
+          <Route path="account" element={<MngrUserInfo />}/>
+        </Route>
+        {/* super admin routes */}
+        <Route path="/sadm/">
+          <Route path="dashboard" element={<SAdminHome />}/>
+          <Route path="pets" element={<SAdminPetList />}/>
+          <Route path="owners" element={<SAdminPetOwners />}/>
+          <Route path="appointments" element={<SAdminAppointments />}/>
+          <Route path="admins" element={<SAdminListAdmin />}/>
+          <Route path="account" element={<SAdminUserInfo />}/>
+        </Route>
+        {/* staff, mngr, super administrator login (IN-PROGESS) */}
+        <Route path="/admin/">
+          <Route path="role" element={<AdminLogin />}/>
+          {/* Individual login pages here */}
+        </Route>
+        {/* Account recovery pages */}
+        <Route path="/account-recovery">
+          <Route path="changepw" element={<ChangePassword />}/>
+          <Route path="forgot-password" element={<ForgotPassword />}/>
+          <Route path="OTP" element={<OTPVerification />}/>
+        </Route>
+        {/* not found routes */}
+        <Route path="*" element={<NotFound />}/>
+      </Routes>
     </> 
   )
 }
