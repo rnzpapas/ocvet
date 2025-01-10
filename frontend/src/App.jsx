@@ -180,7 +180,6 @@ function App() {
       {/* <SAdminPetOwners /> */}
       {/* <SAdminUserInfo /> */}
       {/* <SAdminListAdmin /> */}
-
       <Routes>
         {/* user routes */}
         <Route path="/user/">

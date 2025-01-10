@@ -1,8 +1,13 @@
-import React from 'react'
+import Footer from "../../components/Footer"
+import UserNav from "../../components/navbars/UserNav"
 
 function UserHome() {
   return (
-    <div>UserHome</div>
+    <>
+      <UserNav />
+      <section className="h-dvh"></section>
+      <Footer/>
+    </>
   )
 }
 
