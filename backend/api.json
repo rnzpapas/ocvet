@@ -13,5 +13,29 @@
         "email": "arenzpapas@gmail.com", 
         "role": "User", 
         "date_joined": "2025-01-16"
+    },
+    {
+        "firstname": "Arenz Joshua", 
+        "middlename": "Atayde", 
+        "surname": "Papas", 
+        "gender": "Male", 
+        "address": "2329 Nakar St., Brgy. 806, San Andres, Bukid, Manila City, PH",
+        "username": "a.papas", 
+        "password": "password123", 
+        "email": "arenzpapas@gmail.com", 
+        "role": "User", 
+        "date_joined": "2025-01-16"
+    },
+    {
+       "animal_type": "dog"
+    },
+    {
+        "service": "Vaccination"
+    },
+    {
+        "vaccine": "DHPP"
+    },
+    {
+        "diagnosis": "DHPP"
     }
 ]

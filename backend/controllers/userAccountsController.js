@@ -1,25 +1,5 @@
-import { createUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByIdService, getUserAccountByUsernameService, updateUserAccountService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
-
-export const createUserAccount = async (req, res, next) => {
-    const {username, password, email, role, date_joined} = req.body;
-    const existing_user = await getUserAccountByUsernameService(username);
-    try{
-        if(username.length === 0 || password.length === 0 || email.length === 0 ||
-                role.length === 0 || date_joined.length === 0 ) {
-            return handleResponse(res, 400, "Please fill out all fields.");
-        }else if(password.length < 6){
-            return handleResponse(res, 400, "Password must be minimum of 6 characters.");
-        }else if(existing_user){
-            return handleResponse(res, 400, "User already exists.");
-        }else{
-            const newUser = await createUserAccountService(username, password, email, role, date_joined);
-            return handleResponse(res, 201, "User created successfully.", newUser);
-        }
-    }catch(err) {
-        return next(err);
-    }
-}
 
 export const getAllUsersAccount = async (req, res, next) => {
     try{
@@ -65,23 +45,58 @@ export const deleteUserAccount = async (req, res, next) => {
 }
 
 export const countAllUserAccount = async (req, res, next) => {
-
+    try{
+        const count = await countAllUserAccountService();
+        return handleResponse(res, 200, "Data count successfully established.", count);
+    }catch(err){
+        return next(err)
+    }
 }
-export const countAllUserAccountByDate = async (req, res, next) => {
 
+export const countAllUserAccountByDate = async (req, res, next) => {
+    const date = req.params.date;
+    const dateConverted = new Date(date);
+    try{
+        if(!date) handleResponse(res, 400, "Data count by date successfully established.", countByDate);
+        const countByDate = await countAllUserAccountByDateService(dateConverted);
+        return handleResponse(res, 200, "Data count by date successfully established.", countByDate);
+    }catch(err){
+        return next(err)
+    }
 }
 
 export const sortUsernameAsc = async (req, res, next) => {
-
+    try{
+        const userAsc = await sortUsernameAscService();
+        return handleResponse(res, 200, "User order by ascending successfully established.", userAsc);
+    }catch(err){
+        return next(err)
+    }
 }
+
 export const sortUsernameDesc = async (req, res, next) => {
-    
+    try{
+        const userDesc = await sortUsernameDescService();
+        return handleResponse(res, 200, "User order by descending successfully established.", userDesc);
+    }catch(err){
+        return next(err)
+    }
 }
 
 export const sortDateJoinedAsc = async (req, res, next) => {
-
+    try{
+        const dateAsc = await sortDateJoinedAscService();
+        return handleResponse(res, 200, "User order by date joined ascending successfully established.", dateAsc);
+    }catch(err){
+        return next(err)
+    }
 }
 
 export const sortDateJoinedDesc = async (req, res, next) => {
-    
+    try{
+        const dateDesc = await sortDateJoinedDescService();
+        return handleResponse(res, 200, "User order by date joined descending successfully established.", dateDesc);
+    }catch(err){
+        return next(err)
+    }
 }
