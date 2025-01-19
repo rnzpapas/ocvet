@@ -37,5 +37,16 @@
     },
     {
         "diagnosis": "DHPP"
+    },
+    {
+        "audience": ["UAID100000", "UAID100001"],
+        "nickname": "OCVET_EMPLOYEES"
+    },
+    {
+        "atypeid": "ATID100001",
+        "pet_owner": "UID100000",
+        "nickname": "Domeng",
+        "pet_image": "domeng.png",
+        "registration_timestamp": "2025-01-17"
     }
 ]
