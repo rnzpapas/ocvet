@@ -176,8 +176,10 @@ export const getAllPetsCount = async (req, res, next) => {
 
 export const getAllPetsByDate = async (req, res, next) => {
     const date = req.query.date;
+    const dateConverted = new Date(date);
+    const dateQuery = `${dateConverted.getFullYear()}-${dateConverted.getMonth()+1}-${dateConverted.getDate()}`
     try{
-        const result = await getAllPetsByDateService(date);
+        const result = await getAllPetsByDateService(dateQuery);
         return handleResponse(res, 200, "Pets successfully fetched.", result);
     }catch(err) {
         return next(err);

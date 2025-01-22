@@ -10,7 +10,7 @@ ROUTER.post("/pets/register", upload.single('image'), createPet);
 ROUTER.put("/pets/update/image/:id", upload.single("image"), updatePetImage);
 ROUTER.delete("/pets/remove/:id", deletePet);
 ROUTER.get("/pets/all", getAllPets);
-ROUTER.get("/pets/date?", getAllPetsByDate); //need testing
+ROUTER.get("/pets?", getAllPetsByDate); //need testing
 ROUTER.get("/pets/owner?", getAllPetsByOwner);
 ROUTER.get("/pets/owner/desc", getAllPetsByOwnerDescending);
 ROUTER.get("/pets/date/range", getAllPetsByRangeDate);

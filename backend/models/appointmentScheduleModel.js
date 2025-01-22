@@ -1,0 +1,52 @@
+import pool from "../config/db.js";
+import { generateNewId, generateInitialId } from "../utils/idUtils.js";
+
+const getLatestAppointmentID = async () => {
+    const latest_appointment_id = await pool.query('SELECT "ASID" FROM otcv_appointment_schedule ORDER BY "ASID" DESC LIMIT 1');
+    return latest_appointment_id.rows;
+}
+
+export const createAppointmentScheduleService = async (petid, servid, diagid, remarks, status, date, time ) => {
+    let new_appointment_id;
+    let latest_appointment_id = getLatestAppointmentID();
+    (await latest_appointment_id).length > 0 ? new_appointment_id = generateNewId(await latest_appointment_id, "ASID") : new_appointment_id = generateInitialId("ASID");
+    const res = await pool.query('INSERT INTO otcv_appointment_schedule ("ASID", "PETID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+        [new_appointment_id, petid, servid, diagid, remarks, status, date, time]);
+}
+
+export const deleteAppointmentScheduleService = async (id) => {
+    const res = await pool.query('DELETE FROM otcv_appointment_schedule WHERE "ASID" = $1', [id]);
+}
+
+export const getAppointmentsScheduleService = async (petid, pgid) => {
+    const res = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE "PETID" = $1 OR "PGID" = $2 ORDER BY date ASC',
+        [petid, pgid]
+    );
+    return res.rows;
+}
+
+export const getAllAppointmentScheduleService = async () => {
+    const res = await pool.query('SELECT * FROM otcv_appointment_schedule ORDER BY date ASC');
+    return res.rows;
+}
+
+export const getAppointmentScheduleByDateService = async(date) => {
+    const result = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE date = $1', [date]);
+    return result.rows;
+}
+
+export const getAppointmentScheduleByDateTimeService = async(date, time) => {
+    const result = await pool.query(`SELECT * FROM otcv_appointment_schedule WHERE date = $1 AND TO_CHAR("time",'HH24:MI') = $2`, [date, time]);
+    return result.rows;
+}
+
+export const getAppointmentScheduleByStatusService = async(status) => {
+    const result = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE status = $1', [status]);
+    return result.rows;
+}
+
+export const updateAppointmentScheduleByStatusService = async (asid, status) => {
+    const result = await pool.query('UPDATE otcv_appointment_schedule SET status = $1 WHERE "ASID" = $2', 
+        [status, asid]);
+    return result.rows;
+}

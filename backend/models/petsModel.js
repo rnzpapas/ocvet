@@ -119,7 +119,7 @@ export const getAllPetsByDateService = async (date) => {
         SELECT * FROM 
         otcv_pets p INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
-        WHERE p.registration_timestamp BETWEEN to_timestamp($1) AND to_timestamp($1)
+        WHERE p.registration_timestamp::TIMESTAMPTZ::DATE = $1
         ORDER BY p.nickname ASC`
     ,[date]);
     return result.rows;

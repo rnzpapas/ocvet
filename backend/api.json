@@ -48,5 +48,16 @@
         "nickname": "Domeng",
         "pet_image": "domeng.png",
         "registration_timestamp": "2025-01-17"
+    },
+    {
+        "PETID": "PETID100001",
+        "SERVICEIDS": [
+            "SERVID10000"
+        ],
+        "DIAGNOSIS": [
+            "DIAGID10000"
+        ],
+        "remarks": "",
+        "status": ""
     }
 ]
