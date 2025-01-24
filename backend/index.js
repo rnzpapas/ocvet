@@ -9,6 +9,9 @@ import diagnosisRoutes from './routes/diagnosisRoutes.js';
 import mailGroupsRoutes from './routes/mailGroupsRoutes.js';
 import petsRoutes from './routes/petsRoutes.js';
 import appointmentScheduleRoutes from './routes/appointmentScheduleRoutes.js';
+import animalGroupRoutes from './routes/animalGroupRoutes.js';
+import vaccinationsRoutes from './routes/vaccinationsRoutes.js';
+import announcementsRouter from './routes/announcementsRouter.js';
 import errorHandling from './middleware/errorHandler.js';
 
 const app = express();
@@ -28,7 +31,9 @@ app.use("/api", diagnosisRoutes);
 app.use("/api", mailGroupsRoutes);
 app.use("/api", petsRoutes);
 app.use("/api", appointmentScheduleRoutes);
-
+app.use("/api", animalGroupRoutes);
+app.use("/api", vaccinationsRoutes);
+app.use("/api", announcementsRouter);
 
 app.get("/", async(req,res) => {
     console.log("it is working")

@@ -59,5 +59,20 @@
         ],
         "remarks": "",
         "status": ""
+    },
+    {
+        "asid": "ASID100000",
+        "status": "DONE"
+    },
+    {
+        "PETS": ["PETID100000,PETID100001"],
+        "ATYPEID": "ATID100000",
+        "POPULATION": "10000",
+        "GROUP_NICKNAME": "My beautiful chickens"
+    },
+    {
+        "vaccid": "VACCID100000",
+        "petid": "PETID100000"
     }
+    
 ]
