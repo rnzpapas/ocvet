@@ -73,6 +73,13 @@
     {
         "vaccid": "VACCID100000",
         "petid": "PETID100000"
+    },
+    {
+        "tgid":  ["TGID100000"],
+        "uaid":  [],
+        "announcement_title":  "Medical Benefits",
+        "message": "Your medical allowance will be included to 29th payroll this January 2025.",
+        "time": "10:13"
     }
     
 ]

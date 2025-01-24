@@ -26,3 +26,8 @@ export const getMailGroupsByGroupNicknameService = async (mail_group) => {
     const result = await pool.query('SELECT * FROM otcv_mail_groups WHERE group_nickname = $1', [mail_group]);
     return result.rows;
 }
+
+export const getMailGroupsByUserService = async (uaid) => {
+    const result = await pool.query('SELECT * FROM otcv_mail_groups WHERE $1 = ANY("target_audience")', [uaid]);
+    return result.rows;
+}

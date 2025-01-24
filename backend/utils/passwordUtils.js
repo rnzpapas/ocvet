@@ -10,14 +10,12 @@ export const hashPassword = (password) => {
     }
 }
 
-export const comparePassword = (password, cpassword) => {
-    bcrypt.compare(enteredPassword, storedHashedPassword, (err, result) => {
-        if (err) {
-            console.error('Error comparing passwords:', err);
-        } else if (result) {
-            return true;
-        } else {
-            return false;
-        }
-    });
+export const comparePassword = async (password, dbpassword) => {
+    try{
+        const result = await bcrypt.compare(password, dbpassword);
+        return result;
+    }catch(err){
+        return false;
+    }
+   
 }

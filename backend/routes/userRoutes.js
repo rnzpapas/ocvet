@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllUsersDetail, getUserDetailById, updateUserDetail, deleteUserDetail  } from '../controllers/userDetailsController.js';
-import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, sortUsernameDesc } from '../controllers/userAccountsController.js';
+import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, sortUsernameDesc, loginUserAccount } from '../controllers/userAccountsController.js';
 import { createUser, getUserFullDetails } from '../controllers/userController.js';
 
 
@@ -9,6 +9,7 @@ const ROUTER = express.Router();
 // common
 ROUTER.post("/user/register", createUser);
 ROUTER.get("/user/account/full-details/:id", getUserFullDetails);
+ROUTER.post("/user/login", loginUserAccount);
 
 // USER DETAILS
 ROUTER.get("/user", getAllUsersDetail);

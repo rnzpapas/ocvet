@@ -23,7 +23,7 @@ export const getAllUsersAccountService = async() => {
 
 export const getUserAccountByUsernameService = async(un) => {
     const result = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
-    return result.rows[0];
+    return result.rows;
 }
 
 export const getUserAccountByEmailService = async(em) => {

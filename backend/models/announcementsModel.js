@@ -20,8 +20,14 @@ export const deleteAnnouncementService = async (id) => {
 }
 
 // upnext
-export const getAnnouncementForRecipientsService = async(tgid, uaid) => {
-    const result = await pool.query('SELECT * FROM otcv_announcements $1 = ANY("TGIDS") OR $2 ', 
-        [tgid, uaid]);
+export const getAnnouncementForRecipientsService = async(uaid) => {
+    const result = await pool.query('SELECT * FROM otcv_announcements WHERE $1 = ANY("UAID")', 
+        [uaid]);
+    return result.rows;
+}
+
+export const getAnnouncementForRecipientsMailGroupService = async(tgid, uaid) => {
+    const result = await pool.query('SELECT * FROM otcv_announcements WHERE $1 = ANY("TGIDS");', 
+        [tgid]);
     return result.rows;
 }

@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js"
-import { createMailGroupsService, deleteMailGroupsService, getMailGroupsService } from "../models/mailGroupsModel.js";
+import { createMailGroupsService, deleteMailGroupsService, getMailGroupsByUserService, getMailGroupsService } from "../models/mailGroupsModel.js";
 
 export const createMailGroups = async (req, res, next) => {
     const { audience, nickname } = req.body;
@@ -27,6 +27,16 @@ export const deleteMailGroups = async (req, res, next) => {
 export const getMailGroups = async (req, res, next) => {
     try{
         const result = await getMailGroupsService();
+        return handleResponse(res, 200, "Mail groups successfully fetched.", result)
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getMailGroupsByUser = async (req, res, next) => {
+    const uaid = req.query.uaid
+    try{
+        const result = await getMailGroupsByUserService(uaid);
         return handleResponse(res, 200, "Mail groups successfully fetched.", result)
     }catch(err) {
         return next(err);

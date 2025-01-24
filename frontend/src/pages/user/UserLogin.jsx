@@ -1,28 +1,46 @@
-import { useState } from "react"
-import Button from "../../components/button"
-import InputField from "../../components/InputField"
-import SideLogo from "../../components/SideLogo"
-import { Link as RouterLink} from "react-router";
-import Link from "../../components/Link"
+import { useState } from "react";
+import Button from "../../components/button";
+import InputField from "../../components/InputField";
+import SideLogo from "../../components/SideLogo";
+import { Link as RouterLink, useNavigate} from "react-router";
+import Link from "../../components/Link";
+import axios from "axios";
+
 function UserLogin() {
     const [isHiddenPassword, setIsHiddenPassword] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const onChangeUsername = (evt) => {
-        setUsername(evt.val);
+        setUsername(evt.target.value);
     }
 
     const onChangePassword = (evt) => {
-        setPassword(evt.val);
+        setPassword(evt.target.value);
     }
 
     const togglePasswordField = () => {
         setIsHiddenPassword(!isHiddenPassword);
     }
 
-    const onRegistrationSubmit = () => {
-
+    const onLogin = (evt) => {
+        evt.preventDefault();
+        if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
+        console.log("frontend: ", username);
+        console.log("frontend: ", password)
+        axios.post('http://localhost:5001/api/user/login', {
+            username: username,
+            password: password
+        }, {headers: {'Content-Type': 'application/json'}})
+        .then(res => {
+            const token = res.data.data;
+            sessionStorage.setItem('jwt-token', token);
+            navigate('/user/home');
+        })
+        .catch(err => {
+            alert(err.response.data.message);
+        })
     }
     return (
         <section className="flex w-screen">
@@ -47,7 +65,7 @@ function UserLogin() {
                         </section>
                     </section>
                     <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer"} toPage={"/account-recovery/forgot-password"}/>
-                    <Button txtContent={"sign in"}/>
+                    <Button txtContent={"sign in"} onClickFunc={(evt) => onLogin(evt)}/>
                 </form>
                 <section className="flex items-center justify-center gap-2">
                     <div className="w-[200px] h-[2px] bg-raisin-black"></div>
@@ -55,7 +73,7 @@ function UserLogin() {
                     <div className="w-[200px] h-[2px] bg-raisin-black"></div>
                 </section>
                 <RouterLink to="/user/register" className="w-[60%]">
-                    <Button txtContent={"sign up"} style={"w-[100%]"} isActive={false} />
+                    <Button txtContent={"sign up"} style={"w-[100%]"} isActive={false}/>
                 </RouterLink>
             </section>
         </section>

@@ -1,5 +1,36 @@
 import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
+import { comparePassword } from "../utils/passwordUtils.js";
+import { createToken } from "../utils/jwtAuthUtils.js";
+
+export const loginUserAccount = async (req, res, next) => {
+    const { username, password } = req.body;
+    try{
+        const user = await getUserAccountByUsernameService(username);
+        console.log("backend: ", username);
+        console.log("backend: ", password);
+
+        if(username.length === 0 || password.length === 0  ) return handleResponse(res, 400, "Please fill out all fields.");
+        if(user.length === 0) return handleResponse(res, 400, "Incorrect username or password.");
+
+        let userPw = user[0].password;
+        let isRightPassword = await comparePassword(password, userPw);
+        if(!isRightPassword) return handleResponse(res, 400, "Incorrect username or password.");
+
+        const payload = {
+            "uaid": user[0].uaid,
+            "email": user[0].email,
+            "role": user[0].role,
+            "date_joined": user[0].date_joined
+        };
+
+        const token = await createToken(payload);
+        return handleResponse(res, 200, "Successfully login.", token);
+
+    }catch(err){
+        return next(err);
+    }
+}
 
 export const getAllUsersAccount = async (req, res, next) => {
     try{

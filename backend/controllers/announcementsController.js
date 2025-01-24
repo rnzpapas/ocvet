@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAnnouncementService, deleteAnnouncementService, getAnnouncementForRecipientsService } from "../models/announcementsModel.js";
+import { createAnnouncementService, deleteAnnouncementService, getAnnouncementForRecipientsMailGroupService, getAnnouncementForRecipientsService } from "../models/announcementsModel.js";
 
 export const createAnnouncement = async (req, res, next) => {
     const { tgid, uaid, announcement_title, message, time} = req.body;
@@ -28,10 +28,21 @@ export const deleteAnnouncement = async (req, res, next) => {
 }
 
 export const getAnnouncementForRecipients = async(req, res, next) => {
-    const { tgid, uaid } = req.body;
+    const id = req.query.id;
 
     try{
-        const result = await getAnnouncementForRecipientsService(tgid, uaid);
+        const result = await getAnnouncementForRecipientsService(id);
+        return handleResponse(res, 200, "Announcement successfully fetched.", result);
+    }catch(err){
+        return next(err);
+    }
+}
+
+export const getAnnouncementForRecipientsMailGroup = async(req, res, next) => {
+    const id = req.query.id;
+
+    try{
+        const result = await getAnnouncementForRecipientsMailGroupService(id);
         return handleResponse(res, 200, "Announcement successfully fetched.", result);
     }catch(err){
         return next(err);
