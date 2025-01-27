@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/button";
 import InputField from "../../components/InputField";
 import SideLogo from "../../components/SideLogo";
 import { Link as RouterLink, useNavigate} from "react-router";
 import Link from "../../components/Link";
 import axios from "axios";
+import useRedirectUser from '../../auth/useRedirectUser';
 
 function UserLogin() {
-    const [isHiddenPassword, setIsHiddenPassword] = useState(false);
+    useRedirectUser();
+
+    const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -27,21 +30,37 @@ function UserLogin() {
     const onLogin = (evt) => {
         evt.preventDefault();
         if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
-        console.log("frontend: ", username);
-        console.log("frontend: ", password)
         axios.post('http://localhost:5001/api/user/login', {
             username: username,
             password: password
         }, {headers: {'Content-Type': 'application/json'}})
         .then(res => {
-            const token = res.data.data;
-            sessionStorage.setItem('jwt-token', token);
-            navigate('/user/home');
+            const response = res.data.data;
+            axios.get(`http://localhost:5001/api/user/account/full-details/${response.uaid}`, 
+                {headers: {'Authorization': `Bearer ${response.access_token}`}})
+                .then(res => {
+                    let userFullDetails = res.data.data;
+                    const userData = {
+                        "uid": userFullDetails.UID,
+                        "uaid": userFullDetails.UAID,
+                        "email": userFullDetails.email,
+                        "role": userFullDetails.role,
+                        "date_joined": userFullDetails.date_joined
+                    }
+                    localStorage.setItem("user", JSON.stringify(userData));
+                    sessionStorage.setItem('jwt-token', response.access_token);
+                    navigate('/user/home');
+                })
+                .catch(err => {
+                  console.error(err)
+                })
         })
         .catch(err => {
             alert(err.response.data.message);
         })
     }
+
+
     return (
         <section className="flex w-screen">
             <SideLogo style={"h-screen w-6/12"}/>

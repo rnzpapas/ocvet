@@ -5,6 +5,7 @@ import Link from "./Link"
 
 function Modal({headline, fields, isActive = false, onClose, img, inputStyle, 
     onChangeFunc, isReadOnly = false, isDisabled = false, isTextBox = false,
+    onSubmitFunc, textAreaHeight,
     button = {"txtContent" : "", "isActive" : true, "isDisplayed": true},
     link = {"txtContent" : "", "isActive" : true, "isDisplayed": true},
     }) {
@@ -30,7 +31,7 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
     return (
         <>
             {isModalActive && (
-                <section className="absolute top-0 left-0 w-screen h-screen bg-raisin-black/25 flex items-center justify-center z-10"> 
+                <section className="absolute top-0 left-0 w-screen h-screen overflow-hidden bg-raisin-black/25 flex items-center justify-center z-10"> 
                     <section className="relative bg-white-smoke w-[500px] h-[500px] rounded-[10px] flex flex-col items-center py-7">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" onClick={onClose} className="absolute top-3 right-4 w-[15px] cursor-pointer">
                             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
@@ -62,9 +63,16 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                             :
                                             <section className="flex flex-col gap-1">
                                                 {field.type !== "textarea" ? 
-                                                    <InputField type={field.type} isReadOnly={isReadOnly} isDisabled={isDisabled} value={field.txtContent} name={field.headers} onChangeFunc={onChangeFunc} style={inputStyle} />
+                                                    field.type !== 'select' ?
+                                                        <InputField type={field.type} isReadOnly={isReadOnly} isDisabled={isDisabled} placeholder={field.txtContent} name={field.headers} onChangeFunc={field.onChangeHandler && (field.onChangeHandler)} style={inputStyle} />
+                                                        :
+                                                        <select className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light">
+                                                            {field.options.map((option, index) => (
+                                                                <option key={index} value={option}>{option}</option>
+                                                            ))}
+                                                        </select>
                                                     :
-                                                    <textarea className="h-[220px] w-full resize-none font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light bg-[#DFDFDF]"  readOnly value={field.txtContent}></textarea>
+                                                    <textarea className={`${textAreaHeight} w-full resize-none font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light `} readOnly={isReadOnly} value={field.txtContent} onChange={field.onChangeHandler && (field.onChangeHandler)}></textarea>
                                                 }
                                             </section>
                                     }
@@ -77,7 +85,7 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                             </section>
 
                             {button.txtContent.length > 0 && button.isDisplayed ? 
-                                <Button txtContent={button.txtContent} /> : ""
+                                <Button txtContent={button.txtContent} onClickFunc={onSubmitFunc}/> : ""
                             }
                         </section>
                     </section>

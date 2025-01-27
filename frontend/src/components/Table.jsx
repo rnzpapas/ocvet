@@ -1,11 +1,13 @@
 import { useState } from "react";
 
-function Table({headers, data, tableW, tableH}) {
+function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5,
+    resetPageFunc = undefined, nextPageFunc = undefined, prevPageFunc = undefined, goLastPageFunc = undefined
+}) {
     const [sorted, setIsSorted] = useState({keyToSort: "Client", sortMode: "asc"});
     const [isMarkedChecked, setIsMarkedChecked] = useState(false);
     const [isMarkedX, setIsMarkedX] = useState(false)
-    const [totalPages, setTotalPages] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(tpages);
+    const [currentPage, setCurrentPage] = useState(cpage);
 
     const sortCol = (key) => {
         if(sorted.sortMode === "desc"){
@@ -21,16 +23,33 @@ function Table({headers, data, tableW, tableH}) {
         // isMarkedChecked ? setIsMarkedChecked(false) : setIsMarkedChecked(true)
         // isMarkedChecked ? setIsMarkedX(true) : setIsMarkedX(false)
     }
+
     const toggleX = (el) => {
         el.target.classList.add("fill-raisin-black");
         // isMarkedX ? setIsMarkedX(false) : setIsMarkedX(true)
         // isMarkedX ? setIsMarkedChecked(true) : setIsMarkedChecked(false)
     }
 
-    const goToNextPage = () => {if (currentPage < totalPages) setCurrentPage((n) => n+1)};
-    const goToPrevPage = () => {if (currentPage > 1) setCurrentPage((n) => n-1)};
-    const goToFirstPage = () => {setCurrentPage((n) => n = 1)};
-    const goToLastPage = () => {setCurrentPage((n) => n = totalPages)};
+    const goToNextPage = () => {
+        currentPage < totalPages && (setCurrentPage((n) => n+1));
+        nextPageFunc && (nextPageFunc());
+    };
+
+    const goToPrevPage = () => {
+        if (currentPage > 1) setCurrentPage((n) => n-1)
+        prevPageFunc && (prevPageFunc())
+    };
+
+    const goToFirstPage = () => {
+        setCurrentPage((n) => n = 1)
+        resetPageFunc && (resetPageFunc())
+    };
+
+    const goToLastPage = () => {
+        setCurrentPage((n) => n = totalPages)
+        goLastPageFunc && (goLastPageFunc())
+    };
+
 
     return (
         <section className={`flex flex-col ${tableW} ${tableH}`}>
@@ -59,9 +78,9 @@ function Table({headers, data, tableW, tableH}) {
                             ))}
                         </tr>
                     </thead>
-                    <tbody  className="text-raisin-black">
-                        {data.length > 0 ? 
-                            data.map((info, index) => (
+                    <tbody className="text-raisin-black">
+                        {data.length > 0 &&  
+                            (data.map((info, index) => (
                                 <tr key={index} className="border-b-2 border-silver group hover:bg-silver">
                                     {Object.keys(info).map((key, index) => (
                                         key !== "status" ?
@@ -95,38 +114,41 @@ function Table({headers, data, tableW, tableH}) {
                                             </td>
                                     )) }
                                 </tr>
-                            ))
-                            :
-                            ""
+                            )))
                         }
                     </tbody>
                 </table>
             </section>
-            <section className={`relative flex items-center justify-center mt-3 ${tableW}`}>
-                <section className="flex gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToFirstPage}
-                    >
-                        <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToPrevPage}
-                    >
-                        <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToNextPage}
-                    >
-                        <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
-                        onClick={goToLastPage}
-                    >
-                        <path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/>
-                    </svg>
-                </section>
-                <p className="absolute right-0">Page {currentPage} of {totalPages}</p>
-            </section>        
+            {
+                data.length > 0 && 
+                (
+                    <section className={`relative flex items-center justify-center mt-3 ${tableW}`}>
+                        <section className="flex gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
+                                onClick={goToFirstPage}
+                            >
+                                <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L301.3 256 438.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
+                                onClick={goToPrevPage}
+                            >
+                                <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
+                                onClick={goToNextPage}
+                            >
+                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[25px] h-[25px] cursor-pointer fill-raisin-black-light"
+                                onClick={goToLastPage}
+                            >
+                                <path d="M470.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 256 265.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160zm-352 160l160-160c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L210.7 256 73.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z"/>
+                            </svg>
+                        </section>
+                        <p className="absolute right-0">Page {currentPage} of {totalPages}</p>
+                    </section>
+                )  
+            }
         </section>
     )
 }

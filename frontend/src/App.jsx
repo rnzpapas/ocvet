@@ -40,6 +40,7 @@ import SAdminPetList from "./pages/superadmin/SAdminPetList"
 import SAdminPetOwners from "./pages/superadmin/SAdminPetOwners"
 import SAdminUserInfo from "./pages/superadmin/SAdminUserInfo"
 import SAdminListAdmin from "./pages/superadmin/SAdminListAdmin"
+import LandingPage from "./pages/LandingPage";
 import { Route, Routes } from "react-router"
 import UserHome from "./pages/user/UserHome"
 import NotFound from "./pages/NotFound"
@@ -181,6 +182,8 @@ function App() {
       {/* <SAdminUserInfo /> */}
       {/* <SAdminListAdmin /> */}
       <Routes>
+        {/* landing page */}
+        <Route path="/" element={<LandingPage />}/>
         {/* user routes */}
         <Route path="/user/">
           <Route path="login" element={<UserLogin />}/>

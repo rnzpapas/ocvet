@@ -62,20 +62,37 @@ export const authenticateStaffJwt = async (req, res,  next) => {
     return handleResponse(res, 400, "Invalid token.");
 }
 
+export const authenticateAdminJwt = async (req, res,  next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return handleResponse(res, 400, 'Token required.');
+  }
+
+  const tokenVerified = verifyToken(token);
+
+  if(tokenVerified){
+      req.user = tokenVerified
+
+      if(tokenVerified.role !== 'Staff' || tokenVerified.role !== 'Manager' || tokenVerified.role !== 'Super Administrator') return handleResponse(res, 403, 'Invalid access.');
+
+      return next();
+  }
+
+  return handleResponse(res, 400, "Invalid token.");
+}
+
 export const authenticateUserJwt = async (req, res,  next) => {
     const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
   
     if (!token) {
       return handleResponse(res, 400, 'Token required.');
     }
-
     const tokenVerified = verifyToken(token);
 
     if(tokenVerified){
-        req.user = tokenVerified
-
-        if(tokenVerified.role !== 'User') return handleResponse(res, 403, 'Invalid access.');
-
+        req.user = await tokenVerified
+        if(req.user.role !== 'User') return handleResponse(res, 403, 'Invalid access.');
         return next();
     }
 

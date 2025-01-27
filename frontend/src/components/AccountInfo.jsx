@@ -1,19 +1,15 @@
 
-function AccountInfo({fullName = "Rando Ballosteros", eMail = "randob@gmail.com", username =  "rando182025", style}) {
+function AccountInfo({eMail = "randob@gmail.com", username =  "rando182025", style, onEditClick}) {
   return (
     <section className="flex">
         <section className={`w-6/12 ${style}`}>
             <section className="flex items-center gap-2">
                 <h5 className="font-instrument-sans font-semibold text-headline-md text-raisin-black">Account Information</h5>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[15px] h-[15px] fill-azure cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[15px] h-[15px] fill-azure cursor-pointer" onClick={onEditClick}>
                     <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
                 </svg>
             </section>
             <section>
-                <section className="flex gap-2">
-                    <h5 className="font-instrument-sans font-semibold text-raisin-black">Fullname:</h5>
-                    <p className="font-lato text-raisin-black">{fullName}</p>
-                </section>
                 <section className="flex gap-2">
                     <h5 className="font-instrument-sans font-semibold text-raisin-black">E-Mail:</h5>
                     <p className="font-lato text-raisin-black">{eMail}</p>
@@ -24,10 +20,10 @@ function AccountInfo({fullName = "Rando Ballosteros", eMail = "randob@gmail.com"
                 </section>
             </section>
         </section>
-        <section className="w-6/12">
+        {/* <section className="w-6/12">
             <h5 className="font-instrument-sans font-semibold text-headline-md text-raisin-black">Account Summary</h5>
 
-        </section>
+        </section> */}
     </section>
   )
 }

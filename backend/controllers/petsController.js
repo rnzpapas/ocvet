@@ -11,7 +11,6 @@ export const createPet = async (req, res, next) => {
     const filename = imageFile.originalname.split(".")[0];
     const image_name = Date.now() + filename + path.extname(imageFile.path);
     const registration_timestamp = Date.now() / 1000.0;
-
     try{
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");
@@ -62,16 +61,20 @@ export const updatePetImage = async (req, res, next) => {
             const pet_last_image = path.join("..", "frontend", "public", "pet", pet_image.image);
             const pet_last_img_abspath = path.resolve(pet_last_image);
             
-            if(!fs.existsSync(pet_last_img_abspath)){
+            if(fs.existsSync(pet_last_img_abspath)){
                 fs.unlink(pet_last_img_abspath, (err) => {
                     if(err) {
                         return handleResponse(res, 400, "Failed to delete the previous image.");
                     }
+                    const image = imageFile.path;
+                    const query = updatePetImageService(id, image_name);
+                    return handleResponse(res, 200, "Pet image successfully updated.");
                 })
+            }else{
+                const image = imageFile.path;
+                const query = updatePetImageService(id, image_name);
+                return handleResponse(res, 200, "Pet image successfully updated.");
             }
-            const image = imageFile.path;
-            // const query = updatePetImageService(id, image_name);
-            return handleResponse(res, 200, "Pet image successfully updated.");
         }else{
             return handleResponse(res, 400, "No pet image uploaded.");
         }
@@ -147,8 +150,6 @@ export const getAllPetsByOwner = async (req, res, next) => {
     const uid = req.query.uid;
     try{
         const result = await getAllPetsByOwnerService(uid);
-        console.log(uid)
-        console.log(result)
         return handleResponse(res, 200, "Pets successfully fetched.", result);
     }catch(err) {
         return next(err);

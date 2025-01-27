@@ -51,9 +51,12 @@ export const getPetByNicknameService = async (nickname, pet_owner) => {
         SELECT * FROM 
         otcv_pets p INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
-        WHERE p.nickname = $1 AND
-        p.pet_owner = $2`
-    ,[nickname,pet_owner]);
+        WHERE LOWER(p.nickname) LIKE '%' || $1 || '%' 
+        OR UPPER(p.nickname) LIKE '%' || $1 || '%' 
+        OR LOWER(p.nickname) LIKE $1 || '%' 
+        OR UPPER(p.nickname) LIKE $1 || '%'
+        AND p.pet_owner = $2`
+    ,[nickname, pet_owner]);
     return result.rows;
 }
 

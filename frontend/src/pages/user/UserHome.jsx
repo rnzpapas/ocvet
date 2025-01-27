@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react"
 import Footer from "../../components/Footer"
 import UserNav from "../../components/navbars/UserNav"
+import useRedirectUser from '../../auth/useRedirectUser';
 
 function UserHome() {
-  const [token, setToken] = useState("as");
-  useEffect(() => {
-    setToken(sessionStorage.getItem('jwt-token'))
-  },[])
+  useRedirectUser();
+
   return (
     <>
       <UserNav />
-      <section className="h-dvh flex justify-center items-center overflow-hidden">
-        <h5 className="w-80 break-words">{token}</h5>
-      </section>
+      <section className="h-dvh"></section>
       <Footer/>
     </>
   )

@@ -1,5 +1,5 @@
 import handleResponse from '../middleware/responseHandler.js';
-import { createVaccinationsService, deleteVaccinationService, getAllVaccinationsByPetGroupService, getAllVaccinationsByPetService, getAllVaccinationsService } from '../models/vaccinationsModel.js'
+import { createVaccinationsService, deleteVaccinationService, getAllVaccinationsByPetGroupService, getAllVaccinationsByPetService, getAllVaccinationsService, getRecentVaccinationsByOwnerService } from '../models/vaccinationsModel.js'
 
 export const createVaccinations = async (req, res, next) => {
     const { vaccid, petid, pgid } = req.body;
@@ -48,6 +48,16 @@ export const getAllVaccinationsByPetGroup = async (req, res, next) => {
     try{
         const result = await getAllVaccinationsByPetGroupService(pgid);
         return handleResponse(res, 200, "Vaccination successfully fetched.", result);
+    }catch(err){
+        return next(err);
+    }
+}
+
+export const getRecentVaccinationsByOwner = async (req, res, next) => {
+    const uid = req.query.uid;
+    try{
+        const result = await getRecentVaccinationsByOwnerService(uid);
+        return handleResponse(res, 200, "Vaccinations successfully fetched.", result);
     }catch(err){
         return next(err);
     }

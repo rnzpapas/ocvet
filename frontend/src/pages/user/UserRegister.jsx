@@ -3,8 +3,10 @@ import InputField from "../../components/InputField";
 import Button from "../../components/button"
 import SideLogo from "../../components/SideLogo"
 import { Link } from "react-router";
+import useRedirectUser from '../../auth/useRedirectUser';
 
 function UserRegister() {
+    useRedirectUser();
     const [isHiddenPassword, setIsHiddenPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");

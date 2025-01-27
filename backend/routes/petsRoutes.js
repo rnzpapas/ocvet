@@ -3,15 +3,15 @@ import {upload} from "../config/storage.js";
 import { createPet, deletePet, getAllPets, getAllPetsByDate, getAllPetsByOwner,
 getAllPetsByOwnerDescending, getAllPetsByRangeDate, getAllPetsByType, getAllPetsByTypeDescending,
 getAllPetsCount, getPet, getPetByNickname, updatePet, updatePetImage} from "../controllers/petsController.js"
-
+import { authenticateAdminJwt, authenticateUserJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
-ROUTER.post("/pets/register", upload.single('image'), createPet);
-ROUTER.put("/pets/update/image/:id", upload.single("image"), updatePetImage);
-ROUTER.delete("/pets/remove/:id", deletePet);
-ROUTER.get("/pets/all", getAllPets);
-ROUTER.get("/pets?", getAllPetsByDate); //need testing
-ROUTER.get("/pets/owner?", getAllPetsByOwner);
+ROUTER.post("/pets/register", authenticateUserJwt, upload.single('image'), createPet);
+ROUTER.put("/pets/update/image/:id", authenticateUserJwt, upload.single("image"), updatePetImage);
+ROUTER.delete("/pets/remove/:id", authenticateUserJwt, deletePet);
+ROUTER.get("/pets/all", authenticateAdminJwt, getAllPets);
+ROUTER.get("/pets?", getAllPetsByDate); 
+ROUTER.get("/pets/owner?", authenticateUserJwt, getAllPetsByOwner);
 ROUTER.get("/pets/owner/desc", getAllPetsByOwnerDescending);
 ROUTER.get("/pets/date/range", getAllPetsByRangeDate);
 ROUTER.get("/pets/type", getAllPetsByType);

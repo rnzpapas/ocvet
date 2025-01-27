@@ -1,7 +1,16 @@
 import NavLink from "../NavLink"
 import OcvetLogo from "../../assets/logo_img.png"
+import { useEffect, useState } from "react"
 
 function UserNav() {
+  const [userID, setUserID] = useState('');
+  
+  useEffect(() => {
+    let userData = localStorage.getItem('user');
+    let parsedData = JSON.parse(userData);
+    setUserID(parsedData.uaid);
+  },[])
+
   return (
     <nav className="bg-linen h-[130px] flex justify-around">
         <section className="flex items-center gap-5">
@@ -30,7 +39,7 @@ function UserNav() {
         ">
           <NavLink navTitle={"HOME"} toPage={"/user/home"}/>
           <NavLink navTitle={"PETS"} toPage={"/user/pets"}/>
-          <NavLink navTitle={"ACCOUNT"} toPage={"/user/account/1"}/>
+          <NavLink navTitle={"ACCOUNT"} toPage={`/user/account/${userID}`}/>
         </section>
     </nav>
   )

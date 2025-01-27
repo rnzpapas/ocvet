@@ -2,41 +2,119 @@ import Button from "../../components/button"
 import Footer from "../../components/Footer"
 import InputField from "../../components/InputField"
 import UserNav from "../../components/navbars/UserNav"
+import useRedirectUser from '../../auth/useRedirectUser';
+import { useNavigate, useParams } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { capitalizeFirstLetter } from '../../utils/textUtils'
+import axios from "axios";
 
 function UserPetEditInfo() {
-  return (
-    <>
-        <UserNav />
-        <section className="h-dvh flex items-center flex-col">
-            <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Edit Pet Information</h5>
-            <form action="" className="w-[400px] flex flex-col gap-8">
-                <section className="flex flex-col gap-3">
-                    <label htmlFor="photo" className="font-instrument-sans text-headline-sm font-semibold">Pet Photo</label>
-                    <section className="flex justify-center">
-                        <section className="relative">
-                            <img src="" alt="" className="w-[100px] h-[100px] bg-azure rounded-full" />
-                            <section className="absolute bottom-0 right-0 bg-silver rounded-full h-[30px] w-[30px] flex items-center justify-center cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-white-smoke h-[20px] w-[20px]">
-                                    <path d="M149.1 64.8L138.7 96 64 96C28.7 96 0 124.7 0 160L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-74.7 0L362.9 64.8C356.4 45.2 338.1 32 317.4 32L194.6 32c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/>
-                                </svg>
+    const {id} = useParams();
+    useRedirectUser(`pets/edit/${id}`);
+    const navigate = useNavigate();
+    
+    const [petInfo, setPetInfo] = useState();
+    const [petTypes, setPetTypes] = useState();
+    const [nickname, setNickname]= useState();
+    const [atypeId, setAtypeId] = useState();
+    const [atype, setAtype] = useState("Pet");
+
+    const loadPetInfo = async () => {
+        let pet;
+        await axios.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+        .then((response) => pet = response.data.data)
+        .catch(err => console.error(err))
+        return pet;
+    }
+
+    const loadPetType = async () => {
+        let types;
+        await axios.get('http://localhost:5001/api/atypes/sort')
+        .then(res => types = res.data.data)
+        .catch(err => console.error(err))
+        return types;
+    }
+
+    
+
+    const onChangeNickname = (evt) => {
+        setNickname(evt.target.value);
+    }
+
+    const onChangeType = (evt) => {
+        setAtypeId(evt.target.value);
+    }
+
+    const updatePetDetails = async () => {
+        const body = {
+            "pet_owner": petInfo.pet_owner, 
+            "atypeid": atypeId || petInfo.ATYPEID, 
+            "nickname": nickname || petInfo.nickname
+        }
+        await axios.put(`http://localhost:5001/api/pets/update?petid=${id}`, body,
+            {headers: {
+                'Content-Type': 'application/json'
+            }}
+        )
+        .then(() => navigate(`/user/pets/view/${id}`))
+        .catch(err => console.error(err))
+        
+    }
+
+    useEffect(() => {
+        let petDataPromise = loadPetInfo();
+        petDataPromise.then(pet => {
+            setPetInfo(info => info = pet);
+            setNickname(pet.nickname)
+            setAtypeId(pet.ATYPEID)
+        });
+
+        let typePromise = loadPetType();
+        typePromise.then(type => {setPetTypes((pt) => pt = type)})
+
+    },[]);
+    
+    return (
+        <>
+            <UserNav />
+            <section className="h-dvh flex items-center flex-col">
+                <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Edit Pet Information</h5>
+                {petInfo && (
+                    <form action="" className="w-[400px] flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+                        <section className="flex flex-col gap-3 mt-5">
+                            <section className="flex justify-center">
+                                <section className="relative">
+                                    <img src={`/pet/${petInfo.image}`} alt="" className="w-[100px] h-[100px] bg-azure rounded-full" />
+                                </section>
                             </section>
+                        </section> 
+                        <section className="flex flex-col gap-3">
+                            <label htmlFor="pet_nickname" className="font-instrument-sans text-headline-sm font-semibold">Pet Nickname</label>
+                            <InputField type={"text"} placeholder={"E.g. Moosey"} name={"pet_nickname"} value={nickname} onChangeFunc={onChangeNickname}/>
                         </section>
-                    </section>
-                </section> 
-                <section className="flex flex-col gap-3">
-                    <label htmlFor="pet_nickname" className="font-instrument-sans text-headline-sm font-semibold">Pet Nickname</label>
-                    <InputField type={"text"} placeholder={"E.g. Moosey"} name={"pet_nickname"}/>
-                </section>
-                <section className="flex flex-col gap-3">
-                    <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Breed</label>
-                    <InputField type={"text"} placeholder={"E.g. Dog"} name={"pet_breed"}/>
-                </section>
-                <Button txtContent={"Update Pet Information"}/>                
-            </form>
-        </section>
-        <Footer />
-    </>
-  )
+                        <section className="flex flex-col gap-3">
+                            <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
+                            <select 
+                                className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                onChange={onChangeType}
+                            >
+                                {
+                                    petTypes && (
+                                        petTypes.map((pt) => (
+                                            <option key={pt.ATYPEID} value={pt.ATYPEID} selected={pt.ATYPEID === petInfo.ATYPEID ? true : false}>{capitalizeFirstLetter(pt.animal_type)}</option>
+                                        ))
+                                    )
+                                }
+                            </select>
+                        </section>
+                        <Button txtContent={"Update Pet Information"} onClickFunc={updatePetDetails}/>                
+                    </form>
+                )}
+                
+            </section>
+            <Footer />
+        </>
+    )
 }
 
 export default UserPetEditInfo

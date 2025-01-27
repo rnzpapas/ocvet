@@ -7,8 +7,6 @@ export const loginUserAccount = async (req, res, next) => {
     const { username, password } = req.body;
     try{
         const user = await getUserAccountByUsernameService(username);
-        console.log("backend: ", username);
-        console.log("backend: ", password);
 
         if(username.length === 0 || password.length === 0  ) return handleResponse(res, 400, "Please fill out all fields.");
         if(user.length === 0) return handleResponse(res, 400, "Incorrect username or password.");
@@ -19,13 +17,20 @@ export const loginUserAccount = async (req, res, next) => {
 
         const payload = {
             "uaid": user[0].uaid,
-            "email": user[0].email,
             "role": user[0].role,
-            "date_joined": user[0].date_joined
         };
 
         const token = await createToken(payload);
-        return handleResponse(res, 200, "Successfully login.", token);
+
+        const response = {
+            "access_token": token,
+            "uaid": user[0].UAID,
+            "email": user[0].email,
+            "role": user[0].role,
+            "date_joined": user[0].date_joined
+        }
+
+        return handleResponse(res, 200, "Successfully login.", response);
 
     }catch(err){
         return next(err);
