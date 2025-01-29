@@ -1,6 +1,6 @@
 import express from 'express';
 import { getAllUsersDetail, getUserDetailById, updateUserDetail, deleteUserDetail  } from '../controllers/userDetailsController.js';
-import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, sortUsernameDesc, loginUserAccount } from '../controllers/userAccountsController.js';
+import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, sortUsernameDesc, loginUserAccount, updateUserAccountPassword } from '../controllers/userAccountsController.js';
 import { createUser, getUserFullDetails } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
@@ -21,8 +21,9 @@ ROUTER.delete("/user/:id", authenticateAdminJwt, deleteUserDetail);
 // USER ACCOUNTS
 ROUTER.get("/user/account/all", authenticateAdminJwt, getAllUsersAccount);
 ROUTER.get("/user/account/details/:id", getUserAccountById);
-ROUTER.put("/user/account/details/:id", updateUserAccount);
-ROUTER.delete("/user/account/details/:id", authenticateAdminJwt, deleteUserAccount);
+ROUTER.put("/user/account/details/update", authenticateUserJwt, updateUserAccount);
+ROUTER.put("/user/account/pw", authenticateUserJwt, updateUserAccountPassword)
+ROUTER.delete("/user/account/details/delete/:id", authenticateAdminJwt, deleteUserAccount);
 ROUTER.get("/user/account/count", authenticateSuperAdminJwt, countAllUserAccount);
 ROUTER.get("/user/account/count/:date", authenticateSuperAdminJwt, countAllUserAccountByDate);
 ROUTER.get("/user/account/sort-date/asc", sortDateJoinedAsc);

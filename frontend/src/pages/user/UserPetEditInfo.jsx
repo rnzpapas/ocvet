@@ -83,8 +83,8 @@ function UserPetEditInfo() {
                     <form action="" className="w-[400px] flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
                         <section className="flex flex-col gap-3 mt-5">
                             <section className="flex justify-center">
-                                <section className="relative">
-                                    <img src={`/pet/${petInfo.image}`} alt="" className="w-[100px] h-[100px] bg-azure rounded-full" />
+                                <section className="w-[100px] h-[100px] md:w-[125px] md:h-[125px] relative">
+                                    <img src={`/pet/${petInfo.image}`} alt="" className="h-full w-full object-cover bg-azure rounded-full" />
                                 </section>
                             </section>
                         </section> 

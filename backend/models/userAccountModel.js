@@ -22,13 +22,13 @@ export const getAllUsersAccountService = async() => {
 }
 
 export const getUserAccountByUsernameService = async(un) => {
-    const result = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
-    return result.rows;
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
+    return u.rows;
 }
 
 export const getUserAccountByEmailService = async(em) => {
-    const result = await pool.query('SELECT * FROM otcv_user_accounts WHERE email = $1', [em]);
-    return result.rows[0];
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE email = $1', [em]);
+    return u.rows;
 }
 
 export const getUserAccountByIdService = async(id) => {
@@ -36,11 +36,15 @@ export const getUserAccountByIdService = async(id) => {
     return result.rows[0];
 }
 
-export const updateUserAccountService = async(uaid, un, pw, em) => {
-    pw = hashPassword(pw);
-    const result = await pool.query('UPDATE otcv_user_accounts SET password = $1, email = $2 WHERE "UAID" = $4', 
-        [uaid, un, pw, em]);
-    return result.rows[0];
+export const updateUserAccountService = async(uaid, un, em) => {
+    const result = await pool.query('UPDATE otcv_user_accounts SET username = $1, email = $2 WHERE "UAID" = $3', 
+        [un, em, uaid]);
+}
+
+export const updateUserAccountPasswordService = async(pw, uaid) => {
+    let hashed_pw = hashPassword(pw);
+    const result = await pool.query('UPDATE otcv_user_accounts SET "password" = $1 WHERE "UAID" = $2', 
+        [hashed_pw, uaid]);
 }
 
 export const deleteUserAccountService = async(uaid) => {

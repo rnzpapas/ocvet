@@ -18,6 +18,7 @@ module.exports = {
       'raisin-black': '#201A23',
       'white-smoke': '#F2F4F3',
       'azure': '#357DED',
+      'chefchaouen-blue' : '#4C88E7',
       'silver': '#CCCCCC',
       'fire-engine-red': '#C82123',
       'raisin-black-light': '#2D2532',

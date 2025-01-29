@@ -2,7 +2,7 @@
 function PersonalDetails({fullName = "Rando Ballosteros", gender = "randob@gmail.com", address =  "rando182025", style, onEditClick}) {
     return (
       <section className="flex">
-          <section className={`w-6/12 ${style}`}>
+          <section className={`${style}`}>
               <section className="flex items-center gap-2">
                   <h5 className="font-instrument-sans font-semibold text-headline-md text-raisin-black">Personal Details</h5>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[15px] h-[15px] fill-azure cursor-pointer" onClick={onEditClick}>

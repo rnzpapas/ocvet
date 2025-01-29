@@ -44,6 +44,7 @@ import LandingPage from "./pages/LandingPage";
 import { Route, Routes } from "react-router"
 import UserHome from "./pages/user/UserHome"
 import NotFound from "./pages/NotFound"
+import UserPetGroupRegistration from "./pages/user/UserPetGroupRegistration"
 
 function App() {
   const checkBtn = () => {
@@ -192,6 +193,7 @@ function App() {
           <Route path="pets/">
             <Route path="" element={<UserPetPage />}/>
             <Route path="register" element={<UserPetRegistration />}/>
+            <Route path="group/register" element={<UserPetGroupRegistration />}/>
             <Route path="view/:id" element={<UserPetInformation />}/>
             <Route path="edit/:id" element={<UserPetEditInfo />}/>
           </Route>

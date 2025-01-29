@@ -1,4 +1,4 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
@@ -58,13 +58,34 @@ export const getUserAccountById = async (req, res, next) => {
 }
 
 export const updateUserAccount = async (req, res, next) => {
-    const { old_username, username, password, email} = req.body;
-    const old_user = await getUserAccountByUsernameService(username);
+    const { old_username, username, email} = req.body;
+    const old_user = await getUserAccountByUsernameService(old_username);
     const existing_user = await getUserAccountByUsernameService(username);
+    const existing_email = await getUserAccountByEmailService(email);
+    
     try{
-        const user = await updateUserAccountService(old_user.UAID, username, password, email);
-        if(existing_user) return handleResponse(res, 400, "Username already taken.");
-        return handleResponse(res, 200, "Data deletion success", user);
+        if(existing_user.length > 0) return handleResponse(res, 400, "Username already taken.");
+        if(existing_email.length > 0) return handleResponse(res, 400, "E-Mail already taken.");
+        await updateUserAccountService(old_user[0].UAID, username, email);
+        return handleResponse(res, 200, "Information change success");
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const updateUserAccountPassword = async (req, res, next) => {
+    const { old_pw, pw, cpw, uaid } = req.body;
+    const user_acc = getUserAccountByIdService(uaid);
+    try{
+        if(old_pw.length === 0 || pw.length === 0 || cpw.length === 0) return handleResponse(res, 400, 'Please fill out all fields');
+        if(pw !== cpw) return handleResponse(res, 400, 'Two password does not match.');
+        let isValidPw = comparePassword(old_pw, user_acc.password);
+        if(!isValidPw) return handleResponse(res, 400, 'Old password does not match any of our records.');
+        if(pw.length < 6) return handleResponse(res, 400, 'Password must be at least 6 characters long.');
+        console.log(pw)
+        console.log(uaid)
+        const user = await updateUserAccountPasswordService(pw, uaid);
+        return handleResponse(res, 200, "Password change success", user);
     }catch(err) {
         return next(err);
     }

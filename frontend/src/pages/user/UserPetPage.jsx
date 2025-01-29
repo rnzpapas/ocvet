@@ -8,19 +8,6 @@ import { Link } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axios from "axios";
 
-const PETS = [
-    {
-        "petid": "PET127",
-        "petName": "Marian",
-        "img": "doggy.png"
-    },
-    {
-        "petid": "PET138",
-        "petName": "Rolando",
-        "img": "doggy.png"
-    },
-]
-
 function UserPetPage() {
     let user = localStorage.getItem("user");
     let userParsed = JSON.parse(user);
@@ -29,6 +16,7 @@ function UserPetPage() {
     const [petsData, setPetsData] = useState();
     const [searchedPets, setSearchedPets] = useState();
     const [recentVaccinated, setRecentVaccinated] = useState();
+    const [petGroups, setPetGroups] = useState();
     const [search, setSearch] = useState("");
     const [isDefaultView, setIsDefaultView] = useState(true);
 
@@ -43,7 +31,6 @@ function UserPetPage() {
                 'pet_owner': userParsed.uid,
                 'nickname': search
             }
-
             await axios.post('http://localhost:5001/api/pets/nickname', body, {headers: {"Content-Type":  'application/json'}})
             .then(res => {
                 if(res.data.data.length > 0) {
@@ -84,6 +71,14 @@ function UserPetPage() {
         return rv;
     }
 
+    const loadPetGroups = async () => {
+        let pg;
+        await axios.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+        .then(response => pg = response.data.data)
+        .catch(err => console.error(err))
+        return pg;
+    }
+
     useEffect(() => {
         let petsPromise = loadAllPets();
         petsPromise.then(res => setPetsData(res));
@@ -91,7 +86,10 @@ function UserPetPage() {
         let vaxPromise = loadRecentVaccinations();
         vaxPromise.then(res => setRecentVaccinated(res));
 
-    },[petsData, recentVaccinated])
+        let pgPromise = loadPetGroups();
+        pgPromise.then((pg) => setPetGroups(pg))
+
+    },[petsData, recentVaccinated, petGroups])
 
     return (
         <>
@@ -104,7 +102,7 @@ function UserPetPage() {
                             {recentVaccinated && (
                                recentVaccinated.map((pet, index) => (
                                 <div className="w-[50px] h-[50px]" key={index}>
-                                    <img src={`/pet/${pet.image}`} alt={pet.image} className="aspect-square rounded-full"/>
+                                    <img src={`/pet/${pet.image}`} alt={pet.image} className="h-full w-full object-fill rounded-full"/>
                                 </div>
                                ))
                             )}
@@ -113,14 +111,25 @@ function UserPetPage() {
                             <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div> */}
                         </section>
                     </section>
-                    {/* <section>
-                        <h5 className="font-instrument-sans font-semibold uppercase text-content-sm mb-2.5">Recently Dewormed Pets</h5>
-                        <section className="flex gap-2">
-                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
-                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
-                            <div className="bg-fire-engine-red w-[40px] h-[40px] rounded-full"></div>
+                    <section className="flex flex-col gap-3">
+                        <section className="flex items-center gap-2">
+                            <h5 className="font-instrument-sans font-semibold uppercase text-content-sm ">Pet Groups</h5>
+                            <Link to="/user/pets/group/register">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[16px] fill-azure hover:fill-chefchaouen-blue">
+                                    <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+                                </svg>
+                            </Link>
                         </section>
-                    </section> */}
+                        {
+                            petGroups && (
+                                <section className="flex gap-2 items-center">
+                                    {petGroups.map((pg) => (
+                                        <h5>{pg.GROUP_NICKNAME}</h5>
+                                    ))}
+                                </section>
+                            )
+                        }
+                    </section>
                 </section>
                 <section className="w-[80%]">
                     <form className="flex gap-10" onSubmit={(evt) => evt.preventDefault()}>
@@ -137,18 +146,18 @@ function UserPetPage() {
                             <Button txtContent={"Register Pet"} style={"ml-20"}/>
                         </Link> */}
                     </form>
-                    <section className="mt-5 flex flex-wrap gap-5 h-[90%] overflow-y-scroll">
+                    <section className="mt-5 flex flex-wrap gap-5 max-h-[90%] overflow-y-auto overflow-x-hidden">
                         {
                             isDefaultView ? 
                                 petsData && (petsData.map((pet, index) => (
-                                    <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID}>
+                                    <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="w-[140px] h-[150px]">
                                         <PetCard petName={pet.nickname} img={pet.image} />
                                     </Link>
                                 ))) 
                                 :
                                 searchedPets && searchedPets.length > 0 ? 
                                     (searchedPets.map((pet, index) => (
-                                        <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID}>
+                                        <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="w-[140px] h-[150px]">
                                             <PetCard petName={pet.nickname} img={pet.image} />
                                         </Link>
                                     )))
@@ -161,7 +170,6 @@ function UserPetPage() {
                             </svg>
                         </Link>
                     </section>
-
                 </section>
             </section>
             <Footer />

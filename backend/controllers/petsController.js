@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
 import fs from 'fs'
 
@@ -9,8 +9,10 @@ export const createPet = async (req, res, next) => {
     // module to save images on project folder ....
     const imageFile = req.file;
     const filename = imageFile.originalname.split(".")[0];
-    const image_name = Date.now() + filename + path.extname(imageFile.path);
+    const image_name = filename + path.extname(imageFile.path);
     const registration_timestamp = Date.now() / 1000.0;
+
+    console.log(imageFile)
     try{
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");
@@ -160,6 +162,26 @@ export const getAllPetsByOwnerDescending = async (req, res, next) => {
     const uid = req.query.uid;
     try{
         const result = await getAllPetsByOwnerDescendingService(uid);
+        return handleResponse(res, 200, "Pets successfully fetched.", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAllCountPetsByOwner = async (req, res, next) => {
+    const uid = req.query.uid;
+    try{
+        const result = await getAllCountPetsByOwnerService(uid);
+        return handleResponse(res, 200, "Pets successfully fetched.", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAllCountPetsByOwnerAndPets = async (req, res, next) => {
+    const uid = req.query.uid;
+    try{
+        const result = await getAllCountPetsByOwnerAndPetsService(uid);
         return handleResponse(res, 200, "Pets successfully fetched.", result);
     }catch(err) {
         return next(err);

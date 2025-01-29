@@ -11,7 +11,7 @@ const useRedirectUser = (page = null) => {
         let parsedUserData = JSON.parse(userData);
         // if the user is not yet authenticated and tried to access protected routes
         if(!userData || !userToken){
-
+            navigate('/user/login')
         }
         // if other authenticated user role attempts to go to another role pages and any other common pages e.g. login page, registration page
         if(userData && userToken){

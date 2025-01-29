@@ -22,8 +22,10 @@ export const getUserDetailByIdService = async(id) => {
     return result.rows[0];
 }
 
-export const updateUserDetailService = async() => {
-
+export const updateUserDetailService = async(fn, mn, sn, adr, gd, uid) => {
+    await pool.query('UPDATE otcv_user_details SET firstname = $1, middlename = $2, surname = $3, address = $4, gender = $5 WHERE "UID" = $6',
+        [fn, mn, sn, adr, gd, uid]
+    );
 }
 
 export const deleteUserDetailService = async() => {

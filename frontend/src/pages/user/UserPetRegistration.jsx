@@ -7,10 +7,12 @@ import Pomeranian from "../../assets/pomeranian.png"
 import { useEffect, useRef, useState } from "react";
 import { capitalizeFirstLetter } from "../../utils/textUtils";
 import axios from 'axios';
+import { useNavigate } from "react-router";
 
 function UserPetRegistration() {
     useRedirectUser(`pets/register`);
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const [imageSrc, setImageSrc] = useState();
     const [petTypes, setPetTypes] = useState();
@@ -32,6 +34,8 @@ function UserPetRegistration() {
     }
 
     const onChangeType = (evt) => {
+        console.log(petTypes[0].ATYPEID)
+        console.log(evt.target.value)
         setAtypeId((at) => at = evt.target.value);
     }
 
@@ -71,6 +75,7 @@ function UserPetRegistration() {
         formData.append("nickname", nickname);
         formData.append("pet_owner", userParsed.uid);
         formData.append("image", imgFile);
+        console.log(atypeid)
         await axios.post(`http://localhost:5001/api/pets/register`, formData, 
             {
                 headers: {
@@ -79,10 +84,15 @@ function UserPetRegistration() {
                 }
             }
         )
-    }
+        .then(() => navigate('/user/pets'))
+    };
+
     useEffect(() => {
         let typePromise = loadPetType();
-        typePromise.then(type => {setPetTypes((pt) => pt = type)})
+        typePromise.then(type => {
+            setPetTypes((pt) => pt = type);
+            setAtypeId((at) => at = type[0].ATYPEID);
+        })
 
     },[]);
 
@@ -128,7 +138,7 @@ function UserPetRegistration() {
                             <select 
                                 className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
                                 onChange={onChangeType}
-                                defaultValue={petTypes && (petTypes[0].ATYPEID)}
+                                value={atypeid ? atypeid : petTypes && (petTypes[0].ATYPEID)}
                             >
                                 {
                                     petTypes && (
