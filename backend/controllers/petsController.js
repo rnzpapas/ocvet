@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
 import fs from 'fs'
 
@@ -121,6 +121,17 @@ export const getPetByNickname = async (req, res, next) => {
 export const getAllPets = async (req, res, next) => {
     try{
         const result = await getAllPetsService();
+        return handleResponse(res, 200, "Pets successfully fetched.", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAllPetsAndOwnerByType = async (req, res, next) => {
+    const atypeid  = req.query.atypeid;
+    const uid = req.query.uid
+    try{
+        const result = await getAllPetsAndOwnerByTypeService(uid, atypeid);
         return handleResponse(res, 200, "Pets successfully fetched.", result);
     }catch(err) {
         return next(err);

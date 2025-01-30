@@ -112,6 +112,17 @@ export const getAllPetsByOwnerDescendingService = async (uid) => {
     return result.rows;
 }
 
+export const getAllPetsAndOwnerByTypeService = async (uid, atypeid) => {
+    const result = await pool.query(`
+        SELECT * FROM 
+        otcv_pets p INNER JOIN otcv_animal_types ant
+        ON p."ATYPEID" = ant."ATYPEID"
+        WHERE p."pet_owner" = $1 AND p."ATYPEID" = $2
+        ORDER BY p.nickname ASC`
+    ,[uid, atypeid]);
+    return result.rows;
+}
+
 export const getAllCountPetsByOwnerService = async (uid) => {
     const result = await pool.query(`
         SELECT COUNT(*) FROM 

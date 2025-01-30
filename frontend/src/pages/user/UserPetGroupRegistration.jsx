@@ -11,15 +11,16 @@ import { useNavigate } from "react-router";
 
 function UserPetGroupRegistration() {
     useRedirectUser(`pets/group/register`);
-    const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    let userParsed = JSON.parse(localStorage.getItem('user'));
 
-    const [imageSrc, setImageSrc] = useState();
     const [petTypes, setPetTypes] = useState();
     const [nickname, setNickname] = useState();
     const [atypeid, setAtypeId] = useState();
-    const [imgFile, setImgFile] = useState();
-
+    const [population, setPopulation] = useState();
+    const [isPetDropdownOpen, setIsPetDropdownOpen] = useState(false);
+    const [pets, setPets] = useState();
+    const [selectedPets, setSelectedPets] = useState([]);
 
     const loadPetType = async () => {
         let types;
@@ -29,43 +30,55 @@ function UserPetGroupRegistration() {
         return types;
     }
 
+    const loadPets = async () => {
+        let sessionToken = sessionStorage.getItem('jwt-token')
+        let pet;
+        await axios.get(`http://localhost:5001/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
+            {headers: {'Authorization': `Bearer ${sessionToken}`}})
+        .then(res => pet = res.data.data)
+        .catch(err => console.error(err))
+        return pet;
+    }
+ 
+    const loadPet = async (id) => {
+        let pet;
+        await axios.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+        .then((response) => pet = response.data.data)
+        .catch((err) => console.error(err))
+        return pet
+    }
+
     const onChangeNickname = (evt) => {
         setNickname(evt.target.value);
     }
 
     const onChangeType = (evt) => {
-        console.log(petTypes[0].ATYPEID)
-        console.log(evt.target.value)
         setAtypeId((at) => at = evt.target.value);
+        setSelectedPets([]);
     }
 
-    const handleImgBtnClick = () => {
-        fileInputRef.current.click();
-    };
+    const onChangePopulation = (evt) => {
+        setPopulation((p) => p = evt.target.value)
+    }
+
     
-    const handleFileChange = async (event) => {
-        const file = event.target.files[0];
-        if(file && file.type === "image/jpeg" || file.type === "image/png"){
+    const selectPet = (evt) => {
+        let petPromise = loadPet(evt.target.id);
+        petPromise.then((p) => {
+            let isDuplicate = selectedPets.some(pet => pet.nickname === p.nickname);
 
-            const reader = new FileReader();
-      
-            reader.onloadend = () => {
-                setImageSrc(reader.result); 
-            };
-
-            reader.readAsDataURL(file);
-            setImgFile((fl) => fl = file);
-            // await axios.put(`http://localhost:5001/api/pets/update/image/${id}`, formData,
-            // {
-            //     headers: {
-            //     'Authorization': `Bearer ${sessionToken}`,
-            //     'Content-Type': 'multipart/form-data'}
-            // })
-            // .then((res) => window.location.reload())
-        }else{
-            alert('Invalid file type')
-        }
-    };
+            if(!isDuplicate){
+                setSelectedPets((sp) => [
+                    ...sp,
+                    p
+                ]);
+            }
+        });
+    }
+    
+    const onClickPetDropdown = () => {
+        setIsPetDropdownOpen(!isPetDropdownOpen);
+    }
 
     const registerPet = async () => {
         let sessionToken = sessionStorage.getItem('jwt-token');
@@ -95,6 +108,11 @@ function UserPetGroupRegistration() {
 
     },[]);
 
+    useEffect(() => {
+        let petsPromise = loadPets();
+        petsPromise.then((p) => setPets(p));
+    },[atypeid]);
+
     return (
         <>
             <UserNav />
@@ -109,17 +127,79 @@ function UserPetGroupRegistration() {
                         <section className="flex flex-col gap-3">
                             <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
                             <select 
-                                className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light cursor-pointer' 
                                 onChange={onChangeType}
                                 value={atypeid ? atypeid : petTypes && (petTypes[0].ATYPEID)}
                             >
                                 {
                                     petTypes && (
                                         petTypes.map((pt) => (
-                                            <option key={pt.ATYPEID} value={pt.ATYPEID}>{capitalizeFirstLetter(pt.animal_type)}</option>
+                                            <option key={pt.ATYPEID} value={pt.ATYPEID} >{capitalizeFirstLetter(pt.animal_type)}</option>
                                         ))
                                     )
                                 }
+                            </select>
+                        </section>
+                        <section className="flex flex-col gap-3">
+                            <h5 className="font-instrument-sans text-headline-sm font-semibold">Pets</h5>
+                            <section className="flex flex-col relative">
+                                <section className="flex items-center justify-between border rounded-[5px] border-silver py-2 px-2 focus:border-raisin-black-light" onClick={onClickPetDropdown}>
+                                    <section className="font-lato flex gap-2 flex-wrap overflow-y-auto">
+                                        {selectedPets.length > 0 ? selectedPets.map((pet) => (
+                                            <section className="flex gap-2 items-center px-2 py-2 rounded-full w-fit h-full bg-raisin-black">
+                                                <img src={`/public/pet/${pet.image}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
+                                                <h5 className="font-lato text-content-sm text-white-smoke">{pet.nickname}</h5>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-[12px] fill-white-smoke">
+                                                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                                                </svg>
+                                            </section>
+                                        )): 'Select Pets'}
+                                    </section>
+                                    <section>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`h-[12px] ${isPetDropdownOpen ? 'hidden' : 'block'}`}>
+                                            <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`h-[12px] ${isPetDropdownOpen ? 'block' : 'hidden'}`}>
+                                            <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+                                        </svg>
+                                    </section>
+                                </section>
+                                <section className={`${isPetDropdownOpen ? 'block' : 'hidden'}  w-full bg-[#ffffff] absolute top-[41px] rounded-[10px] border border-silver min-h-[80px] max-h-[130px] overflow-y-auto`}>
+                                    {
+                                        pets && (
+                                            pets.map((pet) => (
+                                                <section className="h-[50px] group hover:bg-azure relative">
+                                                    <section className=" w-full h-full absolute" onClick={selectPet} id={pet.PETID}></section>
+                                                    <section className="flex gap-5 items-center px-2 py-2w-full h-full">
+                                                        <img src={`/public/pet/${pet.image}`} alt="z" className="h-[30px] w-[30px] aspect-square  rounded-full"/>
+                                                        <h5 className="font-lato group group-hover:text-white-smoke">{pet.nickname}</h5>
+                                                    </section>
+                                                </section>
+                                            ))
+                                        )
+                                    }
+                                </section>
+                            </section>
+                        </section>
+                        <section className="flex flex-col gap-3">
+                            <label htmlFor="population" className="font-instrument-sans text-headline-sm font-semibold">Population</label>
+                            <select 
+                                className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                onChange={onChangePopulation}
+                                value={!population ? "1 to 50" : population}
+                            >
+                                <option value="1 to 50"> 1 to 50 </option>
+                                <option value="51 to 100"> 51 to 100 </option>
+                                <option value="101 to 200"> 101 to 200 </option>
+                                <option value="201 to 300"> 201 to 300 </option>
+                                <option value="301 to 400"> 301 to 400 </option>
+                                <option value="401 to 500"> 401 to 500 </option>
+                                <option value="501 to 600"> 501 to 600 </option>
+                                <option value="601 to 700"> 601 to 700 </option>
+                                <option value="701 to 800"> 701 to 800 </option>
+                                <option value="801 to 900"> 801 to 900 </option>
+                                <option value="901 to 1000"> 901 to 1000 </option>
+                                <option value="Above 1001"> Above 1001 </option>
                             </select>
                         </section>
                         <Button txtContent={"Register Pet Group"} onClickFunc={registerPet}/>                
