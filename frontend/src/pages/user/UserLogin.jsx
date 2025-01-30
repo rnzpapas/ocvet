@@ -60,6 +60,13 @@ function UserLogin() {
         })
     }
 
+    useEffect(() => {
+        let sessionToken = sessionStorage.getItem('jwt-token');
+        let user = localStorage.getItem('user');
+
+        !sessionToken && user && (localStorage.clear());
+        sessionToken && !user && (sessionStorage.clear());
+    },[]);
 
     return (
         <section className="flex w-screen">

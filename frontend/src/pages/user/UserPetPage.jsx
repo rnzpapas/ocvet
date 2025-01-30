@@ -122,9 +122,11 @@ function UserPetPage() {
                         </section>
                         {
                             petGroups && (
-                                <section className="flex gap-2 items-center">
+                                <section className="flex gap-1 flex-col">
                                     {petGroups.map((pg) => (
-                                        <h5>{pg.GROUP_NICKNAME}</h5>
+                                        <Link to={`/user/pets/group/view/${pg.PGID}`} className="hover:underline" key={pg.PGID}>
+                                            <h5>{pg.GROUP_NICKNAME}</h5>
+                                        </Link>
                                     ))}
                                 </section>
                             )

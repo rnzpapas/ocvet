@@ -77,40 +77,41 @@ function UserPetEditInfo() {
     return (
         <>
             <UserNav />
-            <section className="h-dvh flex items-center flex-col">
-                <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Edit Pet Information</h5>
-                {petInfo && (
-                    <form action="" className="w-[400px] flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
-                        <section className="flex flex-col gap-3 mt-5">
-                            <section className="flex justify-center">
-                                <section className="w-[100px] h-[100px] md:w-[125px] md:h-[125px] relative">
-                                    <img src={`/pet/${petInfo.image}`} alt="" className="h-full w-full object-cover bg-azure rounded-full" />
+            <section className="h-dvh flex items-center justify-center">
+                <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[500px] px-5 py-5 rounded-2xl">
+                    <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Edit Pet Information</h5>
+                    {petInfo && (
+                        <form action="" className="w-[400px] flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+                            <section className="flex flex-col gap-3 mt-5">
+                                <section className="flex justify-center">
+                                    <section className="w-[100px] h-[100px] md:w-[125px] md:h-[125px] relative">
+                                        <img src={`/pet/${petInfo.image}`} alt="" className="h-full w-full object-cover bg-azure rounded-full" />
+                                    </section>
                                 </section>
+                            </section> 
+                            <section className="flex flex-col gap-3">
+                                <label htmlFor="pet_nickname" className="font-instrument-sans text-headline-sm font-semibold">Pet Nickname</label>
+                                <InputField type={"text"} placeholder={"E.g. Moosey"} name={"pet_nickname"} value={nickname} onChangeFunc={onChangeNickname}/>
                             </section>
-                        </section> 
-                        <section className="flex flex-col gap-3">
-                            <label htmlFor="pet_nickname" className="font-instrument-sans text-headline-sm font-semibold">Pet Nickname</label>
-                            <InputField type={"text"} placeholder={"E.g. Moosey"} name={"pet_nickname"} value={nickname} onChangeFunc={onChangeNickname}/>
-                        </section>
-                        <section className="flex flex-col gap-3">
-                            <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
-                            <select 
-                                className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
-                                onChange={onChangeType}
-                            >
-                                {
-                                    petTypes && (
-                                        petTypes.map((pt) => (
-                                            <option key={pt.ATYPEID} value={pt.ATYPEID} selected={pt.ATYPEID === petInfo.ATYPEID ? true : false}>{capitalizeFirstLetter(pt.animal_type)}</option>
-                                        ))
-                                    )
-                                }
-                            </select>
-                        </section>
-                        <Button txtContent={"Update Pet Information"} onClickFunc={updatePetDetails}/>                
-                    </form>
-                )}
-                
+                            <section className="flex flex-col gap-3">
+                                <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
+                                <select 
+                                    className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                    onChange={onChangeType}
+                                >
+                                    {
+                                        petTypes && (
+                                            petTypes.map((pt) => (
+                                                <option key={pt.ATYPEID} value={pt.ATYPEID} selected={pt.ATYPEID === petInfo.ATYPEID ? true : false}>{capitalizeFirstLetter(pt.animal_type)}</option>
+                                            ))
+                                        )
+                                    }
+                                </select>
+                            </section>
+                            <Button txtContent={"Update Pet Information"} onClickFunc={updatePetDetails}/>                
+                        </form>
+                    )}
+                </section>
             </section>
             <Footer />
         </>

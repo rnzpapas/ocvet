@@ -30,9 +30,9 @@ const DoughnutChart = ({labels, datasetLabel, datasetData, datasetBgColor,
             },
             tooltip: {
                 callbacks: {
-                label: function (tooltipItem) {
-                    return tooltipItem.raw + ' ' + optionTooltipLabel; 
-                },
+                    label: function (tooltipItem) {
+                        return tooltipItem.raw + ' ' + optionTooltipLabel; 
+                    },
                 },
             },
         },
