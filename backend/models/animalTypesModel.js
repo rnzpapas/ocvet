@@ -24,6 +24,11 @@ export const sortAnimalTypeAscService = async () => {
     return result.rows;
 }
 
+export const getAnimalTypeByIdService = async(atypeid) => {
+    const result = await pool.query('SELECT * FROM otcv_animal_types WHERE "ATYPEID" = $1', [atypeid]);
+    return result.rows;
+}
+
 export const getAnimalTypeByTypeService = async(type) => {
     const result = await pool.query('SELECT * FROM otcv_animal_types WHERE animal_type = $1', [type]);
     return result.rows;

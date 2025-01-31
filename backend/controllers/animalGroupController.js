@@ -1,13 +1,15 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAnimalGroupService, deleteAnimalGroupService, getAnimalGroupByIdService, getAnimalGroupByOwnerService, getAnimalGroupByPopulationService, getAnimalGroupService, updateAnimalGroupService } from "../models/animalGroupModel.js";
+import { createAnimalGroupService, deleteAnimalGroupService, getAnimalGroupByIdService, getAnimalGroupByOwnerService, getAnimalGroupByPopulationService, getAnimalGroupDetailsByPetOwnerService, getAnimalGroupService, updateAnimalGroupService } from "../models/animalGroupModel.js";
 
 export const createAnimalGroup = async (req, res, next) => {
     const { PETS, ATYPEID, POPULATION, GROUP_NICKNAME, PET_OWNER } = req.body;
     const CREATED_TIMESTAMP = new Date();
     try{
         GROUP_NICKNAME.length === 0 && (GROUP_NICKNAME = "MyPets");
-        await createAnimalGroupService(PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
-        return handleResponse(res, 201, "Pet group successfully created.");
+        if(PETS.length > 0){
+            await createAnimalGroupService(PETS.split(','), ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
+            return handleResponse(res, 201, "Pet group successfully created.");
+        }
     }catch(err){
         return next(err);
     }
@@ -47,6 +49,16 @@ export const getAnimalGroupByOwner = async(req, res, next) => {
     const id = req.query.id;
     try{
         const result = await getAnimalGroupByOwnerService(id);
+        return handleResponse(res, 200, "Pet group successfully fetched.", result);
+    }catch(err){
+        return next(err);
+    }
+}
+
+export const getAnimalGroupDetailsByPetOwner = async(req, res, next) => {
+    const id = req.query.id;
+    try{
+        const result = await getAnimalGroupDetailsByPetOwnerService(id);
         return handleResponse(res, 200, "Pet group successfully fetched.", result);
     }catch(err){
         return next(err);

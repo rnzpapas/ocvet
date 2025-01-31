@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAnimalTypeService, deleteAnimalTypeService, getAnimalTypeByTypeService, sortAnimalTypeAscService } from "../models/animalTypesModel.js";
+import { createAnimalTypeService, deleteAnimalTypeService, getAnimalTypeByIdService, getAnimalTypeByTypeService, sortAnimalTypeAscService } from "../models/animalTypesModel.js";
 
 export const createAnimalType = async (req, res, next) => {
     const { animal_type } = req.body;
@@ -27,6 +27,17 @@ export const deleteAnimalType = async (req, res, next) => {
         return next(err);
     }
 }
+
+export const getAnimalTypeById = async(req, res, next) => {
+    const atypeid = req.query.id
+    try{
+        const atype = await getAnimalTypeByIdService(atypeid);
+        return handleResponse(res, 200, "Animal type is fetched successfully.", atype);
+    }catch(err) {
+        return next(err);
+    }
+}
+
 
 export const sortAnimalTypeAsc = async (req, res, next) => {
     try{

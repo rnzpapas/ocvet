@@ -18,9 +18,9 @@ export const deleteAppointmentScheduleService = async (id) => {
     const res = await pool.query('DELETE FROM otcv_appointment_schedule WHERE "ASID" = $1', [id]);
 }
 
-export const getAppointmentsScheduleService = async (petid, pgid) => {
-    const res = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE "PETID" = $1 OR "PGID" = $2 ORDER BY date ASC',
-        [petid, pgid]
+export const getAppointmentsScheduleService = async (id) => {
+    const res = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE "PETID" = $1 OR "PGID" = $1 ORDER BY date DESC',
+        [id]
     );
     return res.rows;
 }

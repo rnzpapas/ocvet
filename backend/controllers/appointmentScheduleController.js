@@ -27,11 +27,9 @@ export const deleteAppointmentSchedule = async (req, res, next) => {
 }
 
 export const getAppointmentsSchedule = async (req, res, next) => {
-    const petid = req.query.petid;
-    const pgid = req.query.pgid;
-    console.log(petid)
+    const id = req.query.id;
     try{
-        const q = await getAppointmentsScheduleService(petid, pgid);
+        const q = await getAppointmentsScheduleService(id);
         return handleResponse(res, 200, "Appointments successfully fetched.", q);
     }catch(err) {
         return next(err);

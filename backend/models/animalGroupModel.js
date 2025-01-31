@@ -34,6 +34,15 @@ export const getAnimalGroupByOwnerService = async(uid) => {
     return result.rows;
 }
 
+export const getAnimalGroupDetailsByPetOwnerService = async(uid) => {
+    const result = await pool.query(`
+        SELECT pg."GROUP_NICKNAME", pg."PET_OWNER", pt."PETID", pt.nickname, pt.image
+        FROM otcv_pet_group pg INNER JOIN otcv_pets pt
+        ON pt."PETID" = ANY(pg."PETS")
+        WHERE pg."PET_OWNER" = $1`, [uid]);
+    return result.rows;
+}
+
 export const getAnimalGroupByIdService = async(pgid) => {
     const result = await pool.query('SELECT * FROM otcv_pet_group WHERE "PGID" = $1', [pgid]);
     return result.rows;
