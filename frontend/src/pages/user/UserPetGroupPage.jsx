@@ -198,8 +198,18 @@ function UserPetGroupPage() {
         isPetEditModal && (document.body.style.overflow = '');
     }
 
-    const editPetGroup = (f) => {
-        console.log("form : ", f)
+    const editPetGroup = async (f) => {
+        if(f[0].content.length > 30) return alert('Group nickname must maximum of 30 characters only.')
+        let formData = new FormData();
+        formData.append("PGID", id);
+        formData.append("GROUP_NICKNAME", f[0].content);
+
+        await axios.put('http://localhost:5001/api/animal/group/update', formData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(() => window.location.reload())
     }
 
     const removePetGroup = async () => {
@@ -265,7 +275,6 @@ function UserPetGroupPage() {
                             </section>
                             <Modal headline={"Pet Group Information Update"} fields={[
                                 {'headers': 'Pet Group Nickname','type': 'text', 'txtContent': petGroup.GROUP_NICKNAME},
-                                {'headers': 'Pet Group Nickname','type': 'text', 'txtContent': petGroup.POPULATION}
                             ]} isActive={isPetEditModal} onClose={toggleEditPetGroupModal} onSubmitFunc={editPetGroup} button={{txtContent: 'Edit Pet Group', isDisplayed: true}}/>
                         </section>
                     </>

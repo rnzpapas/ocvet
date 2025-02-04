@@ -1,8 +1,7 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
+import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
-    // "ASID", "PETID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time
     const { PETID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
     const sched = new Date(date);
     const dateConverted = `${sched.getFullYear()}-${sched.getMonth()+1}-${sched.getDate()}`;
@@ -35,6 +34,17 @@ export const getAppointmentsSchedule = async (req, res, next) => {
         return next(err);
     }
 }
+
+export const getAppointmentsScheduleByUser= async (req, res, next) => {
+    const id = req.query.id;
+    try{
+        const q = await getAppointmentsScheduleByUserService(id);
+        return handleResponse(res, 200, "Appointments successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
 
 export const getAllAppointmentSchedule = async (req, res, next) => {
     try{

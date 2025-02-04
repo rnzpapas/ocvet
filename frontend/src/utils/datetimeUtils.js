@@ -1,6 +1,6 @@
 
 
-const adjustMonthVisuals = (month) => {
+export const adjustMonthVisuals = (month) => {
     let nm = month + 1;
 
     if(month < 10){
@@ -9,11 +9,24 @@ const adjustMonthVisuals = (month) => {
     return month;
 }
 
+export const adjustTimeVisuals = (time) => {
+    if(time < 10){
+        return `0${time}`;
+    }
+    return time;
+}
+
 export const convertDate = (date) => {
     let d = new Date(date);
     return `${adjustMonthVisuals(d.getMonth())}-${d.getDate()}-${d.getFullYear()}`;
 }
 
 export const convertTime = (time) => {
+    let timeArr = time.split(":");
+    let timeInTwelveHrClockAbbrv = parseInt(timeArr[0]) > 12 ? 'PM' : 'AM';
+    let timeInTwelveHrClock = adjustTimeVisuals(parseInt(timeArr[0]) > 12 && (parseInt(timeArr[0]) - 12));
     
+    return `${timeInTwelveHrClock}:${timeArr[1]} ${timeInTwelveHrClockAbbrv}`;
+
+
 }

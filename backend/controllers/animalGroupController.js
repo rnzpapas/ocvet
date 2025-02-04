@@ -19,10 +19,10 @@ export const createAnimalGroup = async (req, res, next) => {
 }
 
 export const updateAnimalGroup = async (req, res, next) => {
-    const { PGID, PETS, ATYPEID, POPULATION, GROUP_NICKNAME } = req.body;
+    const { PGID, GROUP_NICKNAME } = req.body;
     try{
         GROUP_NICKNAME.length === 0 && (GROUP_NICKNAME = "MyPets");
-        await updateAnimalGroupService(PGID, PETS, ATYPEID, POPULATION, GROUP_NICKNAME);
+        await updateAnimalGroupService(PGID, GROUP_NICKNAME);
         return handleResponse(res, 200, "Pet group successfully updated.");
     }catch(err){
         return next(err);

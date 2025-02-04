@@ -14,9 +14,9 @@ export const createAnimalGroupService = async (PETS, ATYPEID, POPULATION, GROUP_
         [new_pgid, PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER]);
 }
 
-export const updateAnimalGroupService = async (PGID, PETS, ATYPEID, POPULATION, GROUP_NICKNAME) => {
-    const r = await pool.query('UPDATE otcv_pet_group SET "PETS" = $1, "ATYPEID" = $2, "POPULATION" = $3, "GROUP_NICKNAME" = $4 WHERE "PGID" = $5',
-        [PETS, ATYPEID, POPULATION, GROUP_NICKNAME, PGID]
+export const updateAnimalGroupService = async (PGID, GROUP_NICKNAME) => {
+    const r = await pool.query('UPDATE otcv_pet_group SET "GROUP_NICKNAME" = $1 WHERE "PGID" = $2',
+        [GROUP_NICKNAME, PGID]
     )
 }
 

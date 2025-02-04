@@ -40,6 +40,47 @@ export const getAppointmentsScheduleService = async (id) => {
     return res.rows;
 }
 
+export const getAppointmentsScheduleByUserService = async (id) => {
+    const res = await pool.query(`
+        SELECT "ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME", service, diagnosis, status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pet_group pg
+        ON pg."PGID" = a."PGID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pg."PET_OWNER"
+		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+    	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        WHERE ud."UID" = $1 AND a."PGID" IS NOT NULL
+        UNION
+        SELECT "ASID", a."PETID", a."PGID", pt.nickname, service, diagnosis, status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+	    FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+		INNER JOIN otcv_pets pt
+        ON pt."PETID" = pt."PETID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pt."pet_owner"
+        WHERE ud."UID" = $1 
+		AND a."PETID" IS NOT NULL
+		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+    	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        ORDER BY date ASC;
+        `,
+        [id]
+    );
+    return res.rows;
+}
+
 export const getAllAppointmentScheduleService = async () => {
     const res = await pool.query('SELECT * FROM otcv_appointment_schedule ORDER BY date ASC');
     return res.rows;

@@ -37,13 +37,11 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
     }
 
     const handleSubmit = () => {
-        // Gather the updated field data to submit
         const updatedData = formFields.map(field => ({
           header: field.headers,
           content: field.txtContent
         }));
     
-        // Call the parent’s onSubmitFunc with the updated data
         onSubmitFunc(updatedData);
     };
 
