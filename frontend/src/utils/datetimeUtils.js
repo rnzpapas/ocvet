@@ -1,6 +1,6 @@
 
 
-export const adjustMonthVisuals = (month) => {
+const adjustMonthVisuals = (month) => {
     let nm = month + 1;
 
     if(month < 10){

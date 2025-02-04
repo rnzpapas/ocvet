@@ -95,7 +95,9 @@ function UserPetGroupRegistration() {
         formData.append("ATYPEID", atypeid);
         formData.append("GROUP_NICKNAME", nickname || '');
         formData.append("PET_OWNER", userParsed.uid);
-        formData.append("POPULATION", population || 0);
+        pets.length > 0 ?
+        formData.append("POPULATION", 0) :
+        formData.append("POPULATION", population)
         
         await axios.post(`http://localhost:5001/api/animal/group/create`, formData, 
             {
@@ -106,6 +108,7 @@ function UserPetGroupRegistration() {
             }
         )
         .then(() => navigate('/user/pets'))
+        .catch(err => console.error(err))
     };
 
     useEffect(() => {
@@ -114,7 +117,7 @@ function UserPetGroupRegistration() {
             setPetTypes((pt) => pt = type);
             setAtypeId((at) => at = type[0].ATYPEID);
         })
-
+        setPopulation("1 to 50")
     },[]);
 
     useEffect(() => {

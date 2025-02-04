@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5,
+function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5, style, 
     resetPageFunc = undefined, nextPageFunc = undefined, prevPageFunc = undefined, goLastPageFunc = undefined
 }) {
     const [sorted, setIsSorted] = useState({keyToSort: "Client", sortMode: "asc"});
@@ -52,7 +52,7 @@ function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5
 
 
     return (
-        <section className={`flex flex-col ${tableW} ${tableH}`}>
+        <section className={`flex flex-col ${tableW} ${tableH} ${style}`}>
             <section className="overflow-y-auto overflow-x-auto">
                 <table className="w-full"> 
                     <thead className="bg-raisin-black">
@@ -101,13 +101,13 @@ function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5
                                                 </section>
                                             </td> 
                                         : info.status.isFinished ?
-                                            <td className="py-2 px-14"> 
+                                            <td className="py-2 px-14" key={`${key}-${index}`}> 
                                                 <section className=" bg-lime-green  flex items-center justify-center px-2 py-1 rounded-sm">
                                                     <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Done </p>
                                                 </section>
                                             </td>
-                                        :
-                                            <td className="py-2 px-14"> 
+                                        : 
+                                            <td className="py-2 px-14" key={`${key}-${index}`}> 
                                                 <section className=" bg-fire-engine-red flex items-center justify-center px-2 py-1 rounded-sm">
                                                     <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Missed </p>
                                                 </section>

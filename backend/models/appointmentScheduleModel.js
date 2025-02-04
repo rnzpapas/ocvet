@@ -19,7 +19,22 @@ export const deleteAppointmentScheduleService = async (id) => {
 }
 
 export const getAppointmentsScheduleService = async (id) => {
-    const res = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE "PETID" = $1 OR "PGID" = $1 ORDER BY date DESC',
+    const res = await pool.query(`
+        SELECT "ASID", a."PETID", a."PGID", service, diagnosis, status,
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pet_group pg
+        ON pg."PGID" = a."PGID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pg."PET_OWNER"
+        WHERE a."PETID" = $1 OR a."PGID" = $1
+        ORDER BY date DESC;
+        `,
         [id]
     );
     return res.rows;

@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAnimalGroupService, deleteAnimalGroupService, getAnimalGroupByIdService, getAnimalGroupByOwnerService, getAnimalGroupByPopulationService, getAnimalGroupDetailsByPetOwnerService, getAnimalGroupService, updateAnimalGroupService } from "../models/animalGroupModel.js";
+import { createAnimalGroupService, deleteAnimalGroupService, getAnimalGroupByIdService, getAnimalGroupByOwnerService, getAnimalGroupByPopulationService, getAnimalGroupDetailsByPetOwnerService, getAnimalGroupService, registerPetToPetGroupService, removePetToPetGroupService, updateAnimalGroupService } from "../models/animalGroupModel.js";
 
 export const createAnimalGroup = async (req, res, next) => {
     const { PETS, ATYPEID, POPULATION, GROUP_NICKNAME, PET_OWNER } = req.body;
@@ -8,6 +8,9 @@ export const createAnimalGroup = async (req, res, next) => {
         GROUP_NICKNAME.length === 0 && (GROUP_NICKNAME = "MyPets");
         if(PETS.length > 0){
             await createAnimalGroupService(PETS.split(','), ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
+            return handleResponse(res, 201, "Pet group successfully created.");
+        }else{
+            await createAnimalGroupService([], ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
             return handleResponse(res, 201, "Pet group successfully created.");
         }
     }catch(err){
@@ -80,6 +83,28 @@ export const getAnimalGroupByPopulation = async (req, res, next) => {
     try{
         const result = await getAnimalGroupByPopulationService(total);
         return handleResponse(res, 200, "Pet group successfully fetched.", result);
+    }catch(err){
+        return next(err);
+    }
+}
+
+export const registerPetToPetGroup = async (req, res, next) => {
+    const petid = req.query.petid;
+    const pgid = req.query.pgid;
+    try{
+        await registerPetToPetGroupService(petid, pgid);
+        return handleResponse(res, 200, "Pet group successfully register.");
+    }catch(err){
+        return next(err);
+    }
+}
+
+export const removePetToPetGroup = async (req, res, next) => {
+    const petid = req.query.petid;
+    const pgid = req.query.pgid;
+    try{
+        await removePetToPetGroupService(petid, pgid);
+        return handleResponse(res, 200, "Pet group successfully deleted.");
     }catch(err){
         return next(err);
     }

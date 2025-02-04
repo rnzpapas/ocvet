@@ -54,3 +54,19 @@ export const getAnimalGroupByPopulationService = async (POPULATION) => {
     )
     return r.rows;
 }
+
+export const registerPetToPetGroupService = async (petid, pgid) => {
+    await pool.query(`
+        UPDATE otcv_pet_group
+        SET "PETS" = array_append("PETS", $1)
+        WHERE "PGID" = $2
+    `,[petid, pgid])
+}
+
+export const removePetToPetGroupService = async (petid, pgid) => {
+    await pool.query(`
+        UPDATE otcv_pet_group
+        SET "PETS" = array_remove("PETS", $1)
+        WHERE "PGID" = $2
+    `,[petid, pgid])
+}
