@@ -23,35 +23,67 @@ function UserHome() {
   useRedirectUser();
   let userParsed = JSON.parse(localStorage.getItem('user'));
 
+  const [pets, setPets] = useState();
+  const [petGroup, setPetGroup] = useState();
   const [clinicAppointments, setClinicAppointments] = useState();
+  const [clinicAppointmentsDate, setClinicAppointmentsDate] = useState([]);
+  const [clinicAppointmentsTime, setClinicAppointmentsTime] = useState([]);
   const [appointments, setAppointments] = useState();
   const [services, setServices] = useState();
-  const [servicesSelected, setServicesSelected] = useState();
+  const [servicesSelected, setServicesSelected] = useState([]);
   const [isServicesDpOpened, setIsServicesDpOpened] = useState();
   const [diagnosis, setDiagnosis] = useState();
-  const [diagnosisSelected, setDiagnosisSelected] = useState();
+  const [diagnosisSelected, setDiagnosisSelected] = useState([]);
   const [isDiagnosisDpOpened, setIsDiagnosisDpOpened] = useState();
   const [dateOfAppointment, setDateOfAppointment] = useState();
   const [timeOfAppointment, setTimeOfAppointment] = useState();
   const [appointmentPage, setAppointmentPage] = useState(1);
+  const [isPetsDpOpened, setIsPetsDpOpened] = useState(false);
+  const [isPetGroupDpOpened, setIsPetGroupDpOpened] = useState(false);
 
+
+  const loadPets = async () => {
+    let p;
+    let sessionToken = sessionStorage.getItem('jwt-token');
+    await axios.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
+      {
+        headers : {
+          'Authorization': `Bearer ${sessionToken}`
+        }
+      }
+    )
+    .then((res) => {
+      p = res.data.data;
+    })
+    .catch(err => console.error(err))
+    return p
+  }
+
+  const loadPetGroup = async () => {
+    let p;
+    await axios.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+    .then(res => {
+      p = res.data.data
+    })
+    .catch(err => console.error(err))
+    return p;
+  }
 
   const loadClinicAppointment = async () => {
-    let ap = [];
+    let dates = [];
+    let time = [];
     await axios.get('http://localhost:5001/api/appointment/all')
     .then((res) => {
       let apiResponse = res.data.data;
-
       apiResponse.map((appointment) => {
-        let schedule = {
-          "date": convertDate(appointment.date),
-          "time": appointment.time
-        }
-        ap.push(schedule);
+          let dt = convertDate(appointment.date);
+          let tm = convertTime(appointment.time);
+          dates.push(dt);
+          time.push(tm);
       })
     })
     .catch(err => console.error(err))
-    return ap;
+    return [dates, time]
   }
 
   const loadAppointment = async () => {
@@ -80,7 +112,7 @@ function UserHome() {
 
   const selectDate = (year, month, day) => {
     let modifiedMonth = adjustMonthVisuals(month-1);
-    let selectedDate = `${year}-${modifiedMonth}-${day}`;
+    let selectedDate = `${modifiedMonth}-${day}-${year}`;
     setDateOfAppointment((da) => da = selectedDate);
     setAppointmentPage(appointmentPage + 1);
   }
@@ -91,27 +123,64 @@ function UserHome() {
 
   }
 
+  const nextAppointmentPage = () => {
+    if(servicesSelected.length > 0 || diagnosisSelected.length > 0) setAppointmentPage(appointmentPage + 1)
+    
+  }
+
   const prevAppointmentPage = () => {
     if(appointmentPage > 1){
       setAppointmentPage(appointmentPage - 1)
     }
   }
 
-  const selectService = (evt) => {
+  const toggleService = (evt) => {
+    let serviceChosen = evt.target.parentElement.parentElement.children[1].textContent;
+    let isServiceAlreadySelected = servicesSelected.some((s) => s === serviceChosen);
+
+    if(isServiceAlreadySelected){
+      let newServicesSelected = servicesSelected.filter((s) => s !== serviceChosen);
+      setServicesSelected((s) => s = newServicesSelected);
+      evt.target.classList.remove("bg-raisin-black");
+    }else{
+      servicesSelected.length > 0 ?
+      setServicesSelected((prevSelected) => [...prevSelected, serviceChosen]) : setServicesSelected((s) => s = [serviceChosen]);
+      evt.target.classList.add("bg-raisin-black");
+    }
+  }
+
+  const toggleDiagnosis = (evt) => {
+    let diagnosisChosen = evt.target.parentElement.parentElement.children[1].textContent;
+    let isDiagnosisAlreadySelected = diagnosisSelected.some((s) => s === diagnosisChosen);
+
+    if(isDiagnosisAlreadySelected){
+      let newDiagnosisSelected = diagnosisSelected.filter((s) => s !== diagnosisChosen);
+      setDiagnosisSelected((s) => s = newDiagnosisSelected);
+      evt.target.classList.remove("bg-raisin-black");
+    }else{
+      diagnosisSelected.length > 0 ?
+      setDiagnosisSelected((prevSelected) => [...prevSelected, diagnosisChosen]) : setDiagnosisSelected((s) => s = [diagnosisChosen]);
+      evt.target.classList.add("bg-raisin-black");
+    }
+  }
+
+  const togglePetsDp = () => {
+    setIsPetGroupDpOpened(false);
+    setIsPetsDpOpened(b => b = !isPetsDpOpened)
+  }
+  const togglePetGroupDp = () => {
+    setIsPetsDpOpened(false);
+
+    setIsPetGroupDpOpened(b => b = !isPetGroupDpOpened)
+  }
+
+
+
+  const bookAppointment = (evt) => {
 
   }
 
-  const deselectService = (evt) => {
-    
-  }
 
-  const selectDiagnosis = (evt) => {
-
-  }
-
-  const deselectDiagnosis = (evt) => {
-    
-  }
   useEffect(() => {
     let atsPromise = loadAppointment();
     let scvs = loadServices();
@@ -121,23 +190,38 @@ function UserHome() {
     atsPromise.then(al => setAppointments(at => at = al));
     scvs.then(scv => setServices(ss => ss = scv));
     dgs.then(dg => setDiagnosis(ds => ds = dg));
-    aatsPromise.then(at => setClinicAppointments(ca => ca = at));
+    aatsPromise.then(at => {
+      setClinicAppointmentsDate(cad => cad = at[0]);
+      setClinicAppointmentsTime(cat => cat = at[1]);
+    });
 
-  },[])
+  },[dateOfAppointment])
+
+  useEffect(() => {
+    let petPromise = loadPets();
+    let petGroupPromise = loadPetGroup();
+
+    petPromise.then(r => setPets(p => p = r));
+    petGroupPromise.then(r => setPetGroup(p => p = r));
+
+  }, [])
+
+
+  useEffect(() => {}, [servicesSelected, diagnosisSelected, isPetsDpOpened, isPetGroupDpOpened])
 
   return (
     <>
       <UserNav />
       <section className="h-dvh flex">
         <section className="w-[40%] flex justify-center">
-          <section className="bg-white-smoke shadow-md px-10 py-5 w-[600px] max-h-[300px] overflow-y-auto mt-16">
+          <section className="bg-white-smoke shadow-md px-10 py-5 w-[80%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
             <h5 className="font-lato font-semibold text-headline-md mb-4">Upcoming Appointments</h5>
             <section className="flex flex-col gap-2">
               {/* appointment list */}
               {
                 appointments && (
-                  appointments.map(a => (
-                    <section className="flex items-center justify-between border-b border-b-silver">
+                  appointments.map((a, index) => (
+                    <section key={index} className="flex items-center justify-between border-b border-b-silver">
                       <section className="flex flex-col">
                         <h5 className="font-lato text-content-md text-raisin-black font-semibold">{convertDate(a.date)}</h5>
                         <p className="font-lato text-content-md text-silver font-semibold">{convertTime(a.time)}</p>
@@ -151,148 +235,210 @@ function UserHome() {
                   ))
                 )
               }
-
             </section>
           </section>
         </section>
         <section className="w-[60%] mt-16 flex flex-col items-center">
-          <h5 className="font-lato font-semibold text-headline-md mb-4">Book An Appointment</h5>
-          {/* Stepper */}
-          <section className="flex items-center justify-center gap-2">
-              {/* step 1 */}
-              <section className="flex items-center justify-center gap-2">
-                {
-                appointmentPage > 1 ?  
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[32px] h-[32px] fill-white-smoke bg-chefchaouen-blue rounded-full px-2 py-2">
-                  <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                </svg> 
-                : 
-                <section className="bg-raisin-black rounded-full px-2 py-2 w-[32px] h-[32px] flex justify-center items-center">
-                  <h5 className="text-white-smoke font-lato font-semibold text-content-sm">1</h5>
+          <section className="w-[90%] h-[500px] shadow-md bg-white-smoke px-4 py-4 rounded-md relative">
+            <h5 className="font-lato font-semibold text-headline-md mb-2">Book An Appointment</h5>
+            {/* Stepper */}
+            <section className="flex items-center justify-center gap-2">
+                {/* step 1 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 1 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                      <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">1</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 1 && ('font-semibold')} text-content-sm text-nowrap`}>Set Date</p>
                 </section>
-                }
-                <p className={`${appointmentPage === 1 && ('font-semibold')} text-content-md`}>Set Date</p>
-              </section>
-              <span className={`w-[20px] mt-2 h-[2px] ${appointmentPage > 1 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
-              {/* step 2 */}
-              <section className="flex items-center justify-center gap-2">
-                {
-                appointmentPage > 2 ?  
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[32px] h-[32px] fill-white-smoke bg-chefchaouen-blue rounded-full px-2 py-2`}>
-                  <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                </svg> 
-                : 
-                <section className="bg-raisin-black rounded-full px-2 py-2 w-[32px] h-[32px] flex justify-center items-center">
-                  <h5 className="text-white-smoke font-lato font-semibold text-content-sm">2</h5>
+                <span className={`w-[40px] mt-1 h-[2px] ${appointmentPage > 1 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
+                {/* step 2 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 2 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                      <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">2</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 2 && ('font-semibold')} text-content-sm text-nowrap`}>Choose Timeslot</p>
                 </section>
-                }
-                <p className={`${appointmentPage === 2 && ('font-semibold')} text-content-md`}>Choose Timeslot</p>
-              </section>
-              <span className={`w-[20px] mt-2 h-[2px] ${appointmentPage > 2 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
-              {/* step 3 */}
-              <section className="flex items-center justify-center gap-2">
-                {
-                appointmentPage > 3 ?  
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[32px] h-[32px] fill-white-smoke bg-chefchaouen-blue rounded-full px-2 py-2`}>
-                  <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                </svg> 
-                : 
-                <section className="bg-raisin-black rounded-full px-2 py-2 w-[32px] h-[32px] flex justify-center items-center">
-                  <h5 className="text-white-smoke font-lato font-semibold text-content-sm">3</h5>
+                <span className={`w-[40px] mt-1 h-[2px] ${appointmentPage > 2 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
+                {/* step 3 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 3 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                      <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">3</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 3 && ('font-semibold')} text-content-sm text-nowrap`}>Pick Service</p>
                 </section>
-                }
-                <p className={`${appointmentPage === 3 && ('font-semibold')} text-content-md`}>Pick Service</p>
-              </section>
-              <span className={`w-[20px] mt-2 h-[2px] ${appointmentPage > 3 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
-              {/* step 4 */}
-              <section className="flex items-center justify-center gap-2">
-                {
-                appointmentPage > 3 ?  
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[32px] h-[32px] fill-white-smoke bg-chefchaouen-blue rounded-full px-2 py-2`}>
-                  <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                </svg> 
-                : 
-                <section className="bg-raisin-black rounded-full px-2 py-2 w-[32px] h-[32px] flex justify-center items-center">
-                  <h5 className="text-white-smoke font-lato font-semibold text-content-sm">4</h5>
+                <span className={`w-[40px] mt-1 h-[2px] ${appointmentPage > 3 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
+                {/* step 4 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 4 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">4</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 4 && ('font-semibold')} text-content-sm text-nowrap`}>Select Pet</p>
+                  <span className={`w-[40px] mt-1 h-[2px] ${appointmentPage > 4 ? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
                 </section>
-                }
-                <p className={`${appointmentPage === 3 && ('font-semibold')} text-content-md`}>Select Pet Diagnosis</p>
-              </section>
-          </section>
-          {/* Appointment pages */}
-          <section className="relative py-12">
-            {/* calendar */}
-            <section className={`${appointmentPage == 1 ? 'block' : 'hidden'}`}>
-              <Calendar onSelectDate={selectDate}/>
+                {/* step 5 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 5 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                      <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">5</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 4 && ('font-semibold')} text-content-sm text-nowrap`}>Select Pet Diagnosis</p>
+                </section>
             </section>
-            {/* time slot */}
-            <section className={`${appointmentPage == 2 ? 'block' : 'hidden'} bg-white-smoke shadow-md max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-5`}>
-              {
-                timeSlot.map(time => (
-                  appointments ? (
-                    appointments.map((aps) => (
-                      <div className={`border border-raisin-black ${convertTime(aps.time) === time ? 'hidden' : 'flex'}  items-center justify-center px-2 rounded-md cursor-pointer max-h-[75px] group hover:bg-raisin-black`} onClick={(evt) => selectTime(evt)}>
-                        <p className="font-lato text-raisin-black group group-hover:text-white-smoke">{time}</p>
-                      </div>
+            {/* Appointment pages */}
+            <section className="relative py-5">
+              {/* calendar */}
+              <section className={`${appointmentPage == 1 ? 'block' : 'hidden'}`}>
+                <Calendar onSelectDate={selectDate}/>
+              </section>
+              {/* time slot */}
+              <section className={`${appointmentPage == 2 ? 'w-full max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'}`}>
+                {
+                  timeSlot.map((time, index) => (
+                    <div key={index} className={`border border-raisin-black ${clinicAppointmentsTime.includes(time) && 
+                    clinicAppointmentsDate.includes(dateOfAppointment) ? 'hidden' : 'flex items-center justify-center rounded-3xl cursor-pointer h-[32px] group hover:bg-raisin-black'}`} onClick={(evt) => selectTime(evt)}>
+                      <p className="font-lato text-raisin-black group group-hover:text-white-smoke">{time}</p>
+                    </div>
+                  ))
+                }
+              </section>
+              {/* services */}
+              <section className={`${appointmentPage === 3 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'} `}>
+                {
+                  services && (
+                    services.map((svcs,index) => (
+                      <section key={index} className="flex items-center gap-4 relative">
+                        <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
+                          <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleService(e)}></section>
+                        </section>
+                        <h5 className="font-lato">{svcs.service}</h5>
+                      </section>
                     ))
                   )
-                  :
-                  <div className="border border-raisin-black flex items-center justify-center px-2 rounded-md cursor-pointer max-h-[75px] group hover:bg-raisin-black" onClick={(evt) => selectTime(evt)}>
-                    <p className="font-lato text-raisin-black group group-hover:text-white-smoke">{time}</p>
-                  </div>
-                ))
-              }
-            </section>
-            {/* services */}
-            <section className={`${appointmentPage === 3 ? 'block' : 'hidden'} bg-white-smoke shadow-md max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-5`}>
-              {
-                services && (
-                  services.map(svcs => (
-                    <section className="flex flex-col relative">
-                      <section className="max-h-19 flex items-center justify-between border rounded-[5px] border-silver py-2 px-2 hover:border-raisin-black-light">
-                          <section className="font-lato flex gap-2 overflow-x-auto">
-                              {servicesSelected.length > 0 ? servicesSelected.map((svc) => (
-                                  <section key={svc.SERVICEID} className={`flex gap-2 items-center px-2 py-2 ${selectedPets.length > 0 && ('mb-2')} rounded-full min-w-fit z-10 bg-raisin-black`}>
-                                      <h5 className="font-lato text-content-sm text-white-smoke">{svc.service}</h5>
-                                      <section className="h-full w-5 cursor-pointer flex justify-center relative" >
-                                          <section className="w-full h-full absolute" id={svc.SERVICEID} onClick={e => deselectPet(e)}></section>
-                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-[12px] fill-white-smoke">
-                                              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
-                                          </svg>
-                                      </section>
-                                  </section>
-                              )): 'Select Pets'}
-                          </section>
-                          <section className="flex items-center justify-center w-[10%] max-h-20 cursor-pointer" onClick={onClickPetDropdown}>
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`h-[12px] ${isPetDropdownOpen ? 'hidden' : 'block'}`}>
-                                  <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
-                              </svg>
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`h-[12px] ${isPetDropdownOpen ? 'block' : 'hidden'}`}>
-                                  <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
-                              </svg>
-                          </section>
-                      </section>
-                      <section className={`block z-20 w-full bg-[#ffffff] rounded-[10px] border border-silver min-h-[80px] max-h-[130px] overflow-y-auto`}>
-                          {
-                              services && (
-                                  services.map((svc) => (
-                                      <section key={svc.SERVICEID} className="h-[50px] group hover:bg-azure relative">
-                                          <section className=" w-full h-full absolute" onClick={selectPet} id={svc.PETID}></section>
-                                          <section className="flex gap-5 items-center px-2 py-2w-full h-full">
-                                              <img src={`/pet/${svc.image}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
-                                              <h5 className="font-lato group group-hover:text-white-smoke">{svc.nickname}</h5>
-                                          </section>
-                                      </section>
-                                  ))
-                              )
-                          }
-                      </section>
+                }
+              </section>
+              {/* pets / pet group*/}
+              <section className={`${appointmentPage === 4 ? 'w-full max-h-[500px] px-3 py-3 gap-3 rounded-md flex flex-col' : 'hidden'}`}>
+                <h5>Choose One: </h5>
+                <section className="w-full h-fit flex flex-col gap-4">
+                  {/* PETS */}
+                  <section className="h-fit">
+                    <section className="flex justify-between cursor-pointer px-2 py-2 bg-raisin-black" onClick={togglePetsDp}>
+                      <h5 className="font-lato text-white-smoke">Pets</h5>     
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${isPetsDpOpened ? 'hidden' : 'w-[12px] fill-white-smoke'}`}>
+                        <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+                      </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${!isPetsDpOpened ? 'hidden' : 'w-[12px] fill-white-smoke'}`}>  
+                        <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+                      </svg>
                     </section>
-                  ))
-                )
-              }
+                  </section>
+                  <section className={`${isPetsDpOpened ? 'h-40 grid grid-cols-4 gap-10 overflow-y-auto' : 'hidden'}`}>
+                    {
+                      pets ? 
+                        pets.map(pet => (
+                          <section key={pet.PETID}>
+                            <section className="flex items-center gap-2 px-2 py-2 rounded-full cursor-pointer group hover:bg-chefchaouen-blue">
+                              <img src={`/pet/${pet.image}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
+                              <h5 className="w-full font-lato text-raisin-black group group-hover:text-white-smoke group-hover:font-semibold">{pet.nickname}</h5>
+                            </section>
+                          </section>
+                        ))  
+                      :
+                      <h5> Register a pet</h5>
+                    }
+                  </section>
+
+                  {/* PET GROUP */}
+                  <section className="h-fit">
+                    <section className="flex justify-between cursor-pointer px-2 py-2 bg-raisin-black" onClick={togglePetGroupDp}>
+                      <h5 className="font-lato text-white-smoke">Pet Group</h5>     
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${isPetGroupDpOpened ? 'hidden' : 'w-[12px] fill-white-smoke'}`}>
+                        <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+                      </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${!isPetGroupDpOpened ? 'hidden' : 'w-[12px] fill-white-smoke'}`}>  
+                        <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+                      </svg>
+                    </section>
+                  </section>
+                  <section className={`${isPetGroupDpOpened ? 'h-40 grid grid-cols-4 gap-10 overflow-y-auto' : 'hidden'}`}>
+                  {
+                      petGroup ? 
+                        petGroup.map(pet => (
+                          <section key={pet.PGID}>
+                            <section className="flex items-center gap-2 px-2 py-2 cursor-pointer group">
+                              <h5 className="w-full font-lato text-raisin-black text-nowrap group group-hover:underline underline-offset-4">{pet.GROUP_NICKNAME}</h5>
+                            </section>
+                          </section>
+                        ))  
+                      :
+                      <h5> Register a pet group</h5>
+                    }
+                  </section>
+
+                </section>
+              </section>
+              {/* diagnosis */}
+              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'} `}>
+                {
+                  diagnosis && (
+                    diagnosis.map((svcs,index) => (
+                      <section key={index} className="flex items-center gap-4 relative">
+                        <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
+                          <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleDiagnosis(e)}></section>
+                        </section>
+                        <h5 className="font-lato">{svcs.diagnosis}</h5>
+                      </section>
+                    ))
+                  )
+                }
+                <section className="flex items-center gap-4 relative">
+                  <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
+                    <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleDiagnosis(e)}></section>
+                  </section>
+                  <h5 className="font-lato">Others</h5>
+                </section>
+              </section>
             </section>
-            <button className={`${appointmentPage == 1 ? 'hidden' : 'block'} bg-raisin-black text-white-smoke px-3 py-2 font-lato absolute left-0 bottom-0 rounded-sm hover:bg-raisin-black-light`} onClick={prevAppointmentPage}> Back </button>
+            {/* form controls */}
+            <section className="absolute left-0 bottom-0 px-2 py-2 flex justify-between w-full">
+              <button className={`${appointmentPage == 1 ? 'hidden' : 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light'}`} onClick={prevAppointmentPage}> Back </button>
+              <button className={`${appointmentPage == 3 || appointmentPage == 4 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={nextAppointmentPage}> Next </button>
+              <button className={`${appointmentPage == 5 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={bookAppointment}> Book Appointment </button>
+            </section>
           </section>
         </section>
       </section>

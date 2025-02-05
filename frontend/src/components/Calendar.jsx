@@ -67,9 +67,9 @@ const Calendar = ({onSelectDate}) => {
     }
 
     return (
-        <div className="max-w-sm mx-auto bg-raisin-black shadow-lg rounded-lg p-6">
+        <div className="max-w-sm mx-auto min-h-fit max-h-[380px] bg-raisin-black shadow-lg rounded-lg p-6">
             {/* calendar controls */}
-            <div className="flex justify-center items-center mb-4">
+            <div className="flex justify-center items-center mb-2">
                 {/* <button
                     onClick={handlePrevMonth}
                     className="text-lg font-bold text-white-smoke hover:scale-125"
@@ -78,7 +78,7 @@ const Calendar = ({onSelectDate}) => {
                     <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
                    </svg>
                 </button> */}
-                <span className="text-xl font-semibold text-white-smoke font-lato">
+                <span className="text-headline-sm font-semibold text-white-smoke font-lato">
                     {monthNames[currentMonth - 1]} {currentYear}
                 </span>
                 {/* <button
@@ -91,16 +91,16 @@ const Calendar = ({onSelectDate}) => {
                 </button> */}
             </div>
             {/* day mapping */}
-            <div className="grid grid-cols-7 gap-2 text-center text-white-smoke mb-4">
+            <div className="grid grid-cols-7 gap-2 text-center text-white-smoke">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
-                    <div key={index} className="py-2 font-lato font-medium">{day}</div>
+                    <div key={index} className="py-2 font-lato font-medium text-headline-mbl">{day}</div>
                 ))}
             </div>
             {/* date, week mapping */}
             {calendar.map((week, weekIndex) => (
                 <div key={weekIndex} className="grid grid-cols-7 gap-2">
                     {week.map((day, dayIndex) => (
-                        <div key={dayIndex} className={`font-lato w-12 h-12 flex items-center justify-center cursor-pointer ${day ? 'text-white-smoke hover:bg-chefchaouen-blue hover:text-white-smoke rounded-full' : 'text-transparent'}`} onClick={(evt) => selectDate(evt)}>
+                        <div key={dayIndex} className={`font-lato w-10 h-10 flex items-center justify-center cursor-pointer text-content-xtrasm ${day ? 'text-white-smoke hover:bg-chefchaouen-blue hover:text-white-smoke rounded-full' : 'text-transparent'}`} onClick={(evt) => selectDate(evt)}>
                             {day || ''}
                         </div>
                     ))}
