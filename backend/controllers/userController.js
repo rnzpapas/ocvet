@@ -26,9 +26,9 @@ export const createUser = async (req, res, next) => {
             return handleResponse(res, 400, "Please fill out all fields.");
         }else if(password.length < 6){
             return handleResponse(res, 400, "Password must be minimum of 6 characters.");
-        }else if(existing_username){
+        }else if(existing_username.length > 0){
             return handleResponse(res, 400, "Username already taken.");
-        }else if(existing_email){
+        }else if(existing_email.length > 0){
             return handleResponse(res, 400, "Email already taken.");
         }else{
             const userIDs = await createUserService(firstname, middlename, surname, gender, address, username, password, email, role, splitDateJoined);

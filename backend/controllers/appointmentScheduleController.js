@@ -2,13 +2,13 @@ import handleResponse from "../middleware/responseHandler.js";
 import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
-    const { PETID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
+    const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
     const sched = new Date(date);
     const dateConverted = `${sched.getFullYear()}-${sched.getMonth()+1}-${sched.getDate()}`;
     // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
 
     try{
-        const q = await createAppointmentScheduleService(PETID, SERVICEIDS, DIAGNOSIS, remarks, status, dateConverted, time);
+        const q = await createAppointmentScheduleService(PETID || null, PGID || null, SERVICEIDS.split(','), DIAGNOSIS.split(','), remarks, status, dateConverted, time);
         return handleResponse(res, 201, "Appointment created.");
     }catch(err) {
         return next(err);

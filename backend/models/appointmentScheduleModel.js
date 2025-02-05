@@ -6,12 +6,12 @@ const getLatestAppointmentID = async () => {
     return latest_appointment_id.rows;
 }
 
-export const createAppointmentScheduleService = async (petid, servid, diagid, remarks, status, date, time ) => {
+export const createAppointmentScheduleService = async (petid, pgid, servid, diagid, remarks, status, date, time ) => {
     let new_appointment_id;
     let latest_appointment_id = getLatestAppointmentID();
     (await latest_appointment_id).length > 0 ? new_appointment_id = generateNewId(await latest_appointment_id, "ASID") : new_appointment_id = generateInitialId("ASID");
-    const res = await pool.query('INSERT INTO otcv_appointment_schedule ("ASID", "PETID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
-        [new_appointment_id, petid, servid, diagid, remarks, status, date, time]);
+    const res = await pool.query('INSERT INTO otcv_appointment_schedule ("ASID", "PETID", "PGID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', 
+        [new_appointment_id, petid, pgid, servid, diagid, remarks, status, date, time]);
 }
 
 export const deleteAppointmentScheduleService = async (id) => {
@@ -42,7 +42,7 @@ export const getAppointmentsScheduleService = async (id) => {
 
 export const getAppointmentsScheduleByUserService = async (id) => {
     const res = await pool.query(`
-        SELECT "ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME", service, diagnosis, status, ud."UID",
+        SELECT "ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, service, diagnosis, status, ud."UID",
         ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
         a.date, a.time
         FROM otcv_appointment_schedule a
@@ -54,11 +54,15 @@ export const getAppointmentsScheduleByUserService = async (id) => {
         ON pg."PGID" = a."PGID"
         INNER JOIN otcv_user_details ud
         ON ud."UID" = pg."PET_OWNER"
+        WHERE ud."UID" = $1 
+		AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
+		AND s."SERVICEID" = ANY(a."SERVICEIDS")
+		AND d."DIAGID" = ANY(a."DIAGNOSIS")
+		AND a.date >= CURRENT_DATE
 		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
     	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
-        WHERE ud."UID" = $1 AND a."PGID" IS NOT NULL
-        UNION
-        SELECT "ASID", a."PETID", a."PGID", pt.nickname, service, diagnosis, status, ud."UID",
+ UNION
+        SELECT "ASID", a."PETID", a."PGID", pt.nickname as client, service, diagnosis, status, ud."UID",
         ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
         a.date, a.time
 	    FROM otcv_appointment_schedule a
@@ -70,11 +74,14 @@ export const getAppointmentsScheduleByUserService = async (id) => {
         ON pt."PETID" = pt."PETID"
         INNER JOIN otcv_user_details ud
         ON ud."UID" = pt."pet_owner"
-        WHERE ud."UID" = $1 
-		AND a."PETID" IS NOT NULL
+        WHERE ud."UID" = $1
+		AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
+		AND s."SERVICEID" = ANY(a."SERVICEIDS")
+		AND d."DIAGID" = ANY(a."DIAGNOSIS")
+		AND a.date >= CURRENT_DATE
 		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
     	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
-        ORDER BY date ASC;
+        ORDER BY date ASC
         `,
         [id]
     );

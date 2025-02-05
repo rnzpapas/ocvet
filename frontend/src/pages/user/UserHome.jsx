@@ -5,6 +5,7 @@ import useRedirectUser from '../../auth/useRedirectUser';
 import Calendar from "../../components/Calendar";
 import { adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
 import axios from 'axios'
+import e from "cors";
 
 const timeSlot = [
   '08:00 AM', '08:30 AM',
@@ -28,6 +29,8 @@ function UserHome() {
   const [clinicAppointments, setClinicAppointments] = useState();
   const [clinicAppointmentsDate, setClinicAppointmentsDate] = useState([]);
   const [clinicAppointmentsTime, setClinicAppointmentsTime] = useState([]);
+  const [petSelected, setPetSelected] = useState([]);
+  const [petGroupSelected, setPetGroupSelected] = useState([]);
   const [appointments, setAppointments] = useState();
   const [services, setServices] = useState();
   const [servicesSelected, setServicesSelected] = useState([]);
@@ -135,7 +138,7 @@ function UserHome() {
   }
 
   const toggleService = (evt) => {
-    let serviceChosen = evt.target.parentElement.parentElement.children[1].textContent;
+    let serviceChosen = evt.target.parentElement.parentElement.children[1].id;
     let isServiceAlreadySelected = servicesSelected.some((s) => s === serviceChosen);
 
     if(isServiceAlreadySelected){
@@ -150,9 +153,9 @@ function UserHome() {
   }
 
   const toggleDiagnosis = (evt) => {
-    let diagnosisChosen = evt.target.parentElement.parentElement.children[1].textContent;
+    let diagnosisChosen = evt.target.parentElement.parentElement.children[1].id;
     let isDiagnosisAlreadySelected = diagnosisSelected.some((s) => s === diagnosisChosen);
-
+    console.log(diagnosisSelected)
     if(isDiagnosisAlreadySelected){
       let newDiagnosisSelected = diagnosisSelected.filter((s) => s !== diagnosisChosen);
       setDiagnosisSelected((s) => s = newDiagnosisSelected);
@@ -168,16 +171,53 @@ function UserHome() {
     setIsPetGroupDpOpened(false);
     setIsPetsDpOpened(b => b = !isPetsDpOpened)
   }
+
   const togglePetGroupDp = () => {
     setIsPetsDpOpened(false);
 
     setIsPetGroupDpOpened(b => b = !isPetGroupDpOpened)
   }
 
+  const selectPetForAppointment = (evt) => {
+    petGroupSelected.length > 0 && (setPetGroupSelected([]))
+    setPetSelected(ps => ps = evt.target.id);
+    setAppointmentPage(appointmentPage + 1)
+  }
 
+  const selectPetGroupForAppointment = (evt) => {
+    petSelected.length > 0 && (setPetSelected([]))
+    setPetGroupSelected(pg => pg = evt.target.id);
+    setAppointmentPage(appointmentPage + 1)
+  }
 
-  const bookAppointment = (evt) => {
+  const bookAppointment = async () => {
 
+    const formData = new FormData();
+    formData.append("PETID", petSelected || null)
+    formData.append("PGID", petGroupSelected || null)
+    formData.append("SERVICEIDS", servicesSelected || [])
+    formData.append("DIAGNOSIS", diagnosisSelected || [])
+    formData.append("remarks", "")
+    formData.append("status", "Scheduled")
+    formData.append("date", dateOfAppointment)
+    formData.append("time", timeOfAppointment)
+
+    await axios.post('http://localhost:5001/api/appointment/create', formData, 
+    {
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(() => {
+      setPetSelected([]);
+      setPetGroupSelected([]);
+      setServicesSelected([]);
+      setDiagnosisSelected([]);
+      setDateOfAppointment("");
+      setTimeOfAppointment("");
+      alert('Appointment success.');
+      window.location.reload();
+    })
   }
 
 
@@ -206,7 +246,6 @@ function UserHome() {
 
   }, [])
 
-
   useEffect(() => {}, [servicesSelected, diagnosisSelected, isPetsDpOpened, isPetGroupDpOpened])
 
   return (
@@ -214,22 +253,19 @@ function UserHome() {
       <UserNav />
       <section className="h-dvh flex">
         <section className="w-[40%] flex justify-center">
-          <section className="bg-white-smoke shadow-md px-10 py-5 w-[80%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
+          <section className="bg-white-smoke shadow-md px-2 py-5 w-[90%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
             <h5 className="font-lato font-semibold text-headline-md mb-4">Upcoming Appointments</h5>
             <section className="flex flex-col gap-2">
               {/* appointment list */}
               {
                 appointments && (
                   appointments.map((a, index) => (
-                    <section key={index} className="flex items-center justify-between border-b border-b-silver">
+                    <section key={index} className="grid grid-cols-3 w-full border-b border-b-silver">
                       <section className="flex flex-col">
                         <h5 className="font-lato text-content-md text-raisin-black font-semibold">{convertDate(a.date)}</h5>
                         <p className="font-lato text-content-md text-silver font-semibold">{convertTime(a.time)}</p>
                       </section>
-                      <section>
-                        <h5 className="font-lato text-content-md text-raisin-black font-semibold">{a.PETID ? a.nickname : a.GROUP_NICKNAME}</h5>
-                        <h5 className={`font-lato text-content-md text-silver font-semibold ${a.PETID && ('hidden')}`}>{a.nickname}</h5>
-                      </section>
+                      <h5 className={`font-lato text-content-md text-raisin-black font-semibold`}>{a.client}</h5>
                       <p className="font-lato text-content-md text-raisin-black">{a.service}</p>
                     </section>
                   ))
@@ -344,7 +380,7 @@ function UserHome() {
                         <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
                           <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleService(e)}></section>
                         </section>
-                        <h5 className="font-lato">{svcs.service}</h5>
+                        <h5 id={svcs.SERVICEID} className="font-lato">{svcs.service}</h5>
                       </section>
                     ))
                   )
@@ -352,7 +388,6 @@ function UserHome() {
               </section>
               {/* pets / pet group*/}
               <section className={`${appointmentPage === 4 ? 'w-full max-h-[500px] px-3 py-3 gap-3 rounded-md flex flex-col' : 'hidden'}`}>
-                <h5>Choose One: </h5>
                 <section className="w-full h-fit flex flex-col gap-4">
                   {/* PETS */}
                   <section className="h-fit">
@@ -370,8 +405,9 @@ function UserHome() {
                     {
                       pets ? 
                         pets.map(pet => (
-                          <section key={pet.PETID}>
-                            <section className="flex items-center gap-2 px-2 py-2 rounded-full cursor-pointer group hover:bg-chefchaouen-blue">
+                          <section key={pet.PETID} className="relative group cursor-pointer ">
+                            <section id={pet.PETID} className="w-full h-full bg-raisin-black absolute rounded-full opacity-0" onClick={(evt) => selectPetForAppointment(evt)}></section>
+                            <section className="flex items-center gap-2 px-2 py-2 rounded-full group-hover:bg-chefchaouen-blue">
                               <img src={`/pet/${pet.image}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
                               <h5 className="w-full font-lato text-raisin-black group group-hover:text-white-smoke group-hover:font-semibold">{pet.nickname}</h5>
                             </section>
@@ -398,9 +434,9 @@ function UserHome() {
                   {
                       petGroup ? 
                         petGroup.map(pet => (
-                          <section key={pet.PGID}>
-                            <section className="flex items-center gap-2 px-2 py-2 cursor-pointer group">
-                              <h5 className="w-full font-lato text-raisin-black text-nowrap group group-hover:underline underline-offset-4">{pet.GROUP_NICKNAME}</h5>
+                          <section key={pet.PGID} id={pet.PGID} className="relative h-fit w-fit">
+                            <section id={pet.PGID} className="flex items-center gap-2 px-2 py-2 cursor-pointer group" onClick={(evt) => selectPetGroupForAppointment(evt)}>
+                              <h5 id={pet.PGID} className="w-full font-lato text-raisin-black text-nowrap group group-hover:underline underline-offset-4">{pet.GROUP_NICKNAME}</h5>
                             </section>
                           </section>
                         ))  
@@ -412,7 +448,7 @@ function UserHome() {
                 </section>
               </section>
               {/* diagnosis */}
-              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'} `}>
+              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3 overflow-y-auto' : 'hidden'} `}>
                 {
                   diagnosis && (
                     diagnosis.map((svcs,index) => (
@@ -420,23 +456,18 @@ function UserHome() {
                         <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
                           <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleDiagnosis(e)}></section>
                         </section>
-                        <h5 className="font-lato">{svcs.diagnosis}</h5>
+                        <h5 id={svcs.DIAGID} className="font-lato">{svcs.diagnosis}</h5>
                       </section>
                     ))
                   )
                 }
-                <section className="flex items-center gap-4 relative">
-                  <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
-                    <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleDiagnosis(e)}></section>
-                  </section>
-                  <h5 className="font-lato">Others</h5>
-                </section>
+                
               </section>
             </section>
             {/* form controls */}
             <section className="absolute left-0 bottom-0 px-2 py-2 flex justify-between w-full">
               <button className={`${appointmentPage == 1 ? 'hidden' : 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light'}`} onClick={prevAppointmentPage}> Back </button>
-              <button className={`${appointmentPage == 3 || appointmentPage == 4 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={nextAppointmentPage}> Next </button>
+              <button className={`${appointmentPage == 3 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={nextAppointmentPage}> Next </button>
               <button className={`${appointmentPage == 5 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={bookAppointment}> Book Appointment </button>
             </section>
           </section>
