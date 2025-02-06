@@ -16,9 +16,16 @@ export const adjustTimeVisuals = (time) => {
     return time;
 }
 
+export const adjustDayVisuals = (day) => {
+    if(day < 10){
+        return `0${day}`;
+    }
+    return day;
+}
+
 export const convertDate = (date) => {
     let d = new Date(date);
-    return `${adjustMonthVisuals(d.getMonth())}-${d.getDate()}-${d.getFullYear()}`;
+    return `${adjustMonthVisuals(d.getMonth())}-${adjustDayVisuals(d.getDate())}-${d.getFullYear()}`;
 }
 
 export const convertTime = (time) => {

@@ -1,5 +1,5 @@
 
-function InputField({type, placeholder, style, isReadOnly = false, isDisabled = false, value, onChangeFunc, name}) {
+function InputField({type, placeholder, style, isReadOnly = false, isDisabled = false, value, onChangeFunc, name, maxlength}) {
   const readOnlyStyle = "bg-[#DFDFDF]"
   const defaultStyle = ""
   return (
@@ -12,6 +12,7 @@ function InputField({type, placeholder, style, isReadOnly = false, isDisabled = 
         readOnly = {isReadOnly}
         disabled = {isDisabled}
         name = {name}
+        maxLength={maxlength}
     />
   )
 }

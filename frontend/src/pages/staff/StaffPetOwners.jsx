@@ -1,9 +1,10 @@
-import { useState } from "react";;
+import { useEffect, useState } from "react";;
 import Button from "../../components/button";
 import InputField from "../../components/InputField";
 import StaffNav from "../../components/navbars/StaffNav";
 import Table from "../../components/Table";
-
+import axios from 'axios';
+import { convertDate } from "../../utils/datetimeUtils"
 const HEADERS = [
     {
         "key": "No.",
@@ -30,27 +31,43 @@ const HEADERS = [
         "isSortable": true,
         "isSorted": false    
     }
-  ]
+]
+
 function StaffPetOwners() {
+    let sessionToken = sessionStorage.getItem('jwt-token');
     const [search, setSearch] = useState("");
     const onChangeSearch = (evt) => {setSearch(evt.val)}
-    const [petOwnersDetails, setPetOwnerDetails] = useState([
-        {
-            "number" : "1",
-            "client_name": "John Doe",
-            "email": "john.doe@gmai.com",
-            "username": "jjdoe3",
-            "joined_date": "12/02/2024"
-        },
-        {
-            "number" : "2",
-            "client_name": "Jane Doe",
-            "email": "jane.doe@gmai.com",
-            "username": "jjanedoe3",
-            "joined_date": "12/02/2024"
-        },
-    ]);
+    const [petOwnersDetails, setPetOwnerDetails] = useState();
 
+    const loadPetOwners = async () => {
+        let petOwnersArr = [];
+        await axios.get(`http://localhost:5001/api/user/account/petowners`, 
+            {
+                headers: {'Authorization': `Bearer ${sessionToken}`}
+            }
+        )
+        .then((res) => {
+            let petOwnerList = res.data.data;
+            console.log(petOwnerList)
+            petOwnerList.map((petOwner, index) => {
+                let po = {
+                    "ID": petOwner.UAID,
+                    "fullname": `${petOwner.firstname} ${petOwner.surname}`,
+                    "email": petOwner.email,
+                    "usename": petOwner.username,
+                    "joined_date": convertDate( petOwner.date_joined)
+                }
+
+                petOwnersArr.push(po);
+            })
+        }).catch(err => console.error(err))
+        return petOwnersArr;
+    }
+
+    useEffect(() => {
+        let petOwnerPromise = loadPetOwners();
+        petOwnerPromise.then((po) => setPetOwnerDetails(pod => pod = po))
+    },[])
     return (
         <section className="flex w-full">
             <StaffNav />
@@ -67,7 +84,11 @@ function StaffPetOwners() {
                     </section>
                     <Button txtContent={"Search"} isActive={true} />
                 </section>
-                <Table headers={HEADERS} data={petOwnersDetails}/>
+                {
+                    petOwnersDetails && (
+                        <Table headers={HEADERS} data={petOwnersDetails}/>
+                    )
+                }
             </section>
         </section>
     )

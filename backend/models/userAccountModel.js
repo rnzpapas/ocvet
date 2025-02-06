@@ -21,6 +21,17 @@ export const getAllUsersAccountService = async() => {
     return result.rows;
 }
 
+export const getAllPetOwnersService = async() => {
+    const result = await pool.query(`
+        SELECT * 
+        FROM otcv_user_accounts ua 
+        INNER JOIN otcv_user_details ud
+        ON ua."UAID" = ud."UAID"
+        WHERE ua.role = 'User';`
+    );
+    return result.rows;
+}
+
 export const getUserAccountByUsernameService = async(un) => {
     const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
     return u.rows;
@@ -42,6 +53,12 @@ export const updateUserAccountService = async(uaid, un, em) => {
 }
 
 export const updateUserAccountPasswordService = async(pw, uaid) => {
+    let hashed_pw = hashPassword(pw);
+    const result = await pool.query('UPDATE otcv_user_accounts SET "password" = $1 WHERE "UAID" = $2', 
+        [hashed_pw, uaid]);
+}
+
+export const recoverserAccountPasswordService = async(pw, uaid) => {
     let hashed_pw = hashPassword(pw);
     const result = await pool.query('UPDATE otcv_user_accounts SET "password" = $1 WHERE "UAID" = $2', 
         [hashed_pw, uaid]);
@@ -80,4 +97,18 @@ export const sortDateJoinedAscService = async () => {
 export const sortDateJoinedDescService = async () => {
     const result = await pool.query('SELECT * FROM otcv_user_accounts ORDER BY date_joined DESC');
     return result.rows;
+}
+
+export const updateUserOtpService = async (uaid, otp) => {
+    let result = await pool.query(`UPDATE otcv_user_accounts SET otp = $1 WHERE "UAID" = $2 RETURNING otp`,
+        [otp, uaid]
+    )
+    return result.rows[0]
+}
+
+export const verifyUserOtpService = async (uaid, otp) => {
+    let result = await pool.query(`SELECT "UAID", otp FROM otcv_user_accounts  WHERE otp = $1 AND "UAID" = $2`,
+        [otp, uaid]
+    )
+    return result.rows
 }

@@ -2,24 +2,49 @@ import { useState } from "react";
 import Button from "../../components/button";
 import InputField from "../../components/InputField";
 import SideLogo from "../../components/SideLogo";
+import { useNavigate, useSearchParams } from "react-router";
+import axios from 'axios';
 
 function ChangePassword() {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [isHiddenPassword, setIsHiddenPassword] = useState(false);
+    const [isHiddenPassword, setIsHiddenPassword] = useState(true);
 
     const togglePasswordField = () => {
         setIsHiddenPassword(!isHiddenPassword);
     }
-    const onChangePassword = (evt) => {setPassword(evt.val)}
-    const onChangeConfirmPassword = (evt) => {setConfirmPassword(evt.val)}
+    const onChangePassword = (evt) => {setPassword(evt.target.value)}
+    const onChangeConfirmPassword = (evt) => {setConfirmPassword(evt.target.value)}
 
+    const changePassword = async () => {
+        const formData = new FormData();
+        formData.append('pw', password)
+        formData.append('cpw', confirmPassword)
+        formData.append('uaid', searchParams.get('uaid'));
+
+        await axios.post(`http://localhost:5001/api/user/account-recovery/otp-changpw`, formData, 
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+        .then(() => {
+            navigate('/user/login')
+        })
+        .catch(err => console.error(err))
+    
+
+    }
     return (
         <section className="flex">
             <SideLogo style={"h-screen w-6/12"}/>
             <section className="flex flex-col gap-5 items-center justify-center w-6/12">
                 <h5 className="font-instrument-sans text-headline-lrg font-bold"> Change Password </h5>
-                <form className="flex flex-col gap-3 w-6/12 relative">
+                <form className="flex flex-col gap-3 w-6/12 relative" onSubmit={e => e.preventDefault()}>
                     <section className="flex flex-col gap-1">
                         <label htmlFor="password" className="font-instrument-sans text-headline-md font-semibold"> New Password </label>
                         <section className="relative">
@@ -45,7 +70,7 @@ function ChangePassword() {
                         </section>
                     </section>
                     <section className="flex gap-10  justify-between">
-                        <Button txtContent={"Update Password"} style={"border-2 border-raisin-black w-full"}/>
+                        <Button txtContent={"Update Password"} style={"border-2 border-raisin-black w-full"} onClickFunc={changePassword}/>
                     </section>
                 </form>
             </section>

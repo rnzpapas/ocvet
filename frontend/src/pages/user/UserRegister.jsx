@@ -8,7 +8,7 @@ import axios from 'axios'
 
 function UserRegister() {
     const navigate = useNavigate()
-    const [isHiddenPassword, setIsHiddenPassword] = useState(false);
+    const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [firstname, setFirstname] = useState("");
     const [middlename, setMiddleName] = useState("");
     const [surname, setSurname] = useState("");
@@ -173,7 +173,7 @@ function UserRegister() {
                         </section>
                         <section className="flex flex-col gap-1">
                             <label htmlFor="username" className="font-instrument-sans text-headline-sm font-semibold"> Username </label>
-                            <InputField type="text" placeholder={"yourusername123"} name="username" onChangeFunc={onChangeUsername}/>
+                            <InputField type="text" maxlength={12} placeholder={"yourusername123"} name="username" onChangeFunc={onChangeUsername}/>
                         </section>
                         <section className="flex flex-col gap-1">
                             <label htmlFor="password" className="font-instrument-sans text-headline-sm font-semibold"> Password </label>

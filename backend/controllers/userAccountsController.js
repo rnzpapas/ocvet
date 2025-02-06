@@ -1,7 +1,9 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
+import generateOtp from "../utils/otpUtils.js";
+import { sendEmail } from '../config/email.js';
 
 export const loginUserAccount = async (req, res, next) => {
     const { username, password } = req.body;
@@ -47,6 +49,16 @@ export const getAllUsersAccount = async (req, res, next) => {
     }
 }
 
+export const getAllPetOwnersAccount = async (req, res, next) => {
+    try{
+        const users = await getAllPetOwnersService();
+        if(!users) return handleResponse(res, 404, "Data retrieval failed");
+        return handleResponse(res, 200, "Data retrieval success", users);
+    }catch(err) {
+        return next(err);
+    }
+}
+
 export const getUserAccountById = async (req, res, next) => {
     try{
         const user = await getUserAccountByIdService(req.params.id);
@@ -54,6 +66,60 @@ export const getUserAccountById = async (req, res, next) => {
         return handleResponse(res, 200, "Data retrieval success", user);
     }catch(err) {
         return next(err);
+    }
+}
+
+export const updateUserOtp = async (req, res, next) => {
+    const unmail = req.query.unmail;
+    let otp = generateOtp();
+    let user;
+
+    try{
+        user = await getUserAccountByEmailService(unmail);
+        user = !user && user.length == 0 ? (await getUserAccountByUsernameService(unmail)) : user;
+        if(unmail.length === 0) return handleResponse(res, 400, "Please provide your e-mail or username to proceed.")
+        
+        if(user && user.length > 0){
+            let result = await updateUserOtpService(user[0].UAID, otp);
+            sendEmail(result.otp, unmail, 'Verification Code for Your Account Recovery');
+
+            setTimeout(async () => {
+                otp = null;
+                try{
+                    await updateUserOtpService(user[0].UAID, otp);
+                    return handleResponse(res, 200, "OTP successfully cleared")
+                }catch(err){
+                    return next(err)
+                }
+            },300000)
+        }else{
+            return handleResponse(res, 400, "The username or e-mail you submitted is not on our records.")
+        }
+    }catch(err){
+        return next(err)
+    }
+}
+
+export const verifyUserOtp = async (req, res, next) => {
+    const unmail = req.query.unmail;
+    const { otp } = req.body
+    let user;
+    try{    
+        if(otp.length === 0 ) return handleResponse(res, 400, 'Please provide the one-time pin (OTP) sent to you email.')
+        user = await getUserAccountByEmailService(unmail);
+        user = !user && user.length == 0 ? (await getUserAccountByUsernameService(unmail)) : user;
+        if(unmail.length === 0) return handleResponse(res, 400, "Please provide your e-mail or username to proceed.")
+        
+        if(user && user.length > 0){
+            let result = await verifyUserOtpService(user[0].UAID, otp);
+            return result.length > 0 ?
+            handleResponse(res, 200, "Verified OTP", result) :
+            handleResponse(res, 400, "OTP you submitted is invalid. It might incorrect or expired OTP sent.")
+        }else{
+            return handleResponse(res, 400, "The username or e-mail you submitted is not on our records.")
+        }
+    } catch(err){
+        return next(err)
     }
 }
 
@@ -82,8 +148,19 @@ export const updateUserAccountPassword = async (req, res, next) => {
         let isValidPw = comparePassword(old_pw, user_acc.password);
         if(!isValidPw) return handleResponse(res, 400, 'Old password does not match any of our records.');
         if(pw.length < 6) return handleResponse(res, 400, 'Password must be at least 6 characters long.');
-        console.log(pw)
-        console.log(uaid)
+        const user = await updateUserAccountPasswordService(pw, uaid);
+        return handleResponse(res, 200, "Password change success", user);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const recoversUserAccountPassword = async(req, res, next) => {
+    const { pw, cpw, uaid } = req.body;
+    try{
+        if( pw.length === 0 || cpw.length === 0) return handleResponse(res, 400, 'Please fill out all fields');
+        if(pw !== cpw) return handleResponse(res, 400, 'Two password does not match.');
+        if(pw.length < 6) return handleResponse(res, 400, 'Password must be at least 6 characters long.');
         const user = await updateUserAccountPasswordService(pw, uaid);
         return handleResponse(res, 200, "Password change success", user);
     }catch(err) {

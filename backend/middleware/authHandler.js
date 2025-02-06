@@ -63,7 +63,7 @@ export const authenticateStaffJwt = async (req, res,  next) => {
 }
 
 export const authenticateAdminJwt = async (req, res,  next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+  const token = req.headers['authorization']?.split(' ')[1]; 
 
   if (!token) {
     return handleResponse(res, 400, 'Token required.');
@@ -72,9 +72,12 @@ export const authenticateAdminJwt = async (req, res,  next) => {
   const tokenVerified = verifyToken(token);
 
   if(tokenVerified){
-      req.user = tokenVerified
-
-      if(tokenVerified.role !== 'Staff' || tokenVerified.role !== 'Manager' || tokenVerified.role !== 'Super Administrator') return handleResponse(res, 403, 'Invalid access.');
+      let adminRoles = ['Staff', 'Manager', 'Super Administrator'];
+      req.user = await tokenVerified
+      let role = req.user.role.trim();
+      let isValidRole = adminRoles.some((r) => r === role);
+      
+      if(!isValidRole) return handleResponse(res, 403, 'Invalid access.');
 
       return next();
   }
@@ -83,7 +86,7 @@ export const authenticateAdminJwt = async (req, res,  next) => {
 }
 
 export const authenticateUserJwt = async (req, res,  next) => {
-    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+    const token = req.headers['authorization']?.split(' ')[1]; 
   
     if (!token) {
       return handleResponse(res, 400, 'Token required.');

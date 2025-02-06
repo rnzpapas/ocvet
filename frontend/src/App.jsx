@@ -46,6 +46,7 @@ import UserHome from "./pages/user/UserHome"
 import NotFound from "./pages/NotFound"
 import UserPetGroupRegistration from "./pages/user/UserPetGroupRegistration"
 import UserPetGroupPage from "./pages/user/UserPetGroupPage"
+import ForbiddenAccess from "./pages/ForbiddenAccess"
 
 function App() {
   const checkBtn = () => {
@@ -238,6 +239,8 @@ function App() {
           <Route path="forgot-password" element={<ForgotPassword />}/>
           <Route path="OTP" element={<OTPVerification />}/>
         </Route>
+        {/* Forbidden */}
+        <Route path="/forbidden" element={<ForbiddenAccess />}></Route>
         {/* not found routes */}
         <Route path="*" element={<NotFound />}/>
       </Routes>
