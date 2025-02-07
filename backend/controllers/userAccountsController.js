@@ -1,4 +1,4 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
@@ -35,6 +35,16 @@ export const loginUserAccount = async (req, res, next) => {
         return handleResponse(res, 200, "Successfully login.", response);
 
     }catch(err){
+        return next(err);
+    }
+}
+
+export const getAllAdministrators = async (req, res, next) => {
+    try{
+        const users = await getAllAdministratorsService();
+        if(!users) return handleResponse(res, 404, "Data retrieval failed");
+        return handleResponse(res, 200, "Data retrieval success", users);
+    }catch(err) {
         return next(err);
     }
 }

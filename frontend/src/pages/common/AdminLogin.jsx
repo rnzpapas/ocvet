@@ -19,10 +19,10 @@ function AdminLogin() {
 
   const onChangePassword = (evt) => {setPassword(evt.target.value)}
 
-  const onLogin = (evt) => {
+  const onLogin = async (evt) => {
     evt.preventDefault();
     if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
-    axios.post('http://localhost:5001/api/user/login', {
+    await axios.post('http://localhost:5001/api/user/login', {
         username: username,
         password: password
     }, {headers: {'Content-Type': 'application/json'}})
@@ -42,9 +42,6 @@ function AdminLogin() {
                 localStorage.setItem("user", JSON.stringify(userData));
                 sessionStorage.setItem('jwt-token', response.access_token);
                 switch(userFullDetails.role){
-                  case 'User':
-                    navigate('/forbidden');
-                    break;
                   case 'Staff':
                     navigate('/staff/dashboard');
                     break;
@@ -57,7 +54,7 @@ function AdminLogin() {
                 }
             })
             .catch(err => {
-              console.error(err)
+              navigate('/forbidden');
             })
     })
     .catch(err => {

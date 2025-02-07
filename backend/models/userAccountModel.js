@@ -32,6 +32,16 @@ export const getAllPetOwnersService = async() => {
     return result.rows;
 }
 
+export const getAllAdministratorsService = async () => {
+    let r = await pool.query(`
+        SELECT * FROM otcv_user_accounts ua
+        INNER JOIN otcv_user_details ud
+        ON ua."UAID" = ud."UAID"
+        WHERE role = 'Staff' OR role = 'Manager' OR role = 'Super Administrator'
+    `)
+    return r.rows;
+}
+
 export const getUserAccountByUsernameService = async(un) => {
     const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
     return u.rows;

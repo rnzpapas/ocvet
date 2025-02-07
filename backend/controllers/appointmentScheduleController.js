@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
+import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
     const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
@@ -45,6 +45,23 @@ export const getAppointmentsScheduleByUser= async (req, res, next) => {
     }
 }
 
+export const getAllUpcomingAppointmentSchedule = async (req, res, next) => {
+    try{
+        const q = await getAllUpcomingAppointmentScheduleService();
+        return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAllRecentAppointmentSchedule = async (req, res, next) => {
+    try{
+        const q = await getAllRecentAppointmentScheduleService();
+        return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
 
 export const getAllAppointmentSchedule = async (req, res, next) => {
     try{

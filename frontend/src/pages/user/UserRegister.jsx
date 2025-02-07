@@ -13,7 +13,7 @@ function UserRegister() {
     const [middlename, setMiddleName] = useState("");
     const [surname, setSurname] = useState("");
     const [address, setAddress] = useState("");
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState("Male");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -160,7 +160,7 @@ function UserRegister() {
                         </section>
                         <section className="flex flex-col gap-1">
                             <label htmlFor="gender" className="font-instrument-sans text-headline-sm font-semibold"> Gender </label>
-                            <select name="gender" id="" className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato" onChange={onChangeGender}>
+                            <select name="gender" value={gender} id="" className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato" onChange={onChangeGender}>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>

@@ -1,25 +1,84 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../../components/button';
 import InputField from '../../components/InputField';
 import StaffNav from '../../components/navbars/StaffNav'
 import PetCard from '../../components/PetCard';
+import axios from 'axios';
+import Modal from '../../components/Modal';
+import { capitalizeFirstLetter } from '../../utils/textUtils';
 
 function StaffPetList() {
+    const [pets, setPets] = useState([]);
     const [search, setSearch] = useState("");
-    const [isModalActive, setIsModalActive] = useState(false);
-    const [petIdSelected, setPetIdSelected] = useState("");
-        const onChangeSearch = (evt) => {setSearch(evt.val)};
+    const [isPetModalOpened, setIsPetModalOpened] = useState(false);
+    const [petSelected, setPetSelected] = useState([])
+
+    const onChangeSearch = (evt) => {setSearch(evt.val)};
 
     const onClickPetCard = (evt) => {
+        document.body.style.overflow = 'hidden';
         const petId = evt.target.parentElement.id;
-        setPetIdSelected(idSelected => idSelected = petId);
-        getPetDetails();
+        let pet = pets.filter((p) => p.PETID === petId);
+        let modalInfo = [
+            {
+                "type": 'image',
+                "img": pet[0].image,
+                "headers": ""
+            },
+            {
+                "type": 'text',
+                "txtContent": pet[0].nickname,
+                "headers": "Nickname",
+                "readOnly": true
+            },
+            {
+                "type": 'text',
+                "txtContent": capitalizeFirstLetter(pet[0].animal_type),
+                "headers": "Type",
+                "readOnly": true
+            },
+            {
+                "type": 'text',
+                "txtContent": `${pet[0].firstname} ${pet[0].surname}`,
+                "headers": "Owner",
+                "readOnly": true
+            },
+        ]
+        setPetSelected(modalInfo)
+        setIsPetModalOpened(true);
     }
 
-    const getPetDetails = () => {
-        // open modal and show pet details of the selected
-        // get pet detail API call
+    const closeModal = () => {
+        setIsPetModalOpened(false)
+        document.body.style.overflow = '';
     }
+
+    const loadPetDetails = async () => {
+        let p;
+        let sessionToken = sessionStorage.getItem('jwt-token');
+        await axios.get('http://localhost:5001/api/pets/all', 
+            {
+                headers: {
+                    'Authorization': `Bearer ${sessionToken}`
+                }
+            }
+        )
+        .then((res) => {
+            p = res.data.data
+        })
+        .catch(err => console.error(err))
+        return p;
+    }
+
+    useEffect(() => {
+        let petsPromise = loadPetDetails();
+        if(pets.length === 0){
+            petsPromise.then((pt) => setPets(p => p = pt))
+        }
+    },[])
+
+    useEffect(() => {}, [petSelected])
+
     return (
         <section className="flex w-full">
             <StaffNav />
@@ -36,8 +95,27 @@ function StaffPetList() {
                     </section>
                     <Button txtContent={"Search"} isActive={true} />
                 </section>
-                <section className='flex flex-wrap gap-10'>
-                    <PetCard petName={"Roland"} id={"PET12908"} img={"doggy.png"} onClickFunc={(el) => onClickPetCard(el)}/>
+                <section className='flex flex-wrap gap-5 max-w-full max-h-[75%] overflow-y-auto'>
+                    {
+                        pets && pets.length > 0 && (
+                            pets.map(pet => (
+                                <section className='w-fit h-full relative' id={pet.PETID}  key={pet.PETID} >
+                                    <section className='bg-raisin-black w-full h-full absolute top-0 left-0 z-10 opacity-0 cursor-pointer' onClick={(el) => onClickPetCard(el)}></section>
+                                    <PetCard petName={pet.nickname} id={pet.PETID} key={pet.PETID} img={pet.image}/>
+                                </section>
+                            ))
+                        )
+                    }
+                    {
+                    petSelected.length > 0 && (
+                        <Modal 
+                            headline={"Pet Details"} 
+                            isActive={isPetModalOpened} 
+                            fields={petSelected}
+                            onClose={closeModal} 
+                        />
+                    )
+                }
                 </section>
             </section>
         </section>

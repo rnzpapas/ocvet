@@ -2,13 +2,17 @@ import express from 'express';
 import { getAllUsersDetail, getUserDetailById, updateUserDetail, deleteUserDetail  } from '../controllers/userDetailsController.js';
 import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, 
 sortUsernameDesc, loginUserAccount, updateUserAccountPassword, updateUserOtp, verifyUserOtp, recoversUserAccountPassword, 
-getAllPetOwnersAccount} from '../controllers/userAccountsController.js';
+getAllPetOwnersAccount,
+getAllAdministrators} from '../controllers/userAccountsController.js';
 import { createUser, getUserFullDetails } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
 
 const ROUTER = express.Router();
 
+
+// admin
+ROUTER.get('/admin/all', authenticateAdminJwt, getAllAdministrators);
 // common
 ROUTER.post("/user/register", createUser);
 ROUTER.get("/user/account/full-details/:id", authenticateUserJwt,  getUserFullDetails);
@@ -29,7 +33,7 @@ ROUTER.delete("/user/:id", authenticateAdminJwt, deleteUserDetail);
 ROUTER.get("/user/account/all", authenticateAdminJwt, getAllUsersAccount);
 ROUTER.get("/user/account/petowners", authenticateAdminJwt, getAllPetOwnersAccount);
 ROUTER.get("/user/account/details/:id", getUserAccountById);
-ROUTER.put("/user/account/details/update", authenticateUserJwt, updateUserAccount);
+ROUTER.put("/user/account/details/update", updateUserAccount);
 ROUTER.put("/user/account/pw", authenticateUserJwt, updateUserAccountPassword)
 ROUTER.delete("/user/account/details/delete/:id", authenticateAdminJwt, deleteUserAccount);
 ROUTER.get("/user/account/count", authenticateSuperAdminJwt, countAllUserAccount);

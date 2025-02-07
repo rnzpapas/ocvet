@@ -244,7 +244,7 @@ function UserInformation() {
       <UserNav />
         {userData && (
           <section className="h-dvh gap-10 flex">
-            <section className="flex flex-col gap-5 px-5 py-5">
+            <section className="flex flex-col gap-5 px-5 py-5 w-[30%]">
               <section>
                 <AccountInfo style={""} 
                   eMail={userData.email}
@@ -299,7 +299,7 @@ function UserInformation() {
                 />
               </section>
             </section>
-            <section className="flex justify-evenly px-5 py-5 w-full">
+            <section className="flex justify-evenly px-5 py-5 w-[70%]">
               <section className="w-[300px] h-[150px] px-3 py-2 flex flex-col items-center justify-center shadow-[3px_5px_15px_rgba(0,0,0,0.25)] bg-raisin-black rounded-lg relative">
                 <h5 className="font-lato font-semibold text-headline-sm tracking-wide text-white-smoke absolute top-3 left-5">Registered Pets</h5>
                 <section className="">

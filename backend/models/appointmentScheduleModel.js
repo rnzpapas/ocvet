@@ -88,10 +88,49 @@ export const getAppointmentsScheduleByUserService = async (id) => {
     return res.rows;
 }
 
-export const getAllAppointmentScheduleService = async () => {
-    const res = await pool.query('SELECT * FROM otcv_appointment_schedule ORDER BY date ASC');
+export const getAllUpcomingAppointmentScheduleService = async () => {
+    const res = await pool.query(`
+    SELECT *
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p
+    ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg
+    ON pg."PGID" = sched."PGID"
+    WHERE date >= CURRENT_DATE
+    ORDER BY date ASC;
+    `);
     return res.rows;
 }
+
+export const getAllRecentAppointmentScheduleService = async () => {
+    const res = await pool.query(`
+    SELECT *
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p
+    ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg
+    ON pg."PGID" = sched."PGID"
+    WHERE date < CURRENT_DATE - INTERVAL '3 days'
+    ORDER BY date DESC;
+    `);
+    return res.rows;
+}
+
+export const getAllAppointmentScheduleService = async () => {
+    const res = await pool.query(`
+    SELECT *
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p
+    ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg
+    ON pg."PGID" = sched."PGID"
+    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' 
+    AND CURRENT_DATE - INTERVAL '1 day'
+    ORDER BY date DESC;
+    `);
+    return res.rows;
+}
+
 
 export const getAppointmentScheduleByDateService = async(date) => {
     const result = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE date = $1', [date]);

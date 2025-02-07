@@ -1,8 +1,10 @@
-import { useState } from "react";;
+import { useEffect, useState } from "react";;
 import Button from "../../components/button";
 import InputField from "../../components/InputField";
 import Table from "../../components/Table";
 import SuperAdminNav from "../../components/navbars/SuperAdminNav";
+import axios from 'axios';
+import { convertDate } from "../../utils/datetimeUtils"
 
 const HEADERS = [
     {
@@ -37,32 +39,43 @@ const HEADERS = [
     },
 ]
 function SAdminListAdmin() {
+    let sessionToken = sessionStorage.getItem('jwt-token')
     const [search, setSearch] = useState("");
     const onChangeSearch = (evt) => {setSearch(evt.val)}
-    const [petOwnersDetails, setPetOwnerDetails] = useState([
-        {
-            "number" : "1",
-            "client_name": "John Doe",
-            "email": "john.doe@gmai.com",
-            "username": "jjdoe3",
-            "joined_date": "12/02/2024",
-            "role": "Staff"
-        },
-        {
-            "number" : "2",
-            "client_name": "Jane Doe",
-            "email": "jane.doe@gmai.com",
-            "username": "jjanedoe3",
-            "joined_date": "12/02/2024",
-            "role": "Manager"
-        },
-    ]);
+    const [adminDetails, setAdminDetails] = useState([]);
+
+    const loadAdmin = async () => {
+        let a = [];
+        await axios.get('http://localhost:5001/api/admin/all', {headers: {'Authorization': `Bearer ${sessionToken}`}})
+        .then(res => {
+            let admins = res.data.data;
+            console.log(admins)
+            admins.map((admin) => {
+                let adObj = {
+                    "No": admin.UAID,
+                    "name": `${admin.firstname} ${admin.surname}`,
+                    "email": admin.email,
+                    "username": admin.username,
+                    "joined": convertDate(admin.date_joined),
+                    "role": admin.role
+                }
+                a.push(adObj);
+            })
+        })
+        .catch(err => console.error(err))
+        return a;
+    }
+
+    useEffect(() => {
+        let adminpromise = loadAdmin();
+        adminpromise.then(ap => setAdminDetails(ad => ad = ap))
+    }, [])
 
     return (
         <section className="flex w-full">
             <SuperAdminNav/>
             <section className="px-5 py-5 w-full">
-                <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">pet owners</h5>
+                <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">administrators</h5>
                 <section className="flex gap-10 mb-10">
                     <section className="w-[400px]">
                         <section className="relative">
@@ -74,7 +87,13 @@ function SAdminListAdmin() {
                     </section>
                     <Button txtContent={"Search"} isActive={true} />
                 </section>
-                <Table headers={HEADERS} data={petOwnersDetails}/>
+                <section className="w-full">
+                    {
+                        adminDetails && adminDetails.length > 0 && (
+                            <Table headers={HEADERS} data={adminDetails}/>
+                        )
+                    }
+                </section>
             </section>
         </section>
     )

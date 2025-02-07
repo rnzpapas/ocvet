@@ -62,9 +62,13 @@ export const getPetByNicknameService = async (nickname, pet_owner) => {
 
 export const getAllPetsService = async () => {
     const result = await pool.query(`
-        SELECT * FROM otcv_pets p INNER JOIN otcv_animal_types ant
+        SELECT * FROM otcv_pets p 
+        INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
-        ORDER BY p.nickname ASC`);
+        INNER JOIN otcv_user_details ud
+        ON p."pet_owner" = ud."UID"
+        ORDER BY p.nickname ASC`
+    );
     return result.rows;
 }
 
