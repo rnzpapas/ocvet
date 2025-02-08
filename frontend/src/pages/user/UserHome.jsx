@@ -3,26 +3,27 @@ import Footer from "../../components/Footer"
 import UserNav from "../../components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
 import Calendar from "../../components/Calendar";
-import { adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
+import { adjustDayVisuals, adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
 import axios from 'axios'
 import e from "cors";
 
 const timeSlot = [
-  '08:00 AM', '08:30 AM',
-  '9:00 AM', '09:30 AM',
-  '10:00 AM', '10:30 AM',
-  '11:00 AM', '11:30 AM',
-  '12:00 PM', '12:30 PM',
-  '01:00 PM', '01:30 PM',
-  '02:00 PM', '02:30 PM',
-  '03:00 PM', '03:30 PM',
-  '04:00 PM', '04:30 PM',
+  '08:00 AM', 
+  '09:00 AM', 
+  '10:00 AM', 
+  '11:00 AM', 
+  '12:00 PM', 
+  '01:00 PM', 
+  '02:00 PM', 
+  '03:00 PM', 
+  '04:00 PM',
   '05:00 PM'
 ];
 
 function UserHome() {
   useRedirectUser();
   let userParsed = JSON.parse(localStorage.getItem('user'));
+  let sessionToken = sessionStorage.getItem('jwt-token');
 
   const [pets, setPets] = useState();
   const [petGroup, setPetGroup] = useState();
@@ -43,7 +44,6 @@ function UserHome() {
   const [appointmentPage, setAppointmentPage] = useState(1);
   const [isPetsDpOpened, setIsPetsDpOpened] = useState(false);
   const [isPetGroupDpOpened, setIsPetGroupDpOpened] = useState(false);
-
 
   const loadPets = async () => {
     let p;
@@ -91,7 +91,9 @@ function UserHome() {
 
   const loadAppointment = async () => {
     let apts;
-    await axios.get(`http://localhost:5001/api/appointment/user?id=${userParsed.uid}`)
+    await axios.get(`http://localhost:5001/api/appointment/user?id=${userParsed.uid}`,
+      {headers: {'Authorization': `Bearer ${sessionToken}`}}
+    )
     .then(res => apts = res.data.data)
     .catch(err => console.error(err));
     return apts;
@@ -115,8 +117,9 @@ function UserHome() {
 
   const selectDate = (year, month, day) => {
     let modifiedMonth = adjustMonthVisuals(month-1);
-    let selectedDate = `${modifiedMonth}-${day}-${year}`;
-    setDateOfAppointment((da) => da = selectedDate);
+    let selectedDate = `${modifiedMonth}-${adjustDayVisuals(day)}-${year}`;
+    console.log(selectedDate)
+    setDateOfAppointment((prev) => prev = selectedDate);
     setAppointmentPage(appointmentPage + 1);
   }
 
@@ -155,7 +158,6 @@ function UserHome() {
   const toggleDiagnosis = (evt) => {
     let diagnosisChosen = evt.target.parentElement.parentElement.children[1].id;
     let isDiagnosisAlreadySelected = diagnosisSelected.some((s) => s === diagnosisChosen);
-    console.log(diagnosisSelected)
     if(isDiagnosisAlreadySelected){
       let newDiagnosisSelected = diagnosisSelected.filter((s) => s !== diagnosisChosen);
       setDiagnosisSelected((s) => s = newDiagnosisSelected);
@@ -191,7 +193,10 @@ function UserHome() {
   }
 
   const bookAppointment = async () => {
-
+    if(diagnosisSelected.length === 0){
+      alert('Choose at least one clinical signs to proceed.');
+      return;
+    }
     const formData = new FormData();
     formData.append("PETID", petSelected || null)
     formData.append("PGID", petGroupSelected || null)
@@ -220,7 +225,6 @@ function UserHome() {
     })
   }
 
-
   useEffect(() => {
     let atsPromise = loadAppointment();
     let scvs = loadServices();
@@ -231,10 +235,9 @@ function UserHome() {
     scvs.then(scv => setServices(ss => ss = scv));
     dgs.then(dg => setDiagnosis(ds => ds = dg));
     aatsPromise.then(at => {
-      setClinicAppointmentsDate(cad => cad = at[0]);
-      setClinicAppointmentsTime(cat => cat = at[1]);
+      setClinicAppointmentsDate((cad) => cad = at[0]);
+      setClinicAppointmentsTime((cat) => cat = at[1]);
     });
-
   },[dateOfAppointment])
 
   useEffect(() => {

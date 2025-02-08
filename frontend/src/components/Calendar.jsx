@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { convertDate, convertTime } from '../utils/datetimeUtils';
 // Helper functions for date management
 const getDaysInMonth = (year, month) => {
     return new Date(year, month, 0).getDate();
@@ -34,8 +35,12 @@ const generateCalendar = (year, month) => {
 
 const Calendar = ({onSelectDate}) => {
     const today = new Date();
-    const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1); // Month is 0-based, so +1
+    const [currentDay, setCurrenDay] = useState(today.getDate());
+    const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
+    const [dayFullyBooked, setDayFullyBooked] = useState();
+    const [monthFullyBooked, setMonthFullyBooked] = useState();
+
 
     const handleNextMonth = () => {
         if (currentMonth === 12) {
@@ -55,6 +60,36 @@ const Calendar = ({onSelectDate}) => {
         }
     };
 
+    const checkFullyBookedDate = async () => {
+        let days = []
+        const timeSlot = [
+            '08:00 AM', 
+            '09:00 AM', 
+            '10:00 AM', 
+            '11:00 AM', 
+            '12:00 PM', 
+            '01:00 PM', 
+            '02:00 PM', 
+            '03:00 PM', 
+            '04:00 PM',
+            '05:00 PM'
+        ];
+        await axios.get('http://localhost:5001/api/appointment/datetime')
+        .then((res) => {
+            let apppointments = res.data.data;
+            apppointments.map((apppointment) => {
+                let fullyBookedTimeSlot = apppointment.time_slots.length === timeSlot.length && timeSlot.every((val, index) => val === convertTime(apppointment.time_slots[index]))
+                if(fullyBookedTimeSlot){
+                    let dateConverted = convertDate(apppointment.date);
+                    let d = new Date(dateConverted)
+                    console.log(d.getDate())
+                    setDayFullyBooked(df => df = d.getDate())
+                    setMonthFullyBooked(df => df = d.getMonth()+1)
+
+                }
+            })
+        })
+    }
     const calendar = generateCalendar(currentYear, currentMonth);
 
     const monthNames = [
@@ -66,6 +101,9 @@ const Calendar = ({onSelectDate}) => {
         onSelectDate(currentYear, currentMonth, evt.target.textContent)
     }
 
+    useEffect(() => {
+        checkFullyBookedDate();
+    },[])
     return (
         <div className="max-w-sm mx-auto min-h-fit max-h-[380px] bg-raisin-black shadow-lg rounded-lg p-6">
             {/* calendar controls */}
@@ -100,9 +138,18 @@ const Calendar = ({onSelectDate}) => {
             {calendar.map((week, weekIndex) => (
                 <div key={weekIndex} className="grid grid-cols-7 gap-2">
                     {week.map((day, dayIndex) => (
-                        <div key={dayIndex} className={`font-lato w-10 h-10 flex items-center justify-center cursor-pointer text-content-xtrasm ${day ? 'text-white-smoke hover:bg-chefchaouen-blue hover:text-white-smoke rounded-full' : 'text-transparent'}`} onClick={(evt) => selectDate(evt)}>
-                            {day || ''}
-                        </div>
+                        <section key={dayIndex}>
+                            {
+                                day < currentDay || (monthFullyBooked === currentMonth && day === dayFullyBooked)? 
+                                <div key={dayIndex} className={`font-lato w-10 h-10 flex items-center justify-center text-content-xtrasm ${day ? 'text-silver line-through' : 'text-transparent'}`}>
+                                    {day || ''}
+                                </div>
+                                :
+                                <div key={dayIndex} className={`font-lato w-10 h-10 flex items-center justify-center cursor-pointer text-content-xtrasm ${day ? 'text-white-smoke hover:bg-chefchaouen-blue hover:text-white-smoke rounded-full' : 'text-transparent'}`} onClick={(evt) => selectDate(evt)}>
+                                    {day || ''}
+                                </div>
+                            }
+                        </section>
                     ))}
                 </div>
             ))}

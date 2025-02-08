@@ -42,7 +42,9 @@ export const getAppointmentsScheduleService = async (id) => {
 
 export const getAppointmentsScheduleByUserService = async (id) => {
     const res = await pool.query(`
-        SELECT "ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, service, diagnosis, status, ud."UID",
+        SELECT 	a."ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis, status, ud."UID",
         ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
         a.date, a.time
         FROM otcv_appointment_schedule a
@@ -55,32 +57,43 @@ export const getAppointmentsScheduleByUserService = async (id) => {
         INNER JOIN otcv_user_details ud
         ON ud."UID" = pg."PET_OWNER"
         WHERE ud."UID" = $1 
-		AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
-		AND s."SERVICEID" = ANY(a."SERVICEIDS")
-		AND d."DIAGID" = ANY(a."DIAGNOSIS")
-		AND a.date >= CURRENT_DATE
-		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
-    	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
- UNION
-        SELECT "ASID", a."PETID", a."PGID", pt.nickname as client, service, diagnosis, status, ud."UID",
+        AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID" ,  pg."GROUP_NICKNAME", 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
+        UNION
+        SELECT a."ASID", a."PETID", a."PGID", pt.nickname as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis,
+        status, ud."UID",
         ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
         a.date, a.time
-	    FROM otcv_appointment_schedule a
+        FROM otcv_appointment_schedule a
         INNER JOIN otcv_service s
         ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
         INNER JOIN otcv_diagnosis d
         ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
-		INNER JOIN otcv_pets pt
+        INNER JOIN otcv_pets pt
         ON pt."PETID" = pt."PETID"
         INNER JOIN otcv_user_details ud
         ON ud."UID" = pt."pet_owner"
         WHERE ud."UID" = $1
-		AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
-		AND s."SERVICEID" = ANY(a."SERVICEIDS")
-		AND d."DIAGID" = ANY(a."DIAGNOSIS")
-		AND a.date >= CURRENT_DATE
-		AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
-    	AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID", pt.nickname, 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
         ORDER BY date ASC
         `,
         [id]
@@ -120,13 +133,22 @@ export const getAllAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT *
     FROM otcv_appointment_schedule sched
-    LEFT JOIN otcv_pets p
-    ON p."PETID" = sched."PETID"
-    LEFT JOIN otcv_pet_group pg
-    ON pg."PGID" = sched."PGID"
-    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' 
-    AND CURRENT_DATE - INTERVAL '1 day'
+    LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
+    WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
     ORDER BY date DESC;
+    `);
+    return res.rows;
+}
+
+export const getAppointmentScheduleTimeslotsPerDateService = async () => {
+    const res = await pool.query(`
+    SELECT 
+    date, 
+    array_agg("time" ORDER BY "time") AS time_slots
+    FROM public.otcv_appointment_schedule
+    GROUP BY date
+    ORDER BY date;
     `);
     return res.rows;
 }

@@ -34,8 +34,6 @@ function UserPetRegistration() {
     }
 
     const onChangeType = (evt) => {
-        console.log(petTypes[0].ATYPEID)
-        console.log(evt.target.value)
         setAtypeId((at) => at = evt.target.value);
     }
 
@@ -75,7 +73,6 @@ function UserPetRegistration() {
         formData.append("nickname", nickname);
         formData.append("pet_owner", userParsed.uid);
         formData.append("image", imgFile);
-        console.log(atypeid)
         await axios.post(`http://localhost:5001/api/pets/register`, formData, 
             {
                 headers: {

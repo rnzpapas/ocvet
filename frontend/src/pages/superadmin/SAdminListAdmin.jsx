@@ -49,7 +49,6 @@ function SAdminListAdmin() {
         await axios.get('http://localhost:5001/api/admin/all', {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => {
             let admins = res.data.data;
-            console.log(admins)
             admins.map((admin) => {
                 let adObj = {
                     "No": admin.UAID,

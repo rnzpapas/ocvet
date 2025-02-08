@@ -69,6 +69,12 @@ function UserRegister() {
     }
 
     const onRegistrationSubmit = async () => {
+
+        if(password !== cpassword){
+            alert("Two passwords does not match.");
+            return;
+        }
+
         let dateNow = new Date();
         let dateStr = `${dateNow.getFullYear()}-${dateNow.getMonth()+1}-${dateNow.getDate()}`
         let formData = new FormData();

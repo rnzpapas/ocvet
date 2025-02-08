@@ -72,7 +72,6 @@ function UserInformation() {
   const onOpenChangePwEdit = () => {
     setIsChangePwModalNotOpen(true);
     setIsAccModalNotOpen(false);
-    console.log('as')
     document.body.style.overflow = 'hidden';
   }
 
@@ -282,7 +281,7 @@ function UserInformation() {
                 <PersonalDetails style={""}
                   fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
                   address={userData.address}
-                  gender={userData.gender}
+                  gender={capitalizeFirstLetter(userData.gender)}
                   onEditClick={onOpenPersonalEdit}
                 />
                 <Modal 

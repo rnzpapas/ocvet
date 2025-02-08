@@ -12,7 +12,6 @@ export const createPet = async (req, res, next) => {
     const image_name = filename + path.extname(imageFile.path);
     const registration_timestamp = Date.now() / 1000.0;
 
-    console.log(imageFile)
     try{
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");

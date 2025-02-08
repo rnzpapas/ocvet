@@ -48,7 +48,6 @@ function StaffPetOwners() {
         )
         .then((res) => {
             let petOwnerList = res.data.data;
-            console.log(petOwnerList)
             petOwnerList.map((petOwner, index) => {
                 let po = {
                     "ID": petOwner.UAID,

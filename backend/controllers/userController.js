@@ -16,8 +16,7 @@ export const createUser = async (req, res, next) => {
     const formattedDateJoined = new Date(date_joined);
     const splitDateJoined = formattedDateJoined.toISOString().split('T')[0];
     const existing_username = await getUserAccountByUsernameService(username);
-    const existing_email = await getUserAccountByEmailService(username);
-
+    const existing_email = await getUserAccountByEmailService(email);
     try{
         if(username.length === 0 || password.length === 0 || email.length === 0 ||
                 role.length === 0 || date_joined.length === 0 || firstname.length === 0 || 

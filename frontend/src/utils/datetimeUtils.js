@@ -30,7 +30,7 @@ export const convertDate = (date) => {
 
 export const convertTime = (time) => {
     let timeArr = time.split(":");
-    let timeInTwelveHrClockAbbrv = parseInt(timeArr[0]) > 12 ? 'PM' : 'AM';
+    let timeInTwelveHrClockAbbrv = parseInt(timeArr[0]) >= 12 ? 'PM' : 'AM';
     let timeInTwelveHrClock = parseInt(timeArr[0]) > 12 ? adjustTimeVisuals((parseInt(timeArr[0]) - 12)) : timeArr[0];
     
     return `${timeInTwelveHrClock}:${timeArr[1]} ${timeInTwelveHrClockAbbrv}`;
