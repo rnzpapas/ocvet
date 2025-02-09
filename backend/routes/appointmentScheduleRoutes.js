@@ -2,7 +2,8 @@ import express from 'express';
 import { createAppointmentSchedule, deleteAppointmentSchedule, getAllAppointmentSchedule, 
 getAppointmentScheduleByDate, getAppointmentScheduleByDateTime, getAppointmentScheduleByStatus, 
 updateAppointmentScheduleByStatus, getAppointmentsSchedule, getAppointmentsScheduleByUser,
-getAllRecentAppointmentSchedule, getAllUpcomingAppointmentSchedule, getAppointmentScheduleTimeslotsPerDate} from '../controllers/appointmentScheduleController.js';
+getAllRecentAppointmentSchedule, getAllUpcomingAppointmentSchedule, getAppointmentScheduleTimeslotsPerDate,
+generateAppointmentHistoryPdf} from '../controllers/appointmentScheduleController.js';
 import { authenticateAdminJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
@@ -14,6 +15,7 @@ ROUTER.delete("/appointment/delete", deleteAppointmentSchedule);
 ROUTER.get("/appointment/all",  getAllAppointmentSchedule);
 ROUTER.get("/appointment/datetime",  getAppointmentScheduleTimeslotsPerDate);
 ROUTER.get("/appointment/all/recent", authenticateAdminJwt, getAllRecentAppointmentSchedule);
+ROUTER.get("/appointment/all/history/export", authenticateAdminJwt, generateAppointmentHistoryPdf);
 ROUTER.get("/appointment/all/upcoming", authenticateAdminJwt, getAllUpcomingAppointmentSchedule);
 ROUTER.get("/appointment", getAppointmentScheduleByDate);
 ROUTER.get("/appointment/user", getAppointmentsScheduleByUser)

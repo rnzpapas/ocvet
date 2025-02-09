@@ -36,7 +36,6 @@ const HEADERS = [
 function StaffPetOwners() {
     let sessionToken = sessionStorage.getItem('jwt-token');
     const [search, setSearch] = useState("");
-    const onChangeSearch = (evt) => {setSearch(evt.val)}
     const [petOwnersDetails, setPetOwnerDetails] = useState();
 
     const loadPetOwners = async () => {
@@ -63,10 +62,42 @@ function StaffPetOwners() {
         return petOwnersArr;
     }
 
+    const searchPetOwners = async () => {
+        let petOwnersArr = [];
+        await axios.get(`http://localhost:5001/api/user/account/full-details-search?namemail=${search}`,
+            {
+                headers: {'Authorization': `Bearer ${sessionToken}`}
+            }
+        )
+        .then((res) => {
+            let petOwnerList = res.data.data;
+            if(petOwnerList.length > 0){
+                petOwnerList.map((petOwner, index) => {
+                    let po = {
+                        "ID": petOwner.UAID,
+                        "fullname": `${petOwner.firstname} ${petOwner.surname}`,
+                        "email": petOwner.email,
+                        "usename": petOwner.username,
+                        "joined_date": convertDate( petOwner.date_joined)
+                    }
+
+                    petOwnersArr.push(po);
+                })
+            }
+        }).catch(err => console.error(err))
+        return petOwnersArr;
+    }
+
+    const onChangeSearch = (evt) => {setSearch(evt.target.value)}
+
     useEffect(() => {
         let petOwnerPromise = loadPetOwners();
-        petOwnerPromise.then((po) => setPetOwnerDetails(pod => pod = po))
-    },[])
+        let searchPromise = searchPetOwners();
+        
+        search.length === 0 ? petOwnerPromise.then((po) => setPetOwnerDetails((pod) => pod = po)) : searchPromise.then((po) => setPetOwnerDetails((pod) => pod = po))
+
+    },[search]);
+
     return (
         <section className="flex w-full">
             <StaffNav />
@@ -81,7 +112,7 @@ function StaffPetOwners() {
                             </svg>
                         </section>
                     </section>
-                    <Button txtContent={"Search"} isActive={true} />
+                    {/* <Button txtContent={"Search"} isActive={true} /> */}
                 </section>
                 {
                     petOwnersDetails && (

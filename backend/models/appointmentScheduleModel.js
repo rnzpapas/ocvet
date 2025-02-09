@@ -110,7 +110,7 @@ export const getAllUpcomingAppointmentScheduleService = async () => {
     LEFT JOIN otcv_pet_group pg
     ON pg."PGID" = sched."PGID"
     WHERE date >= CURRENT_DATE
-    ORDER BY date ASC;
+    ORDER BY date ASC, time ASC;
     `);
     return res.rows;
 }
@@ -123,8 +123,8 @@ export const getAllRecentAppointmentScheduleService = async () => {
     ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg
     ON pg."PGID" = sched."PGID"
-    WHERE date < CURRENT_DATE - INTERVAL '3 days'
-    ORDER BY date DESC;
+    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE - INTERVAL '1 days'
+    ORDER BY date DESC, time ASC;
     `);
     return res.rows;
 }
@@ -136,10 +136,23 @@ export const getAllAppointmentScheduleService = async () => {
     LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
     WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
-    ORDER BY date DESC;
+    ORDER BY date, time ASC;
     `);
     return res.rows;
 }
+
+export const getAllAppointmentSchedulePdfService = async () => {
+    const res = await pool.query(`
+    SELECT sched."ASID", COALESCE(p.nickname, pg."GROUP_NICKNAME") as client, TO_CHAR(sched.date, 'YYYY-MM-DD') AS formatted_date, sched.time, sched.status
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
+    WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
+    ORDER BY date, time ASC;
+    `);
+    return res.rows;
+}
+
 
 export const getAppointmentScheduleTimeslotsPerDateService = async () => {
     const res = await pool.query(`

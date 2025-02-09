@@ -47,16 +47,27 @@ export const getPetService = async (petid) => {
 }
 
 export const getPetByNicknameService = async (nickname, pet_owner) => {
+    let nickNameSearched = `%${nickname}%`
     const result = await pool.query(`
         SELECT * FROM 
         otcv_pets p INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
-        WHERE LOWER(p.nickname) LIKE '%' || $1 || '%' 
-        OR UPPER(p.nickname) LIKE '%' || $1 || '%' 
-        OR LOWER(p.nickname) LIKE $1 || '%' 
-        OR UPPER(p.nickname) LIKE $1 || '%'
+        WHERE p.nickname ILIKE $1 OR
+        ant.animal_type ILIKE $1
         AND p.pet_owner = $2`
-    ,[nickname, pet_owner]);
+    ,[nickNameSearched, pet_owner]);
+    return result.rows;
+}
+
+export const getPetByNicknameAdminService = async (nickname) => {
+    let nickNameSearched = `%${nickname}%`
+    const result = await pool.query(`
+        SELECT * FROM 
+        otcv_pets p INNER JOIN otcv_animal_types ant
+        ON p."ATYPEID" = ant."ATYPEID"
+        WHERE p.nickname ILIKE $1 OR
+        ant.animal_type ILIKE $1`
+    ,[nickNameSearched]);
     return result.rows;
 }
 

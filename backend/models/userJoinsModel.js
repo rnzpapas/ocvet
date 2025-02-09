@@ -21,6 +21,23 @@ export const getUserCompleteDetailByIdService = async(id) => {
     return result.rows[0];
 }
 
+export const getUserCompleteDetailByNameEmailService = async(namemail) => {
+    let searchVal = `%${namemail}%`
+    const result = await pool.query(`
+        SELECT ud."UID", ud.firstname, ud.middlename, ud.surname, ud.gender, ud.address,
+        ua."UAID", ua.username, ua.email,ua.verified, ua.role, ua.date_joined
+        FROM otcv_user_details ud 
+        INNER JOIN otcv_user_accounts ua ON ud."UAID" = ua."UAID"  
+        WHERE (ud."firstname" ILIKE $1 OR 
+        ud."middlename" ILIKE $1 OR 
+        ud."surname" ILIKE $1 OR 
+        ua."email" ILIKE $1) AND
+        ua.role = 'User'
+        `, 
+        [searchVal]);
+    return result.rows;
+}
+
 export const createUserService = async(fn, mn, sn, gd, adrs, un, pw, em, rl, dj) => {
     let new_uaid = "";
     let latest_uaid = getLatestuserAccId();

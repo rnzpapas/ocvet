@@ -1,5 +1,6 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
+import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentSchedulePdfService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
+import { generatePdf } from "../utils/reportUtils.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
     const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
@@ -67,6 +68,19 @@ export const getAllAppointmentSchedule = async (req, res, next) => {
     try{
         const q = await getAllAppointmentScheduleService();
         return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const generateAppointmentHistoryPdf = async (req, res, next) => {
+    const dateObj = new Date();
+    const dateTimeStamp = `${dateObj.getFullYear()}${dateObj.getMonth()+1}${dateObj.getDate()}_${dateObj.getHours()}${dateObj.getMinutes()}`
+    try{
+        const result = await getAllAppointmentSchedulePdfService();
+        const headers = ['ID', "Client", "Date", "Time", "Status"]
+        generatePdf(res, "Appointment History", headers, result, `AppointmentHistory${dateTimeStamp}`)
+        // return handleResponse(res, 200, "Appointment successfully fetched.", q);
     }catch(err) {
         return next(err);
     }

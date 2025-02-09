@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
 import fs from 'fs'
 
@@ -112,6 +112,18 @@ export const getPetByNickname = async (req, res, next) => {
             return handleResponse(res, 200, "Pet successfully fetched", result);
         }
         return handleResponse(res, 400, "Please give a nickname to search.");
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getPetByNicknameAdmin = async (req, res, next) => {
+    const pet = req.query.pet;
+    try{
+        if(pet.length > 0){
+            const result = await getPetByNicknameAdminService(pet);
+            return handleResponse(res, 200, "Pet successfully fetched", result);
+        }
     }catch(err) {
         return next(err);
     }

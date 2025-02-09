@@ -81,7 +81,7 @@ function UserPetPage() {
 
     useEffect(() => {
         let petsPromise = loadAllPets();
-        petsPromise.then(res => setPetsData(res));
+        if(search.length === 0) petsPromise.then(res => setPetsData(res));
 
         let vaxPromise = loadRecentVaccinations();
         vaxPromise.then(res => setRecentVaccinated(res));
@@ -89,7 +89,7 @@ function UserPetPage() {
         let pgPromise = loadPetGroups();
         pgPromise.then((pg) => setPetGroups(pg))
 
-    },[petsData, recentVaccinated, petGroups])
+    },[petsData, recentVaccinated, petGroups, search])
 
     return (
         <>

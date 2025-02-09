@@ -1,6 +1,6 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { getUserAccountByEmailService, getUserAccountByUsernameService } from "../models/userAccountModel.js";
-import { createUserService, getUserCompleteDetailByIdService } from "../models/userJoinsModel.js";
+import { createUserService, getUserCompleteDetailByIdService, getUserCompleteDetailByNameEmailService } from "../models/userJoinsModel.js";
 
 export const getUserFullDetails = async (req, res, next) => {
     try{
@@ -35,6 +35,16 @@ export const createUser = async (req, res, next) => {
         }
     }catch(err) {
         return next(err);
+    }
+}
+
+export const getUserCompleteDetailByNameEmail = async(req, res, next) => {
+    const namemail  = req.query.namemail;
+    try{
+        const userFull = await getUserCompleteDetailByNameEmailService(namemail);
+        return handleResponse(res, 200, "User full details successfully fetched.", userFull);
+    }catch(err){
+        return next(err)
     }
 }
 

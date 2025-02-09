@@ -4,7 +4,7 @@ import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAc
 sortUsernameDesc, loginUserAccount, updateUserAccountPassword, updateUserOtp, verifyUserOtp, recoversUserAccountPassword, 
 getAllPetOwnersAccount,
 getAllAdministrators} from '../controllers/userAccountsController.js';
-import { createUser, getUserFullDetails } from '../controllers/userController.js';
+import { createUser, getUserFullDetails, getUserCompleteDetailByNameEmail } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
 
@@ -16,6 +16,7 @@ ROUTER.get('/admin/all', authenticateAdminJwt, getAllAdministrators);
 // common
 ROUTER.post("/user/register", createUser);
 ROUTER.get("/user/account/full-details/:id", authenticateUserJwt,  getUserFullDetails);
+ROUTER.get("/user/account/full-details-search", authenticateAdminJwt,  getUserCompleteDetailByNameEmail);
 ROUTER.get("/user/account/admin-full-details/:id", authenticateAdminJwt,  getUserFullDetails);
 ROUTER.post("/user/login", loginUserAccount);
 ROUTER.put("/user/account-recovery/otp-update", updateUserOtp);
