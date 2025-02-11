@@ -77,18 +77,18 @@ function OTPVerification() {
     }, [isCountdownRunning]);
 
     return (
-        <section className="flex">
-            <SideLogo style={"h-screen w-6/12"}/>
-            <section className="flex flex-col gap-5 items-center justify-center w-6/12">
-                <h5 className="font-instrument-sans text-headline-lrg font-bold"> Password Recovery</h5>
-                <section className="flex flex-col gap-3 w-6/12 relative">
+        <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-screen lg:h-auto">
+            <SideLogo style={"lg:h-screen lg:w-6/12"}/>
+            <section className="flex flex-col gap-5 items-center justify-center lg:w-6/12">
+                <h5 className="font-instrument-sans text-headline-md xxl:text-headline-lrg font-bold"> Password Recovery</h5>
+                <section className="flex flex-col gap-3 w-[80%] xxl:w-6/12 relative">
                     <section className="flex flex-col gap-1">
-                        <label htmlFor="OTP" className="font-instrument-sans text-headline-md font-semibold"> One-Time Password (OTP) </label>
+                        <label htmlFor="OTP" className="font-instrument-sans text-headline-sm xxl:text-headline-md font-semibold"> One-Time Password (OTP) </label>
                         {isCountdownRunning ? <p className="font-lato text-content-sm mb-4"> We sent a 6 digit verification code to your e-mail.</p> : ""}
                         <InputField type="text" placeholder={"XXXXXX"} name="OTP" maxlength={6} onChangeFunc={onChangeOTP}/>
                     </section>
                     <h5 onClick={onResendCode}
-                    className="font-lato text-azure font-semibold cursor-pointer hover:underline flex justify-end"
+                    className="font-lato text-azure font-semibold cursor-pointer hover:underline flex justify-end text-content-sm xl:text-content-md"
                     >
                         {`Resend Code ${isCountdownRunning ? `(${seconds}s)` : '' }`}
                     </h5>

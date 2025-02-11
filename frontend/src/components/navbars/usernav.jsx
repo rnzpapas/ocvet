@@ -4,7 +4,16 @@ import { useEffect, useState } from "react"
 
 function UserNav() {
   const [userID, setUserID] = useState('');
-  
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  const openMobileNav = () => {
+    setIsMobileNavOpen(true)
+  }
+
+  const closeMobileNav = () => {
+    setIsMobileNavOpen(false)
+  }
+
   useEffect(() => {
     let userData = localStorage.getItem('user');
     let parsedData = JSON.parse(userData);
@@ -12,11 +21,11 @@ function UserNav() {
   },[])
 
   return (
-    <nav className="bg-linen h-[130px] flex justify-around">
+    <nav className="bg-linen h-[130px] flex items-center justify-between px-10 lg:justify-around z-50">
         <section className="flex items-center gap-5">
           {/* logo */}
             <img 
-                className="w-[75px] h-[75px]"
+                className="w-[60px] h-[60px] md:w-[75px] md:h-[75px]"
                 src={OcvetLogo} alt="OCVET Logo"
             />
             {/* logo title */}
@@ -26,17 +35,22 @@ function UserNav() {
                 <h5 className="uppercase font-extrabold md:text-content-sm font-lato">office of the city veterinarian</h5>
             </section>
         </section>
+        <section className={`hidden md:flex md:justify-end md:gap-5 md:w-6/12`}>
+          <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"} />
+          <NavLink navTitle={"PETS"} toPage={"/user/pets"} />
+          <NavLink navTitle={"ACCOUNT"} toPage={`/user/account/${userID}`} />
+        </section>
         {/* hamburger nav */}
-        <section className="flex items-center gap-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[50px] h-[50px] md:hidden">
+        <section className="flex items-center gap-5" onClick={openMobileNav}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[40px] h-[40px] md:hidden">
             <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/>
           </svg>
         </section>
-        {/* navlinks */}
-        <section className="
-        absolute w-full h-full bg-linen flex flex-col items-center justify-center gap-5 
-        md:relative md:flex-row md:bg-transparent md:w-auto
-        ">
+        {/* navlinks hamb*/}
+        <section className={`${isMobileNavOpen ? ('absolute top-0 left-0 w-full h-full bg-linen flex flex-col items-center justify-center gap-5 md:relative md:flex-row md:bg-transparent md:w-auto z-40') : 'hidden'}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={`${isMobileNavOpen ? ('fill-raisin-black w-[30px] absolute top-4 right-4') : 'hidden' }`} onClick={closeMobileNav}>
+            <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/>
+          </svg>
           <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"}/>
           <NavLink navTitle={"PETS"} toPage={"/user/pets"}/>
           <NavLink navTitle={"ACCOUNT"} toPage={`/user/account/${userID}`}/>

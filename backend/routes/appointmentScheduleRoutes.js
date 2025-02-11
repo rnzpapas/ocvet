@@ -3,7 +3,10 @@ import { createAppointmentSchedule, deleteAppointmentSchedule, getAllAppointment
 getAppointmentScheduleByDate, getAppointmentScheduleByDateTime, getAppointmentScheduleByStatus, 
 updateAppointmentScheduleByStatus, getAppointmentsSchedule, getAppointmentsScheduleByUser,
 getAllRecentAppointmentSchedule, getAllUpcomingAppointmentSchedule, getAppointmentScheduleTimeslotsPerDate,
-generateAppointmentHistoryPdf} from '../controllers/appointmentScheduleController.js';
+generateAppointmentHistoryPdf,
+generateUpcomingAppointmentPdf,
+getAppointmentStats,
+getAppointmentSuccessStats} from '../controllers/appointmentScheduleController.js';
 import { authenticateAdminJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
@@ -16,7 +19,13 @@ ROUTER.get("/appointment/all",  getAllAppointmentSchedule);
 ROUTER.get("/appointment/datetime",  getAppointmentScheduleTimeslotsPerDate);
 ROUTER.get("/appointment/all/recent", authenticateAdminJwt, getAllRecentAppointmentSchedule);
 ROUTER.get("/appointment/all/history/export", authenticateAdminJwt, generateAppointmentHistoryPdf);
+ROUTER.get("/appointment/all/upcoming/export", authenticateAdminJwt, generateUpcomingAppointmentPdf);
 ROUTER.get("/appointment/all/upcoming", authenticateAdminJwt, getAllUpcomingAppointmentSchedule);
+ROUTER.get("/appointment/stats", getAppointmentStats);
+ROUTER.get("/appointment/stats/success", getAppointmentSuccessStats);
+
+
+
 ROUTER.get("/appointment", getAppointmentScheduleByDate);
 ROUTER.get("/appointment/user", getAppointmentsScheduleByUser)
 // ROUTER.get("/appointment/datetime", getAppointmentScheduleByDateTime);

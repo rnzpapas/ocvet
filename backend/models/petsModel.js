@@ -83,6 +83,21 @@ export const getAllPetsService = async () => {
     return result.rows;
 }
 
+export const getAllPetsPdfService = async () => {
+    const result = await pool.query(`
+        SELECT p."PETID", p.nickname, INITCAP(ant.animal_type) as AnimalType, ud.firstname || ' ' || ud.surname as fullname, 
+        TO_CHAR(p.registration_timestamp, 'YYYY-MM-DD HH24:MI')
+        FROM otcv_pets p 
+        INNER JOIN otcv_animal_types ant
+        ON p."ATYPEID" = ant."ATYPEID"
+        INNER JOIN otcv_user_details ud
+        ON p."pet_owner" = ud."UID"
+        ORDER BY p.nickname ASC`
+    );
+    return result.rows;
+}
+
+
 export const getAllPetsByTypeService = async (atypeid) => {
     const result = await pool.query(`
         SELECT * FROM 

@@ -104,8 +104,9 @@ const Calendar = ({onSelectDate}) => {
     useEffect(() => {
         checkFullyBookedDate();
     },[])
+    
     return (
-        <div className="max-w-sm mx-auto min-h-fit max-h-[380px] bg-raisin-black shadow-lg rounded-lg p-6">
+        <div className="max-w-sm min-h-fit h-[100px] max-h-[380px] bg-raisin-black shadow-lg rounded-lg p-6">
             {/* calendar controls */}
             <div className="flex justify-center items-center mb-2">
                 {/* <button

@@ -32,6 +32,19 @@ export const getAllPetOwnersService = async() => {
     return result.rows;
 }
 
+export const generateAllPetOwnersPdfService = async () => {
+    const result = await pool.query(`
+        SELECT ud."UID", ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, ua.email, ua.username, 
+        TO_CHAR(ua.date_joined, 'YYYY-MM-DD')
+        FROM otcv_user_accounts ua 
+        INNER JOIN otcv_user_details ud
+        ON ua."UAID" = ud."UAID"
+        WHERE ua.role = 'User';`
+    );
+    return result.rows;
+}
+
+
 export const getAllAdministratorsService = async () => {
     let r = await pool.query(`
         SELECT * FROM otcv_user_accounts ua

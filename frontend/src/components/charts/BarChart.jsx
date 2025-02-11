@@ -12,8 +12,8 @@ const BarChart = ({labels, datasetLabel, datasetData, datasetBgColor, datasetBor
       {
         label: datasetLabel, // Dataset label
         data: datasetData, // Data points
-        backgroundColor: datasetBgColor, // Bar color
-        borderColor: datasetBorderColor, // Border color
+        backgroundColor: ['#1f77b4','#ff7f0e', '#2ca02c', '#d62728','#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'],
+        borderColor: ['#1f77b4','#ff7f0e', '#2ca02c', '#d62728','#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'],
         borderWidth: 1,
       },
     ],
@@ -31,6 +31,9 @@ const BarChart = ({labels, datasetLabel, datasetData, datasetBgColor, datasetBor
             return tooltipItem.raw + ' ' + optionTooltipLabel; 
           },
         },
+      },
+      scales: {
+        y: { beginAtZero: true },
       },
     },
   };

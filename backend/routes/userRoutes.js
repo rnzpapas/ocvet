@@ -3,7 +3,8 @@ import { getAllUsersDetail, getUserDetailById, updateUserDetail, deleteUserDetai
 import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, 
 sortUsernameDesc, loginUserAccount, updateUserAccountPassword, updateUserOtp, verifyUserOtp, recoversUserAccountPassword, 
 getAllPetOwnersAccount,
-getAllAdministrators} from '../controllers/userAccountsController.js';
+getAllAdministrators,
+generateAllPetOwnersPdf} from '../controllers/userAccountsController.js';
 import { createUser, getUserFullDetails, getUserCompleteDetailByNameEmail } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
@@ -33,6 +34,7 @@ ROUTER.delete("/user/:id", authenticateAdminJwt, deleteUserDetail);
 // USER ACCOUNTS
 ROUTER.get("/user/account/all", authenticateAdminJwt, getAllUsersAccount);
 ROUTER.get("/user/account/petowners", authenticateAdminJwt, getAllPetOwnersAccount);
+ROUTER.get("/user/account/petowners/export", authenticateAdminJwt, generateAllPetOwnersPdf);
 ROUTER.get("/user/account/details/:id", getUserAccountById);
 ROUTER.put("/user/account/details/update", updateUserAccount);
 ROUTER.put("/user/account/pw", authenticateUserJwt, updateUserAccountPassword)

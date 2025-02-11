@@ -4,7 +4,8 @@ import { createPet, deletePet, getAllPets, getAllPetsByDate, getAllPetsByOwner,
 getAllPetsByOwnerDescending, getAllPetsByRangeDate, getAllPetsByType, getAllPetsByTypeDescending,
 getAllPetsCount, getPet, getPetByNickname, updatePet, updatePetImage, getAllCountPetsByOwner, getAllCountPetsByOwnerAndPets,
 getAllPetsAndOwnerByType,
-getPetByNicknameAdmin} from "../controllers/petsController.js"
+getPetByNicknameAdmin,
+getAllPetsPdf} from "../controllers/petsController.js"
 import { authenticateAdminJwt, authenticateUserJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
@@ -12,6 +13,7 @@ ROUTER.post("/pets/register", authenticateUserJwt, upload.single('image'), creat
 ROUTER.put("/pets/update/image/:id", authenticateUserJwt, upload.single("image"), updatePetImage);
 ROUTER.delete("/pets/remove/:id", authenticateUserJwt, deletePet);
 ROUTER.get("/pets/all", authenticateAdminJwt, getAllPets);
+ROUTER.get("/pets/all/export", authenticateAdminJwt, getAllPetsPdf);
 ROUTER.get("/pets?", getAllPetsByDate); 
 ROUTER.get("/pets/owner", authenticateUserJwt, getAllPetsByOwner);
 ROUTER.get("/pets/owner/desc", authenticateUserJwt, getAllPetsByOwnerDescending);

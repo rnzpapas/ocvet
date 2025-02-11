@@ -1,7 +1,8 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
 import fs from 'fs'
+import { generatePdf } from "../utils/reportUtils.js";
 
 export const createPet = async (req, res, next) => {
     const { atypeid, pet_owner, nickname} = req.body;
@@ -133,6 +134,19 @@ export const getAllPets = async (req, res, next) => {
     try{
         const result = await getAllPetsService();
         return handleResponse(res, 200, "Pets successfully fetched.", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAllPetsPdf = async (req, res, next) => {
+    const dateObj = new Date();
+    const dateTimeStamp = `${dateObj.getFullYear()}${dateObj.getMonth()+1}${dateObj.getDate()}_${dateObj.getHours()}${dateObj.getMinutes()}`
+
+    try{
+        const result = await getAllPetsPdfService();
+        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Date Registered']
+        generatePdf(res, 'Pets', headers, result, `PetList_${dateTimeStamp}`)
     }catch(err) {
         return next(err);
     }

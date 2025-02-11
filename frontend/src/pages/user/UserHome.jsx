@@ -118,7 +118,6 @@ function UserHome() {
   const selectDate = (year, month, day) => {
     let modifiedMonth = adjustMonthVisuals(month-1);
     let selectedDate = `${modifiedMonth}-${adjustDayVisuals(day)}-${year}`;
-    console.log(selectedDate)
     setDateOfAppointment((prev) => prev = selectedDate);
     setAppointmentPage(appointmentPage + 1);
   }
@@ -246,17 +245,16 @@ function UserHome() {
 
     petPromise.then(r => setPets(p => p = r));
     petGroupPromise.then(r => setPetGroup(p => p = r));
-
   }, [])
 
   useEffect(() => {}, [servicesSelected, diagnosisSelected, isPetsDpOpened, isPetGroupDpOpened])
 
   return (
-    <>
+    <section className="overflow-hidden">
       <UserNav />
-      <section className="h-dvh flex">
-        <section className="w-[40%] flex justify-center">
-          <section className="bg-white-smoke shadow-md px-2 py-5 w-[90%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
+      <section className="h-fit flex flex-col lg:flex-row">
+        <section className="lg:w-[40%] flex justify-center">
+          <section className="bg-white-smoke shadow-md px-2 py-5 h-[300px] w-[90%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
             <h5 className="font-lato font-semibold text-headline-md mb-4">Upcoming Appointments</h5>
             <section className="flex flex-col gap-2">
               {/* appointment list */}
@@ -277,11 +275,11 @@ function UserHome() {
             </section>
           </section>
         </section>
-        <section className="w-[60%] mt-16 flex flex-col items-center">
-          <section className="w-[90%] h-[500px] shadow-md bg-white-smoke px-4 py-4 rounded-md relative">
+        <section className="lg:w-[60%] mt-16 flex flex-col items-center">
+          <section className="w-[90%] h-fit shadow-md bg-white-smoke px-4 py-4 rounded-md relative">
             <h5 className="font-lato font-semibold text-headline-md mb-2">Book An Appointment</h5>
             {/* Stepper */}
-            <section className="flex items-center justify-center gap-2">
+            <section className="flex items-center justify-center flex-wrap w-full gap-2">
                 {/* step 1 */}
                 <section className="flex items-center justify-center gap-2">
                   {
@@ -358,7 +356,7 @@ function UserHome() {
                 </section>
             </section>
             {/* Appointment pages */}
-            <section className="relative py-5">
+            <section className="flex justify-center py-5">
               {/* calendar */}
               <section className={`${appointmentPage == 1 ? 'block' : 'hidden'}`}>
                 <Calendar onSelectDate={selectDate}/>
@@ -404,7 +402,7 @@ function UserHome() {
                       </svg>
                     </section>
                   </section>
-                  <section className={`${isPetsDpOpened ? 'h-40 grid grid-cols-4 gap-10 overflow-y-auto' : 'hidden'}`}>
+                  <section className={`${isPetsDpOpened ? 'h-40 grid grid-cols-3 gap-5 lg:grid-cols-4 lg:gap-10 overflow-y-auto overflow-x-hidden' : 'hidden'}`}>
                     {
                       pets ? 
                         pets.map(pet => (
@@ -433,7 +431,7 @@ function UserHome() {
                       </svg>
                     </section>
                   </section>
-                  <section className={`${isPetGroupDpOpened ? 'h-40 grid grid-cols-4 gap-10 overflow-y-auto' : 'hidden'}`}>
+                  <section className={`${isPetGroupDpOpened ? 'h-40 grid grid-cols-3 gap-5 lg:grid-cols-4 lg:gap-10 overflow-y-auto' : 'hidden'}`}>
                   {
                       petGroup ? 
                         petGroup.map(pet => (
@@ -451,7 +449,7 @@ function UserHome() {
                 </section>
               </section>
               {/* diagnosis */}
-              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3 overflow-y-auto' : 'hidden'} `}>
+              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[200px] px-3 py-3 gap-4 rounded-md grid grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden' : 'hidden'} `}>
                 {
                   diagnosis && (
                     diagnosis.map((svcs,index) => (
@@ -459,7 +457,7 @@ function UserHome() {
                         <section className="flex items-center justify-center w-[16px] h-[16px] border border-raisin-black group cursor-pointer">
                           <section className={`w-[12px] h-[12px] group group-hover:bg-raisin-black-light`} onClick={(e) => toggleDiagnosis(e)}></section>
                         </section>
-                        <h5 id={svcs.DIAGID} className="font-lato">{svcs.diagnosis}</h5>
+                        <h5 id={svcs.DIAGID} className="font-lato text-content-xtrasm md:text-content-md">{svcs.diagnosis}</h5>
                       </section>
                     ))
                   )
@@ -477,7 +475,7 @@ function UserHome() {
         </section>
       </section>
       <Footer/>
-    </>
+    </section>
   )
 }
 

@@ -1,6 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Emails from "../../components/Emails";
 import MngrNav from "../../components/navbars/MngrNav";
+import BarChart from "../../components/charts/BarChart";
+import DoughnutChart from "../../components/charts/DoughnutChart";
+import axios from 'axios';
 
 function MngrHome() {
   const [emails, setEmails] = useState([
@@ -26,23 +29,74 @@ function MngrHome() {
       "date_sent": "Dec 14"
     },
   ]);
+  const [stats, setStats] = useState({ totalToday: 0, totalThisWeek: 0, totalThisMonth: 0 });
+  const [successStats, setSuccessStats] = useState({ totalCompleted: 0, totalMissed: 0});
+
+  const loadAppointmentStats = async () => {
+    let a;
+    await axios.get("http://localhost:5001/api/appointment/stats")
+    .then(response => a = response.data.data)
+    .catch(error => console.error("Error fetching data:", error));
+    return a;
+  }
+
+  const loadAppointmentSuccessStats = async () => {
+    let a;
+    await axios.get("http://localhost:5001/api/appointment/stats/success")
+    .then(response => a = response.data.data)
+    .catch(error => console.error("Error fetching data:", error));
+    return a;
+  }
+
+  useEffect(() => {
+    let appointmentStatsPromise = loadAppointmentStats();
+    appointmentStatsPromise.then((astats) => setStats(st => st = astats));
+    let appointmentSuccessStatsPromise = loadAppointmentSuccessStats();
+    appointmentSuccessStatsPromise.then((astats) => setSuccessStats(st => st = astats));
+  },[])
+
   return (
     <section className="flex w-full">
         <MngrNav />
         <section className="px-5 py-5 w-full">
             <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">dashboard</h5>
-            <section className="flex flex-col gap-5">
-                <h5 className="font-lato text-raisin-black text-headline-md font-semibold"> Visit this week</h5>
-                <section className="w-full h-60"></section>
+            <section className="grid grid-cols-3 gap-7">
+                <section className="flex flex-col gap-5 items-center">
+                    <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
+                    <section className="h-60">
+                      {
+                        stats && (
+                          <BarChart 
+                          chartH={'h-full'}
+                          labels={["Today", "This Week", "This Month"]} 
+                          datasetLabel={"Total Appointments"}
+                          datasetData={[stats.totalToday, stats.totalThisWeek, stats.totalThisMonth]}
+                          optionTooltipLabel={'Appointments'}
+                          />
+                        )
+                      }
+                    </section>
+                </section>
+                <section className="flex flex-col gap-5  items-center">
+                    <h5 className="font-lato text-raisin-black text-headline-sm font-semibold">Appointment Completion Overview</h5>
+                    <section className="h-60 flex justify-center">
+                    {
+                      successStats && (
+                        <DoughnutChart 
+                        chartH={'h-48'}
+                        labels={["Total Completed", "Total Missed"]} 
+                        datasetLabel={"Total Appointments"}
+                        datasetData={[successStats.totalCompleted, successStats.totalMissed]}
+                        optionTooltipLabel={'Appointments'}
+                        />
+                      )
+                    }
+                </section>
+                </section>
             </section>
-            <section className="flex justify-between">
-                <section className="flex flex-col gap-5">
-                    <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Pet assists</h5>
-                </section>
-                <section className="flex flex-col gap-5">
-                    <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Announcements</h5>
-                    <Emails mails={emails} isBodyIncluded={false}/>
-                </section>
+            <section className="flex flex-col gap-5">
+                <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Announcements</h5>
+                <Emails mails={emails} isBodyIncluded={true}/>
             </section>
         </section>
     </section>

@@ -143,7 +143,11 @@ export const getAllAppointmentScheduleService = async () => {
 
 export const getAllAppointmentSchedulePdfService = async () => {
     const res = await pool.query(`
-    SELECT sched."ASID", COALESCE(p.nickname, pg."GROUP_NICKNAME") as client, TO_CHAR(sched.date, 'YYYY-MM-DD') AS formatted_date, sched.time, sched.status
+    SELECT sched."ASID", COALESCE(p.nickname, pg."GROUP_NICKNAME") as client, TO_CHAR(sched.date, 'YYYY-MM-DD') AS formatted_date, sched.time, 
+    CASE 
+        WHEN sched.status = 'Scheduled' AND sched.date < CURRENT_DATE THEN 'Missed' 
+        ELSE sched.status 
+    END AS status
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
@@ -153,6 +157,17 @@ export const getAllAppointmentSchedulePdfService = async () => {
     return res.rows;
 }
 
+export const getAllUpcomingAppointmentSchedulePdfService = async () => {
+    const res = await pool.query(`
+    SELECT sched."ASID", COALESCE(p.nickname, pg."GROUP_NICKNAME") as client, TO_CHAR(sched.date, 'YYYY-MM-DD') AS formatted_date, sched.time
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
+    WHERE date >= CURRENT_DATE
+    ORDER BY date, time ASC;
+    `);
+    return res.rows;
+}
 
 export const getAppointmentScheduleTimeslotsPerDateService = async () => {
     const res = await pool.query(`
@@ -167,6 +182,20 @@ export const getAppointmentScheduleTimeslotsPerDateService = async () => {
 }
 
 
+export const getAppointmentStatsService = async() => {
+    const todayQuery = await pool.query(`SELECT COUNT(*) AS total_today FROM public.otcv_appointment_schedule WHERE date = CURRENT_DATE;`);
+    const weekQuery = await pool.query(`SELECT COUNT(*) AS total_this_week FROM public.otcv_appointment_schedule WHERE date >= DATE_TRUNC('week', CURRENT_DATE) AND date < DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '7 days';`);
+    const monthQuery = await pool.query(`SELECT COUNT(*) AS total_this_month FROM public.otcv_appointment_schedule WHERE date >= DATE_TRUNC('month', CURRENT_DATE) AND date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month';`);
+    return[todayQuery, weekQuery, monthQuery]
+}
+
+export const getAppointmentSuccessStatsService = async() => {
+    const completedQuery = `SELECT COUNT(*) AS total_completed FROM public.otcv_appointment_schedule WHERE status = 'Done';`;
+    const missedQuery = `SELECT COUNT(*) AS total_missed FROM public.otcv_appointment_schedule WHERE status = 'Missed'`;
+    const completedRes = await pool.query(completedQuery);
+    const successfulRes = await pool.query(missedQuery);
+    return [completedRes, successfulRes];
+}
 export const getAppointmentScheduleByDateService = async(date) => {
     const result = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE date = $1', [date]);
     return result.rows;

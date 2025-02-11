@@ -3,9 +3,9 @@ import OcvetLogo from "../assets/logo_img.png"
 
 function Footer() {
   return (
-    <footer className="bg-raisin-black w-full lg:h-[250px] z-1">
+    <footer className="relative bg-raisin-black w-full lg:h-[250px] z-1 mt-10">
       {/* footer contents */}
-      <section className="w-full h-[90%] flex flex-col gap-5 lg:flex-row items-center lg:justify-center xl:gap-20 text-wrap">
+      <section className="w-full h-[90%] flex flex-col gap-5 lg:flex-row items-center lg:justify-center xl:gap-20 text-wrap py-5">
         <img 
             className="w-[75px] h-[75px] md:w-[100px] md:h-[100px] xxl:w-[125px] xxl:h-[125px]"
             src={OcvetLogo} alt="OCVET Logo"

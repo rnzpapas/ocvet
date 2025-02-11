@@ -69,17 +69,17 @@ function UserLogin() {
     },[]);
 
     return (
-        <section className="flex w-screen">
-            <SideLogo style={"h-screen w-6/12"}/>
-            <section className="flex flex-col gap-5 items-center justify-center w-6/12">
-                <h5 className="font-instrument-sans text-headline-lrg font-bold"> Sign In</h5>
-                <form className="flex flex-col gap-3 w-[60%] relative">
+        <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-screen lg:h-auto">
+            <SideLogo style={"lg:h-screen lg:w-6/12"}/>
+            <section className="flex flex-col gap-5 items-center justify-center lg:w-6/12">
+                <h5 className="font-instrument-sans text-headline-md xl:text-headline-lrg font-bold"> Sign In</h5>
+                <form className="flex flex-col gap-3 w-[75%] xl:w-[60%] relative">
                     <section className="flex flex-col gap-1">
-                        <label htmlFor="username" className="font-instrument-sans text-headline-md font-semibold"> Username </label>
+                        <label htmlFor="username" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Username </label>
                         <InputField type="text" placeholder={"yourusername123"} name="username" onChangeFunc={onChangeUsername}/>
                     </section>
                     <section className="flex flex-col gap-1">
-                        <label htmlFor="password" className="font-instrument-sans text-headline-md font-semibold"> Password </label>
+                        <label htmlFor="password" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Password </label>
                         <section className="relative">
                             <InputField type={`${isHiddenPassword ? 'password' : 'text'}`} placeholder={"E.g. y0uRp4ssW0rd@!"} name="password" style={"w-[100%]"} onChangeFunc={onChangePassword}/>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" onClick={togglePasswordField} className={`w-[28px] fill-silver cursor-pointer hover:fill-raisin-black-light absolute right-4 top-2.5 ${isHiddenPassword ? '' : 'hidden'}`}>
@@ -90,16 +90,16 @@ function UserLogin() {
                             </svg>
                         </section>
                     </section>
-                    <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer"} toPage={"/account-recovery/forgot-password"}/>
+                    <Link txtContent={"Forgot Password?"} style={"flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer text-content-sm xl:text-content-md"} toPage={"/account-recovery/forgot-password"}/>
                     <Button txtContent={"sign in"} onClickFunc={(evt) => onLogin(evt)}/>
                 </form>
                 <section className="flex items-center justify-center gap-2">
-                    <div className="w-[200px] h-[2px] bg-raisin-black"></div>
+                    <div className="w-[150px] md:w-[300px] lg:w-[180px] xl:w-[200px] xxl:w-[250px] h-[2px] bg-raisin-black"></div>
                     <h5 className="uppercase font-lato text-raisin-black"> or </h5>
-                    <div className="w-[200px] h-[2px] bg-raisin-black"></div>
+                    <div className="w-[150px] md:w-[300px] lg:w-[180px] xl:w-[200px] xxl:w-[250px] h-[2px] bg-raisin-black"></div>
                 </section>
-                <RouterLink to="/user/register" className="w-[60%]">
-                    <Button txtContent={"sign up"} style={"w-[100%]"} isActive={false}/>
+                <RouterLink to="/user/register" className="w-[75%] xl:w-[60%]">
+                    <Button txtContent={"sign up"} style={"w-full"} isActive={false}/>
                 </RouterLink>
             </section>
         </section>

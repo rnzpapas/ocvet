@@ -1,9 +1,10 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
 import generateOtp from "../utils/otpUtils.js";
 import { sendEmail } from '../config/email.js';
+import { generatePdf } from "../utils/reportUtils.js"
 
 export const loginUserAccount = async (req, res, next) => {
     const { username, password } = req.body;
@@ -68,6 +69,21 @@ export const getAllPetOwnersAccount = async (req, res, next) => {
         return next(err);
     }
 }
+
+export const generateAllPetOwnersPdf = async (req, res, next) => {
+    const dateObj = new Date();
+    const dateTimeStamp = `${dateObj.getFullYear()}${dateObj.getMonth()+1}${dateObj.getDate()}_${dateObj.getHours()}${dateObj.getMinutes()}`
+
+    try{
+        const users = await generateAllPetOwnersPdfService();
+        if(!users) return handleResponse(res, 404, "Data retrieval failed");
+        const headers = ['ID', 'Full Name', 'E-Mail', 'Username', 'Joined_Date']
+        generatePdf(res, 'Pet Owners', headers, users, `PetOwnersList_${dateTimeStamp}`)
+    }catch(err) {
+        return next(err);
+    }
+}
+
 
 export const getUserAccountById = async (req, res, next) => {
     try{

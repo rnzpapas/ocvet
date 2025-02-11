@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentSchedulePdfService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
+import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentSchedulePdfService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentSchedulePdfService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, getAppointmentStatsService, getAppointmentSuccessStatsService, updateAppointmentScheduleByStatusService } from "../models/appointmentScheduleModel.js";
 import { generatePdf } from "../utils/reportUtils.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
@@ -86,10 +86,52 @@ export const generateAppointmentHistoryPdf = async (req, res, next) => {
     }
 }
 
+
+export const generateUpcomingAppointmentPdf = async (req, res, next) => {
+    const dateObj = new Date();
+    const dateTimeStamp = `${dateObj.getFullYear()}${dateObj.getMonth()+1}${dateObj.getDate()}_${dateObj.getHours()}${dateObj.getMinutes()}`
+    try{
+        const result = await getAllUpcomingAppointmentSchedulePdfService();
+        const headers = ['ID', "Client", "Date", "Time"]
+        generatePdf(res, "Upcoming Appointment", headers, result, `UpcomingAppointment${dateTimeStamp}`)
+        // return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
 export const getAppointmentScheduleTimeslotsPerDate = async (req, res, next) => {
     try{
         const q = await getAppointmentScheduleTimeslotsPerDateService();
         return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+
+export const getAppointmentStats = async(req, res, next) => {
+    try{
+        const result = await getAppointmentStatsService();
+        let stats = {
+            'totalToday': result[0].rows[0].total_today,
+            'totalThisWeek': result[1].rows[0].total_this_week,
+            'totalThisMonth': result[2].rows[0].total_this_month,
+        }
+        return handleResponse(res, 200, "Appointment successfully fetched.",  stats);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getAppointmentSuccessStats = async(req, res, next) => {
+    try{
+        const result = await getAppointmentSuccessStatsService();
+        let stats = {
+            'totalCompleted': result[0].rows[0].total_completed,
+            'totalMissed': result[1].rows[0].total_missed,
+        }
+        return handleResponse(res, 200, "Appointment successfully fetched.",  stats);
     }catch(err) {
         return next(err);
     }
