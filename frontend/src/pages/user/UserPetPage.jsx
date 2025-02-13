@@ -94,8 +94,8 @@ function UserPetPage() {
     return (
         <>
             <UserNav />
-            <section className="flex px-5 py-5 h-dvh">
-                <section className="w-[20%] flex flex-col gap-8">
+            <section className="flex flex-col-reverse lg:flex-row px-5 py-5 gap-5 lg:gap-0 lg:h-dvh">
+                <section className="lg:w-[20%] flex flex-col gap-8">
                     <section>
                         <h5 className="font-instrument-sans font-semibold uppercase text-content-sm mb-2.5">Recently Vaccinated Pets</h5>
                         <section className="flex gap-2">
@@ -133,9 +133,9 @@ function UserPetPage() {
                         }
                     </section>
                 </section>
-                <section className="w-[80%]">
-                    <form className="flex gap-10" onSubmit={(evt) => evt.preventDefault()}>
-                        <section className="w-[400px]">
+                <section className="lg:w-[80%]">
+                    <form className="flex gap-2 lg:gap-10" onSubmit={(evt) => evt.preventDefault()}>
+                        <section className="w-[250px] lg:w-[400px]">
                             <section className="relative">
                                 <InputField type={"text"} placeholder={"Nickname..."} name="petSearch" style={"w-[100%]"} onChangeFunc={onChangeSearch}/>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[28px] fill-silver absolute right-4 top-1.5">  
@@ -143,23 +143,23 @@ function UserPetPage() {
                                 </svg>
                             </section>
                         </section>
-                        <Button txtContent={"Search"} isActive={true} onClickFunc={searchPet}/>
+                        <Button txtContent={"Search"} isActive={true} onClickFunc={searchPet} style={'w-[100px] md:w-fit md:px-4'}/>
                         {/* <Link to="/user/pets/register">
                             <Button txtContent={"Register Pet"} style={"ml-20"}/>
                         </Link> */}
                     </form>
-                    <section className="mt-5 flex flex-wrap gap-5 max-h-[90%] overflow-y-auto overflow-x-hidden">
+                    <section className="mt-5 flex flex-wrap gap-2 lg:gap-5 max-h-[90%] overflow-y-auto overflow-x-hidden">
                         {
                             isDefaultView ? 
                                 petsData && (petsData.map((pet, index) => (
-                                    <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="w-[140px] h-[150px]">
+                                    <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="">
                                         <PetCard petName={pet.nickname} img={pet.image} />
                                     </Link>
                                 ))) 
                                 :
                                 searchedPets && searchedPets.length > 0 ? 
                                     (searchedPets.map((pet, index) => (
-                                        <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="w-[140px] h-[150px]">
+                                        <Link to={`/user/pets/view/${pet.PETID}`} key={pet.PETID} className="">
                                             <PetCard petName={pet.nickname} img={pet.image} />
                                         </Link>
                                     )))
@@ -167,7 +167,7 @@ function UserPetPage() {
                                     <h5> No pets found. </h5>
                         }
                         <Link to="/user/pets/register">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[100px] mt-5 fill-silver hover:fill-raisin-black">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[60px] mt-5 lg:w-[80px] lg:mt-3 xl:w-[100px] fill-silver hover:fill-raisin-black">
                                 <path d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
                             </svg>
                         </Link>

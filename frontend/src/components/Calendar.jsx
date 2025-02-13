@@ -82,7 +82,6 @@ const Calendar = ({onSelectDate}) => {
                 if(fullyBookedTimeSlot){
                     let dateConverted = convertDate(apppointment.date);
                     let d = new Date(dateConverted)
-                    console.log(d.getDate())
                     setDayFullyBooked(df => df = d.getDate())
                     setMonthFullyBooked(df => df = d.getMonth()+1)
 
@@ -90,6 +89,7 @@ const Calendar = ({onSelectDate}) => {
             })
         })
     }
+    
     const calendar = generateCalendar(currentYear, currentMonth);
 
     const monthNames = [

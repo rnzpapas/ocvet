@@ -36,7 +36,7 @@ const HEADERS = [
 function StaffPetOwners() {
     let sessionToken = sessionStorage.getItem('jwt-token');
     const [search, setSearch] = useState("");
-    const [petOwnersDetails, setPetOwnerDetails] = useState();
+    const [petOwnersDetails, setPetOwnerDetails] = useState([' ']);
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
@@ -104,13 +104,15 @@ function StaffPetOwners() {
           window.URL.revokeObjectURL(url); 
       
         })
-      }
+    }
 
     useEffect(() => {
         let petOwnerPromise = loadPetOwners();
         let searchPromise = searchPetOwners();
-        
-        search.length === 0 ? petOwnerPromise.then((po) => setPetOwnerDetails((pod) => pod = po)) : searchPromise.then((po) => setPetOwnerDetails((pod) => pod = po))
+
+        search.length === 0 ? 
+        petOwnerPromise.then((po) => setPetOwnerDetails(po)) : 
+        searchPromise.then((po) => setPetOwnerDetails(po))
 
     },[search]);
 
@@ -136,7 +138,7 @@ function StaffPetOwners() {
                     {/* <Button txtContent={"Search"} isActive={true} /> */}
                 </section>
                 {
-                    petOwnersDetails && (
+                    petOwnersDetails && petOwnersDetails.length > 0 &&(
                         <Table headers={HEADERS} data={petOwnersDetails}/>
                     )
                 }

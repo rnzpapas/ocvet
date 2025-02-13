@@ -110,10 +110,10 @@ function UserRegister() {
     }
 
     return (
-        <section className="flex">
-            <SideLogo style={"h-screen w-6/12"}/>
-            <section className="flex flex-col gap-5 items-center justify-center w-6/12">
-                <h5 className="font-instrument-sans text-headline-lrg font-bold"> Sign Up</h5>
+        <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-fit py-5 lg:h-auto">
+            <SideLogo style={"lg:h-screen lg:w-6/12"}/>
+            <section className="flex flex-col gap-5 items-center justify-center lg:w-6/12">
+                <h5 className="font-instrument-sans text-headline-md xl:text-headline-lrg font-bold"> Sign Up</h5>
                 {/* Stepper */}
                 <section className="flex items-center justify-center gap-2">
                     {/* step 1 */}
@@ -146,26 +146,26 @@ function UserRegister() {
                     <p className={`${registerFormPage === 2 && ('font-semibold')} text-content-sm text-nowrap`}>Account Details</p>
                     </section>
                 </section>
-                <form className="flex flex-col gap-2 w-[60%]" onSubmit={(e) => e.preventDefault()}>
+                <form className="flex flex-col gap-3 pb-5 w-[75%] xl:w-[60%] relative" onSubmit={(e) => e.preventDefault()}>
                     <section className={`${registerFormPage === 1 ? 'flex flex-col gap-3 ' : 'hidden'}`}>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="firstname" className="font-instrument-sans text-headline-sm font-semibold"> Firstname </label>
+                            <label htmlFor="firstname" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Firstname </label>
                             <InputField type="text" placeholder={"E.g. John Mark"} name="email" onChangeFunc={onChangeFirstname}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="middlename" className="font-instrument-sans text-headline-sm font-semibold"> Middle Name </label>
+                            <label htmlFor="middlename" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Middle Name </label>
                             <InputField type="text" placeholder={"E.g. Capas"} name="middlename" onChangeFunc={onChangeMiddlename}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="surname" className="font-instrument-sans text-headline-sm font-semibold"> Surname </label>
+                            <label htmlFor="surname" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Surname </label>
                             <InputField type="text" placeholder={"E.g. Policarpio"} name="surname" onChangeFunc={onChangeSurname}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="address" className="font-instrument-sans text-headline-sm font-semibold"> Full Address </label>
+                            <label htmlFor="address" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Full Address </label>
                             <InputField type="text" placeholder={"E.g. B19 L91 Tandang Sora St., Brgy. Alegro, Taguig City, PH"} name="address" onChangeFunc={onChangeAddress}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="gender" className="font-instrument-sans text-headline-sm font-semibold"> Gender </label>
+                            <label htmlFor="gender" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Gender </label>
                             <select name="gender" value={gender} id="" className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato" onChange={onChangeGender}>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
@@ -174,15 +174,15 @@ function UserRegister() {
                     </section>
                     <section className={`${registerFormPage === 2 ? 'flex flex-col gap-3 ' : 'hidden'}`}>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="email" className="font-instrument-sans text-headline-sm font-semibold"> E-Mail </label>
+                            <label htmlFor="email" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> E-Mail </label>
                             <InputField type="email" placeholder={"youremail@gmail.com"} name="email" onChangeFunc={onChangeEmail}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="username" className="font-instrument-sans text-headline-sm font-semibold"> Username </label>
+                            <label htmlFor="username" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Username </label>
                             <InputField type="text" maxlength={12} placeholder={"yourusername123"} name="username" onChangeFunc={onChangeUsername}/>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="password" className="font-instrument-sans text-headline-sm font-semibold"> Password </label>
+                            <label htmlFor="password" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Password </label>
                             <section className="relative">
                                 <InputField type={`${isHiddenPassword ? 'password' : 'text'}`} placeholder={"E.g. y0uRp4ssW0rd@!"} name="password" style={"w-[100%]"} onChangeFunc={onChangePassword}/>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" onClick={togglePasswordField} className={`w-[28px] fill-silver cursor-pointer hover:fill-raisin-black-light absolute right-4 top-2.5 ${isHiddenPassword ? '' : 'hidden'}`}>
@@ -194,7 +194,7 @@ function UserRegister() {
                             </section>
                         </section>
                         <section className="flex flex-col gap-1">
-                            <label htmlFor="cpassword" className="font-instrument-sans text-headline-sm font-semibold"> Confirm Password </label>
+                            <label htmlFor="cpassword" className="font-instrument-sans text-headline-sm xl:text-headline-md font-semibold"> Confirm Password </label>
                             <section className="relative">
                                 <InputField type={`${isHiddenPassword ? 'password' : 'text'}`} placeholder={"E.g. y0uRp4ssW0rd@!"} name="cpassword" style={"w-[100%]"} onChangeFunc={onChangeCpassword}/>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" onClick={togglePasswordField} className={`w-[28px] fill-silver cursor-pointer hover:fill-raisin-black-light absolute right-4 top-2.5 ${isHiddenPassword ? '' : 'hidden'}`}>
@@ -207,7 +207,7 @@ function UserRegister() {
                         </section>
                     </section>
                     <Link to={"/user/login"}>
-                        <h5 className="flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer">Already have an account?</h5>
+                        <h5 className="flex justify-end text-azure font-lato font-semibold hover:underline cursor-pointer text-content-sm xl:text-content-md">Already have an account?</h5>
                     </Link>
                     <section className="flex justify-between">
                         <Button txtContent={"back"} style={`${registerFormPage === 2 ? 'block' : 'hidden'}`} onClickFunc={prevRegisterPage}/>

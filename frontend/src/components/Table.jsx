@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { convertObjectArrayToString } from "../utils/textUtils";
 
-function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5, style, 
-    resetPageFunc = undefined, nextPageFunc = undefined, prevPageFunc = undefined, goLastPageFunc = undefined
-}) {
+function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment}) {
+    const MAX_ROWS = 10;
+    const [pageData, setPageData] = useState([]);
     const [sorted, setIsSorted] = useState({keyToSort: "Client", sortMode: "asc"});
     const [isMarkedChecked, setIsMarkedChecked] = useState(false);
     const [isMarkedX, setIsMarkedX] = useState(false)
-    const [totalPages, setTotalPages] = useState(tpages);
-    const [currentPage, setCurrentPage] = useState(cpage);
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const sortCol = (key) => {
         if(sorted.sortMode === "desc"){
@@ -16,18 +17,6 @@ function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5
         if(sorted.sortMode === "asc"){
             setIsSorted({keyToSort: key, sortMode: "desc"})
         }
-    }
-
-    const toggleCheck = (el) => {
-        el.target.classList.add("fill-raisin-black");
-        // isMarkedChecked ? setIsMarkedChecked(false) : setIsMarkedChecked(true)
-        // isMarkedChecked ? setIsMarkedX(true) : setIsMarkedX(false)
-    }
-
-    const toggleX = (el) => {
-        el.target.classList.add("fill-raisin-black");
-        // isMarkedX ? setIsMarkedX(false) : setIsMarkedX(true)
-        // isMarkedX ? setIsMarkedChecked(true) : setIsMarkedChecked(false)
     }
 
     const goToNextPage = () => {
@@ -50,15 +39,22 @@ function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5
         goLastPageFunc && (goLastPageFunc())
     };
 
+    useEffect(() => {
+        if(data) {
+            setTotalPages(Math.ceil(data.length / MAX_ROWS));
+            let dataSliced = data.slice(((currentPage - 1) * MAX_ROWS), ((currentPage - 1) * MAX_ROWS) + MAX_ROWS - 1)
+            setPageData((prevState) => prevState = dataSliced);
+        }
+    },[currentPage])
 
     return (
-        <section className={`flex flex-col ${tableW} ${tableH} ${style}`}>
+        <section className={`flex flex-col max-h-[350px] ${tableW} ${tableH} ${style}`}>
             <section className="overflow-y-auto overflow-x-auto">
-                <table className="w-full"> 
-                    <thead className="bg-raisin-black">
+                <table className="w-full border-collapse"> 
+                    <thead className="bg-raisin-black sticky top-0 z-20">
                         <tr>
                             {headers.map((header, index) => (
-                                <th key={`${index+1}-${header.key}`} className={`text-white-smoke font-lato text-content-md py-2 px-14 ${header.isSortable ? 'cursor-pointer' : ''}`} onClick={() => sortCol(header.key)}> 
+                                <th key={`${index+1}-${header.key}`} className={` text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 ${header.isSortable ? 'cursor-pointer' : ''}`} onClick={() => sortCol(header.key)}> 
                                     <section className="flex gap-2 items-center justify-center relative">
                                         <p>{header.key} </p>
                                         {header.isSortable ? 
@@ -78,49 +74,66 @@ function Table({headers, data, tableW, tableH, tpages = 1, cpage = 1, tlimit = 5
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="text-raisin-black">
-                        {data.length > 0 &&  
-                            (data.map((info, index) => (
-                                <tr key={index} className="border-b-2 border-silver group hover:bg-silver">
-                                    {Object.keys(info).map((key, index) => (
-                                        key !== "status" ?
-                                            <td className="py-2 px-14 items-center" key={`${key}-${index}`}> {info[key]} </td>
-                                        : info.status.withCheckboxes ? 
-                                            <td key={`${key}-${index}`} >
-                                                <section className="flex gap-2 items-center justify-center">
-                                                    <section className={`border-2 rounded-[2px] px-1 py-1 border-silver cursor-pointer fill-silver group-hover:border-raisin-black`} onClick={(el) => toggleCheck(el)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[15px] h-[15px] group-hover:fill-raisin-black">
-                                                            <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-                                                        </svg>
-                                                    </section>
-                                                    <section className={`border-2 rounded-[2px] px-1 py-1 border-silver cursor-pointer fill-silver group-hover:border-raisin-black`} onClick={(el) => toggleX(el)}>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="w-[15px] h-[15px] group-hover:fill-raisin-black">
-                                                            <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z"/>
-                                                        </svg>
-                                                    </section>
-                                                </section>
-                                            </td> 
-                                        : info.status.isFinished ?
-                                            <td className="py-2 px-14" key={`${key}-${index}`}> 
-                                                <section className=" bg-lime-green  flex items-center justify-center px-2 py-1 rounded-sm">
-                                                    <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Done </p>
-                                                </section>
-                                            </td>
-                                        : 
-                                            <td className="py-2 px-14" key={`${key}-${index}`}> 
-                                                <section className=" bg-fire-engine-red flex items-center justify-center px-2 py-1 rounded-sm">
-                                                    <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Missed </p>
-                                                </section>
-                                            </td>
-                                    )) }
-                                </tr>
+                    <tbody className="text-raisin-black z-10">
+                        {pageData.length > 0 ? 
+                            (pageData.map((info, index) => (
+                                (
+                                    index < MAX_ROWS && (
+                                        <tr key={index} className="border-b-2 border-silver hover:bg-silver">
+                                            {Object.keys(info).map((key, index) => (
+                                                key !== "status" && typeof info[key] == "object" ?
+                                                    <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
+                                                        {convertObjectArrayToString(info[key])} 
+                                                    </td>
+                                                : key !== "status" ?
+                                                    <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> {info[key]} </td>
+                                                :info.status.status == 'Scheduled' ? 
+                                                    <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
+                                                        <section className=" bg-raisin-black  flex items-center justify-center px-2 py-1 rounded-sm">
+                                                            <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Scheduled </p>
+                                                        </section>
+                                                    </td>
+                                                : info.status.withCheckboxes ? 
+                                                    <td key={`${key}-${index}`} >
+                                                        <section className="flex gap-2 items-center justify-center py-3">
+                                                            <section 
+                                                            className={`border-2 px-3 py-1 border-raisin-black cursor-pointer rounded-2xl group hover:border-fire-engine-red`} 
+                                                            onClick={(el) => rejectAppointment(info.number)}>
+                                                                <h5 className="font-lato text-content-xtrasm lg:text-content-md text-raisin-black group-hover:text-fire-engine-red">Reject</h5>
+                                                            </section>
+                                                            <section className={`border-2 px-3 py-1 border-azure cursor-pointer rounded-2xl group
+                                                         hover:bg-azure`} 
+                                                            onClick={(el) => acceptAppointment(info.number)}>
+                                                                <h5 className="font-lato text-content-xtrasm lg:text-content-md group-hover:text-white-smoke text-raisin-black">Accept</h5>
+
+                                                            </section>
+                                                        </section>
+                                                    </td> 
+                                                : info.status.isFinished ?
+                                                    <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
+                                                        <section className=" bg-lime-green  flex items-center justify-center px-2 py-1 rounded-sm">
+                                                            <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Done </p>
+                                                        </section>
+                                                    </td>
+                                                : 
+                                                    <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
+                                                        <section className=" bg-fire-engine-red flex items-center justify-center px-2 py-1 rounded-sm">
+                                                            <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Missed </p>
+                                                        </section>
+                                                    </td>
+                                            )) }
+                                        </tr>
+                                    )
+                                )
                             )))
+                            :
+                            <tr></tr>
                         }
                     </tbody>
                 </table>
             </section>
             {
-                data.length > 0 && 
+                data.length > 1 && 
                 (
                     <section className={`relative flex items-center justify-center mt-3 ${tableW}`}>
                         <section className="flex gap-2">

@@ -242,8 +242,8 @@ function UserInformation() {
     <div className={`${!isAccModalNotOpen || !isPersonalModalNotOpen && ("overflow-hidden")}`}>
       <UserNav />
         {userData && (
-          <section className="h-dvh gap-10 flex">
-            <section className="flex flex-col gap-5 px-5 py-5 w-[30%]">
+          <section className="py-5 lg:py-0 lg:h-dvh gap-10 flex flex-col-reverse lg:flex-row">
+            <section className="flex flex-col gap-5 px-5 py-5 lg:w-[30%]">
               <section>
                 <AccountInfo style={""} 
                   eMail={userData.email}
@@ -263,7 +263,7 @@ function UserInformation() {
                   onSubmitFunc={updateAccInfo}
                   clickableLink={{"txtContent" : "Change Password?", "isActive" : true, "isDisplayed": true, "onClickFunc": onOpenChangePwEdit}}
                 />
-                <h5 className="text-azure cursor-pointer hover:underline w-fit" onClick={logout}>Logout</h5>
+                <h5 className="text-azure cursor-pointer hover:underline w-fit text-content-sm" onClick={logout}>Logout</h5>
                 <Modal 
                   headline={"Update Password"}
                   isActive={isChangePwModalNotOpen}
@@ -298,8 +298,8 @@ function UserInformation() {
                 />
               </section>
             </section>
-            <section className="flex justify-evenly px-5 py-5 w-[70%]">
-              <section className="w-[300px] h-[150px] px-3 py-2 flex flex-col items-center justify-center shadow-[3px_5px_15px_rgba(0,0,0,0.25)] bg-raisin-black rounded-lg relative">
+            <section className="flex justify-evenly gap-2 px-5 lg:py-5 lg:w-[70%]">
+              <section className="w-[180px] h-[130px] xl:w-[300px] px-3 py-2 flex flex-col items-center justify-center shadow-[3px_5px_15px_rgba(0,0,0,0.25)] bg-raisin-black rounded-lg relative">
                 <h5 className="font-lato font-semibold text-headline-sm tracking-wide text-white-smoke absolute top-3 left-5">Registered Pets</h5>
                 <section className="">
                   <h3 className="font-lato text-headline-xtralrg text-white-smoke">{petCount}</h3>
@@ -315,7 +315,7 @@ function UserInformation() {
                       optionTooltipLabel={'pets'}
                       optionLegendPos="top"
                       chartLabel={'Account Summary'} 
-                      chartW={'w-[300px]'}
+                      chartW={'w-[180px] xl:w-[300px]'}
                       chartH={'h-fit'}
                     />
                   )

@@ -5,7 +5,7 @@ function PetCard({petName, img = "", style, onClickFunc, id}) {
 
   useEffect(() => {setImgSrc(src => src = img)},[img])
   return (
-    <section className="w-[140px] h-[150px] cursor-pointer relative" onClick={onClickFunc} id={id}>
+    <section className="w-[80px] h-[100px] xl:w-[140px] xl:h-[150px] cursor-pointer relative" onClick={onClickFunc} id={id}>
         <section className=" h-[80%]">
           <img src={`/pet/${imgSrc}`} alt="as" className="h-full w-full object-cover rounded-tl-lg rounded-tr-lg" />
         </section>

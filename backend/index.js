@@ -39,10 +39,11 @@ app.use("/api", announcementsRouter);
 
 app.get("/", async(req,res) => {
     console.log("it is working")
+    res.send("Backend is working!");
 });
 
 app.use(errorHandling);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port: ${PORT}`);
 });

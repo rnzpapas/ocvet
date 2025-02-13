@@ -27,6 +27,11 @@ const headers = [
         "isSorted": false
     },
     {
+        "key": "Vaccine",
+        "isSortable": true,
+        "isSorted": false
+    },
+    {
         "key": "Date",
         "isSortable": true,
         "isSorted": false
@@ -113,13 +118,15 @@ function UserPetGroupPage() {
             appDatas.map((appData) => {
                 let data = {
                     "number" : appData.ASID,
-                    "service": appData.service,
+                    "service": appData.services,
                     "diagnosis": appData.diagnosis,
+                    "vaccine": appData.vaccine_name || '', 
                     "date_of_transaction": convertDate(appData.date),
-                    "time_of_transaction": appData.time,
+                    "time_of_transaction": convertTime(appData.time),
                     "status": {
-                            "isFinished": appData.status === "Done" ? true : false,
-                        }
+                        "status": appData.status,
+                        "isFinished": appData.status !== 'Scheduled' && (appData.status === 'Done' ? true : false)
+                    }
                 }
                 app.push(data)
             })
@@ -138,10 +145,13 @@ function UserPetGroupPage() {
 
     const togglePetListDp = () => {
         setIsPetListDpOpen(!isPetListDpOpen);
+        setIsAppointmentsDpOpen(false);
+
     }
 
     const toggleAppointmentDp = () => {
         setIsAppointmentsDpOpen(!isAppointmentsDpOpen);
+        setIsPetListDpOpen(false);
     }
 
     const toggleAddPetModal = () => {
@@ -252,24 +262,24 @@ function UserPetGroupPage() {
             {
                 petGroup && (
                     <> 
-                        <section className="w-full h-[15%] border-b-2 border-silver relative">
-                            <h5 className="font-instrument-sans text-headline-lrg font-bold">{petGroup.GROUP_NICKNAME}</h5>
+                        <section className="w-full xxl:h-[15%] border-b-2 border-silver relative">
+                            <h5 className="font-instrument-sans xl:text-headline-md xxl:text-headline-lrg font-bold">{petGroup.GROUP_NICKNAME}</h5>
                             <section className="flex gap-2">
-                                <p className="font-lato text-silver font-semibold text-content-lrg">{animalType}</p>
+                                <p className="font-lato text-silver font-semibold xxl:text-content-lrg">{animalType}</p>
                                 {
                                     petGroup.POPULATION !== '0' && (
                                         <>
-                                            <p className="font-lato text-silver font-semibold text-content-lrg">  /  </p>
-                                            <p className="font-lato text-silver font-semibold text-content-lrg">{petGroup.POPULATION}</p>
+                                            <p className="font-lato text-silver font-semibold xxl:text-content-lrg">  /  </p>
+                                            <p className="font-lato text-silver font-semibold xxl:text-content-lrg">{petGroup.POPULATION}</p>
                                         </>
                                     )
                                 }
                             </section>
-                            <section className="absolute top-4 right-0 flex gap-8">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[24px] fill-chefchaouen-blue cursor-pointer" onClick={toggleEditPetGroupModal}>
+                            <section className="absolute top-4 right-0 flex gap-2 lg:gap-8">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[16px] h-[16px] lg:w-[24px] lg:h-[24px] fill-chefchaouen-blue cursor-pointer" onClick={toggleEditPetGroupModal}>
                                     <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
                                 </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[22px] fill-fire-engine-red cursor-pointer" onClick={removePetGroup}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] lg:w-[24px] lg:h-[24px] fill-fire-engine-red cursor-pointer" onClick={removePetGroup}>
                                     <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/>
                                 </svg>
                             </section>
@@ -284,18 +294,18 @@ function UserPetGroupPage() {
                 pets && petGroup.POPULATION === '0' &&(
                     <section> 
                         <section className="mt-8 px-4 py-4 bg-raisin-black hover:bg-raisin-black-light cursor-pointer flex items-center justify-between gap-14 h-[48px] rounded-sm" onClick={togglePetListDp}>
-                            <h5 className="font-instrument-sans font-semibold text-headline-md text-white-smoke">Pet list</h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[24px] fill-white-smoke ${isPetListDpOpen ? 'hidden' : 'block' }`}>
+                            <h5 className="font-instrument-sans font-semibold lg:text-headline-md text-white-smoke">Pet list</h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[16px] lg:w-[24px] fill-white-smoke ${isPetListDpOpen ? 'hidden' : 'block' }`}>
                                 <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
                             </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[24px] fill-white-smoke ${isPetListDpOpen ? 'block' : 'hidden' }`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[16px] lg:w-[24px] fill-white-smoke ${isPetListDpOpen ? 'block' : 'hidden' }`}>
                                 <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
                             </svg>
                         </section>
                         <section className={`${isPetListDpOpen ? 'max-h-fit flex gap-4 px-2 py-5 shadow-md' : 'h-0'} transition ease-in-out duration-500 `}>
                             {
                                 pets.map(pet => (
-                                    <section className={`${isPetListDpOpen ? 'w-[150px] h-[160px]' : 'h-0'} transition ease-in-out duration-500 cursor-pointer relative group`} key={pet.PETID}>
+                                    <section className={`${isPetListDpOpen ? 'w-[80px] h-[100px] lg:w-[150px] lg:h-[160px]' : 'h-0'} transition ease-in-out duration-500 cursor-pointer relative group`} key={pet.PETID}>
                                         <section className={`${isPetListDpOpen ? 'w-full h-full absolute items-center justify-center bg-raisin-black/25 hidden group-hover:flex' : 'h-0'}`}>
                                             <h5 className={`${isPetListDpOpen ? 'font-lato font-semibold text-white-smoke mr-4 flex gap-2 hover:underline' : 'hidden'}`} onClick={() => removePetToGroup(pet.PETID)}>
                                                 Remove Pet
@@ -313,7 +323,7 @@ function UserPetGroupPage() {
                                     </section>
                                 ))
                             }
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${isPetListDpOpen ? 'w-[100px] mt-5 fill-silver hover:fill-raisin-black cursor-pointer' : 'hidden'}`} onClick={toggleAddPetModal}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`${isPetListDpOpen ? 'w-[60px] mt-2 lg:w-[80px] lg:mt-3 xl:w-[100px] fill-silver hover:fill-raisin-black cursor-pointer' : 'hidden'}`} onClick={toggleAddPetModal}>
                                 <path d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
                             </svg>
                             <section className={`${isAddPetModal ? 'fixed top-0 left-0 w-full h-full overflow-hidden bg-raisin-black/25 flex items-center justify-center z-10': 'hidden'}`}> 
@@ -377,11 +387,11 @@ function UserPetGroupPage() {
                 appointments && (
                     <section> 
                         <section className="mt-8 px-4 py-4 bg-raisin-black hover:bg-raisin-black-light cursor-pointer flex items-center justify-between gap-14 h-[48px] rounded-sm" onClick={toggleAppointmentDp}>
-                            <h5 className="font-instrument-sans font-semibold text-headline-md text-white-smoke">Appointments</h5>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[24px] fill-white-smoke ${isAppointmentsDpOpen ? 'hidden' : 'block' }`}>
+                            <h5 className="font-instrument-sans font-semibold lg:text-headline-md text-white-smoke">Clinic Records</h5>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[16px] lg:w-[24px] fill-white-smoke ${isAppointmentsDpOpen ? 'hidden' : 'block' }`}>
                                 <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
                             </svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[24px] fill-white-smoke ${isAppointmentsDpOpen ? 'block' : 'hidden' }`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className={`w-[16px] lg:w-[24px] fill-white-smoke ${isAppointmentsDpOpen ? 'block' : 'hidden' }`}>
                                 <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
                             </svg>
                         </section>

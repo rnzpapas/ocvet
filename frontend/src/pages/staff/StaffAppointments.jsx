@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import StaffNav from '../../components/navbars/StaffNav'
 import Table from '../../components/Table';
 import axios from 'axios';
-import { convertDate, convertTime } from '../../utils/datetimeUtils'
+import { convertDate, convertTime } from '../../utils/datetimeUtils';
+import Modal from '../../components/Modal';
 
 const HEADERS = [
     {
@@ -34,75 +35,30 @@ const HEADERS = [
 function StaffAppointments() {
   let sessionToken = sessionStorage.getItem('jwt-token')
   const [tab, setTab] = useState(1);
-  const [UAData, setUADATA] = useState([
-      {
-        "number" : "1",
-        "client_name": "John Doe",
-        "date_of_transaction": "12/02/2024",
-        "time_of_transaction": "03:13 PM",
-        "status": {
-          "isFinished": false,
-          "withCheckboxes" : true,
-        }
-      },
-      {
-        "number" : "2",
-        "client_name": "Jane Doe",
-        "date_of_transaction": "12/08/2024",
-        "time_of_transaction": "05:13 PM",
-        "status": {
-          "isFinished": true,
-          "withCheckboxes" : true,
-        }
-      },
-  ]);
-  const [RAData, setRAData] = useState([
-      {
-        "number" : "1",
-        "client_name": "John Doe",
-        "date_of_transaction": "12/02/2024",
-        "time_of_transaction": "03:13 PM",
-        "status": {
-          "isFinished": false,
-          "withCheckboxes" : false,
-        }
-      },
-      {
-        "number" : "2",
-        "client_name": "Jane Doe",
-        "date_of_transaction": "12/08/2024",
-        "time_of_transaction": "05:13 PM",
-        "status": {
-          "isFinished": true,
-          "withCheckboxes" : false,
-        }
-      },
-  ]);
-  const [AHData, setAHData] = useState([
-      {
-        "number" : "1",
-        "client_name": "John Doe",
-        "date_of_transaction": "12/02/2024",
-        "time_of_transaction": "03:13 PM",
-        "status": {
-          "isFinished": false,
-          "withCheckboxes" : false,
-        }
-      },
-      {
-        "number" : "2",
-        "client_name": "Jane Doe",
-        "date_of_transaction": "12/08/2024",
-        "time_of_transaction": "05:13 PM",
-        "status": {
-          "isFinished": true,
-          "withCheckboxes" : false,
-        }
-      },
-  ]);
+
+  const [UAData, setUADATA] = useState([]);
+  const [RAData, setRAData] = useState([]);
+  const [AHData, setAHData] = useState([]);
+  const [appointmentSelected,setAppointmentSelected] = useState({asid: '', status: ''});
+  const [isAppModalOpened, setIsAppModalOpened] = useState(false);
+  const [vaccineObj, setVaccineObj] = useState();
+  const [vaccineNames, setVaccineNames] = useState([]);
+
 
   const changeTab = (tabNum) => {
     setTab(prev => prev = tabNum)
+  }
+
+  const loadVaccines = async () => {
+    let v;
+    let vaccine_names = [];
+    await axios.get('http://localhost:5001/api/vaccine')
+    .then(res => {
+      v = res.data.data
+      v.map(vaccine => vaccine_names.push(vaccine.vaccine_name))
+    })
+    .catch(err => console.error(err))
+    return [v, vaccine_names];
   }
 
   const loadAppointmentHistory = async () => {
@@ -206,18 +162,55 @@ function StaffAppointments() {
     })
   }
 
+  const openAcceptAppointmentModal = (asid) => {
+    setAppointmentSelected({asid: asid, status: ''})
+
+    setIsAppModalOpened(true)
+  }
+
+  const closeAppointmentModal = () => {
+    setIsAppModalOpened(false)
+  }
+
+  const rejectAppointment = (asid) => {
+    setAppointmentSelected({asid: asid, status: 'Rejected'})
+    onUpdateAppointmentStatus();
+  }
+
+  const onUpdateAppointmentStatus = async () => {
+    const formData = new FormData();
+    formData.append('status', appointmentSelected.status);
+
+    await axios.put(`http://localhost:5001/api/appointment/status?asid=${appointmentSelected.asid}`, formData, {headers: {'Content-Type': 'application/json'}})
+    .then(() => window.location.reload())
+  }
 
   useEffect(() => {
     let ahPromise = loadAppointmentHistory();
     let raPromise = loadRecentAppointment();
     let uaPromise = loadUpcomingAppointment();
-
     ahPromise.then((ahist) => setAHData(ahist))
     raPromise.then((rce) => setRAData(rce))
     uaPromise.then((up) => setUADATA(up))
-
-  })
+    
+  },[])
   
+  useEffect(() => {
+    const fetchVaccines = async () => {
+      try {
+        const v = await loadVaccines();
+        setVaccineNames(v[1]);
+        setVaccineObj(v[0]);
+      } catch (error) {
+        console.error("Error loading vaccines:", error);
+      }
+    };
+    fetchVaccines()
+  },[])
+
+  useEffect(() => {
+    console.log(vaccineNames)
+  },[vaccineNames])
   return (
     <section className="flex w-full overflow-hidden">
         <StaffNav />
@@ -236,13 +229,39 @@ function StaffAppointments() {
           </section>
           <section className="flex flex-wrap justify-between h-full">
             <section className={`${tab === 1 ? 'w-full' : 'hidden'}`}>
-                <Table headers={HEADERS} data={UAData} tableW={"w-[100%]"} tableH={"ma"}/>
+                {
+                  UAData.length > 0 && (
+                    <Table headers={HEADERS} data={UAData} tableW={"w-[100%]"} tableH={"h-[400px]"} 
+                      acceptAppointment={openAcceptAppointmentModal}
+                      rejectAppointment={rejectAppointment }
+                      />
+                  )
+                }
+                <Modal headline={''} isActive={isAppModalOpened} onClose={closeAppointmentModal} fields={[
+                  {
+                    "type": 'textarea',
+                    "headers": 'Remarks'
+                  },
+                  {
+                    "type": 'select',
+                    "headers": 'Vaccine (if any)',
+                    "options": vaccineNames.length > 0 ? vaccineNames : ['No vaccine available.']
+                  }
+                ]} button={{txtContent: 'Complete Appointment', isDisplayed: true}}/>
             </section>
             <section className={`${tab === 2 ? 'w-full' : 'hidden'}`}>
-                <Table headers={HEADERS} data={RAData} tableW={"w-[100%]"}/>
+              {
+                RAData.length > 0 && (
+                  <Table headers={HEADERS} data={RAData} tableW={"w-[100%]"}/>
+                )
+              }
             </section>
             <section className={`${tab === 3 ? 'w-full' : 'hidden'}`}>
-                <Table headers={HEADERS} data={AHData} tableW={"w-[100%]"} tableH={"ma"}/>
+              {
+                AHData.length > 0 && (
+                  <Table headers={HEADERS} data={AHData} tableW={"w-[100%]"} tableH={"h-[400px]"}/>
+                )
+              }
             </section>
           </section>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={`${tab === 1 ? 'w-[40px] fill-silver absolute bottom-8 right-4 cursor-pointer hover:fill-raisin-black' : 'hidden'}`} onClick={exportUpcomingAppointment}>

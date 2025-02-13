@@ -97,9 +97,9 @@ function UserPetRegistration() {
         <>
             <UserNav />
             <section className="h-dvh flex items-center justify-center">
-                <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[500px] px-5 py-5 rounded-2xl">
-                    <h5 className="mt-10 font-instrument-sans font-bold text-headline-md">Pet Registration</h5>
-                    <form action="" className="w-[400px] flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+                <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl">
+                    <h5 className="xl:mt-10 font-instrument-sans font-bold lg:text-headline-md">Pet Registration</h5>
+                    <form action="" className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8" onSubmit={(e) => e.preventDefault()}>
                         <section className="flex flex-col gap-3">
                             <label htmlFor="photo" className="font-instrument-sans text-headline-sm font-semibold">Pet Photo</label>
                             <section className="flex justify-center">

@@ -20,19 +20,27 @@ export const deleteAppointmentScheduleService = async (id) => {
 
 export const getAppointmentsScheduleService = async (id) => {
     const res = await pool.query(`
-        SELECT "ASID", a."PETID", a."PGID", service, diagnosis, status,
+        SELECT a."ASID", a."PETID", a."PGID", array_agg(DISTINCT service) as services, 
+        array_agg(DISTINCT diagnosis) as diagnosis, vs.vaccine_name, status,
         ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
         a.date, a.time
         FROM otcv_appointment_schedule a
-        INNER JOIN otcv_service s
-        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
-        INNER JOIN otcv_diagnosis d
-        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
-        INNER JOIN otcv_pet_group pg
+        LEFT JOIN otcv_service s
+        ON s."SERVICEID" = ANY(a."SERVICEIDS")
+        LEFT JOIN otcv_diagnosis d
+        ON d."DIAGID" = ANY(a."DIAGNOSIS")
+        LEFT JOIN otcv_pets pt
+        ON pt."PETID" = a."PETID"
+        LEFT JOIN otcv_pet_group pg
         ON pg."PGID" = a."PGID"
-        INNER JOIN otcv_user_details ud
+        LEFT JOIN otcv_user_details ud
         ON ud."UID" = pg."PET_OWNER"
+        LEFT JOIN otcv_vaccinations v
+        ON pt."PETID" = v."PETID" AND pg."PGID" = v."PGID"
+        LEFT JOIN otcv_vaccines vs
+        ON v."VACCID" = vs."VACCID"
         WHERE a."PETID" = $1 OR a."PGID" = $1
+        GROUP BY a."ASID", a."PETID", a."PGID", status, fullname, vs.vaccine_name, a.date, a.time
         ORDER BY date DESC;
         `,
         [id]
@@ -101,6 +109,68 @@ export const getAppointmentsScheduleByUserService = async (id) => {
     return res.rows;
 }
 
+export const getAppointmentsScheduleCountByUserService = async (id) => {
+    const res = await pool.query(`
+        SELECT 	a."ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis, status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pet_group pg
+        ON pg."PGID" = a."PGID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pg."PET_OWNER"
+        WHERE ud."UID" = 'UID100000' 
+        AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID" ,  pg."GROUP_NICKNAME", 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
+        UNION
+        SELECT a."ASID", a."PETID", a."PGID", pt.nickname as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis,
+        status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pets pt
+        ON pt."PETID" = pt."PETID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pt."pet_owner"
+        WHERE ud."UID" = 'UID100000'
+        AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID", pt.nickname, 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
+        ORDER BY date ASC
+        `,
+        [id]
+    );
+    return res.rows;
+}
+
+
 export const getAllUpcomingAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT *
@@ -109,7 +179,7 @@ export const getAllUpcomingAppointmentScheduleService = async () => {
     ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg
     ON pg."PGID" = sched."PGID"
-    WHERE date >= CURRENT_DATE
+    WHERE date >= CURRENT_DATE AND status = 'Scheduled'
     ORDER BY date ASC, time ASC;
     `);
     return res.rows;
@@ -181,6 +251,9 @@ export const getAppointmentScheduleTimeslotsPerDateService = async () => {
     return res.rows;
 }
 
+export const updateAppointmentStatusService = async (status, asid) => {
+    await pool.query(`UPDATE otcv_appointment_schedule SET status = $1 WHERE "ASID" = $2`, [status, asid])
+}
 
 export const getAppointmentStatsService = async() => {
     const todayQuery = await pool.query(`SELECT COUNT(*) AS total_today FROM public.otcv_appointment_schedule WHERE date = CURRENT_DATE;`);
@@ -196,6 +269,7 @@ export const getAppointmentSuccessStatsService = async() => {
     const successfulRes = await pool.query(missedQuery);
     return [completedRes, successfulRes];
 }
+
 export const getAppointmentScheduleByDateService = async(date) => {
     const result = await pool.query('SELECT * FROM otcv_appointment_schedule WHERE date = $1', [date]);
     return result.rows;
