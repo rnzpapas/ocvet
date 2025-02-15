@@ -65,10 +65,10 @@ export const getAllRecentAppointmentSchedule = async (req, res, next) => {
 }
 
 export const updateAppointmentStatus = async (req, res, next) => {
-    const { status } = req.body;
+    const { status, remarks } = req.body;
     const asid = req.query.asid
     try{
-        await updateAppointmentStatusService(status, asid);
+        await updateAppointmentStatusService(status, asid, remarks);
         return handleResponse(res, 200, "Status successfully updated.")
     }catch(err) {
         return next(err)

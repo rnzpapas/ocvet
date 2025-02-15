@@ -2,12 +2,15 @@ import handleResponse from '../middleware/responseHandler.js';
 import { createVaccinationsService, deleteVaccinationService, getAllVaccinationsByPetGroupService, getAllVaccinationsByPetService, getAllVaccinationsService, getRecentVaccinationsByOwnerService } from '../models/vaccinationsModel.js'
 
 export const createVaccinations = async (req, res, next) => {
-    const { vaccid, petid, pgid } = req.body;
+    let { vaccid, petid, pgid, asid } = req.body;
+    petid === 'null' && (petid = null);
+    pgid === 'null' && (pgid = null);
+
     const today = new Date();
     const date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;  
     const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
     try{
-        await createVaccinationsService(vaccid, petid, pgid, date, time);
+        await createVaccinationsService(vaccid, petid, pgid, asid, date, time);
         return handleResponse(res, 201, "Vaccination successfully created.");
     }catch(err){
         return next(err);

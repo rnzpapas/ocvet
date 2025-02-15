@@ -36,7 +36,7 @@ const HEADERS = [
 function StaffPetOwners() {
     let sessionToken = sessionStorage.getItem('jwt-token');
     const [search, setSearch] = useState("");
-    const [petOwnersDetails, setPetOwnerDetails] = useState([' ']);
+    const [petOwnersDetails, setPetOwnerDetails] = useState();
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
@@ -113,7 +113,6 @@ function StaffPetOwners() {
         search.length === 0 ? 
         petOwnerPromise.then((po) => setPetOwnerDetails(po)) : 
         searchPromise.then((po) => setPetOwnerDetails(po))
-
     },[search]);
 
     return (

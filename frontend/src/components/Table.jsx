@@ -48,7 +48,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
     },[currentPage])
 
     return (
-        <section className={`flex flex-col max-h-[350px] ${tableW} ${tableH} ${style}`}>
+        <section className={`flex flex-col max-h-fit ${tableW} ${tableH} ${style}`}>
             <section className="overflow-y-auto overflow-x-auto">
                 <table className="w-full border-collapse"> 
                     <thead className="bg-raisin-black sticky top-0 z-20">
@@ -86,7 +86,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                         {convertObjectArrayToString(info[key])} 
                                                     </td>
                                                 : key !== "status" ?
-                                                    <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> {info[key]} </td>
+                                                    <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap" key={`${key}-${index}`}> {info[key]} </td>
                                                 :info.status.status == 'Scheduled' ? 
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
                                                         <section className=" bg-raisin-black  flex items-center justify-center px-2 py-1 rounded-sm">

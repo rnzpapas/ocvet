@@ -6,13 +6,13 @@ const generateLatestVaccId = async () => {
     return r.rows;
 }
 
-export const createVaccinationsService = async (vaccid, petid, pgid, date, time) => {
+export const createVaccinationsService = async (vaccid, petid, pgid, asid, date, time) => {
     let new_vacc_id = "";
     const latest_vacc_id = await generateLatestVaccId();
 
     (latest_vacc_id).length > 0 ? new_vacc_id = generateNewId(latest_vacc_id, "PVACCID") : new_vacc_id = generateInitialId("PVACCID");
-    await pool.query('INSERT INTO otcv_vaccinations ("PVACCID", "VACCID", "PETID", "PGID", "DATE", "TIME") VALUES ($1, $2, $3, $4, $5, $6)',
-        [new_vacc_id, vaccid, petid, pgid, date, time]
+    await pool.query('INSERT INTO otcv_vaccinations ("PVACCID", "VACCID", "PETID", "PGID", "DATE", "TIME", "ASID") VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [new_vacc_id, vaccid, petid, pgid, date, time, asid]
     )
 }
 
@@ -42,6 +42,7 @@ export const getRecentVaccinationsByOwnerService = async (uid) => {
         INNER JOIN otcv_pets p ON vcs."PETID" = p."PETID"
         INNER JOIN otcv_user_details ud ON p.pet_owner = ud."UID" 
         WHERE p.pet_owner = $1
+		GROUP BY p.image, p.nickname, ud.firstname, ud.middlename, ud.surname,vcs."DATE"
         ORDER BY vcs."DATE" DESC LIMIT 5`, [uid]);
     return q.rows;
 }

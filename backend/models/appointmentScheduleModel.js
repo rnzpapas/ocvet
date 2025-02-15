@@ -36,7 +36,8 @@ export const getAppointmentsScheduleService = async (id) => {
         LEFT JOIN otcv_user_details ud
         ON ud."UID" = pg."PET_OWNER"
         LEFT JOIN otcv_vaccinations v
-        ON pt."PETID" = v."PETID" AND pg."PGID" = v."PGID"
+        ON (pt."PETID" = v."PETID" OR pg."PGID" = v."PGID")
+		AND v."ASID" = a."ASID" 
         LEFT JOIN otcv_vaccines vs
         ON v."VACCID" = vs."VACCID"
         WHERE a."PETID" = $1 OR a."PGID" = $1
@@ -49,6 +50,69 @@ export const getAppointmentsScheduleService = async (id) => {
 }
 
 export const getAppointmentsScheduleByUserService = async (id) => {
+    const res = await pool.query(`
+        SELECT 	a."ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis, status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pet_group pg
+        ON pg."PGID" = a."PGID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pg."PET_OWNER"
+        WHERE ud."UID" = $1 
+        AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        AND a.status = 'Scheduled'
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID" ,  pg."GROUP_NICKNAME", 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
+        UNION
+        SELECT a."ASID", a."PETID", a."PGID", pt.nickname as client, 
+        STRING_AGG(DISTINCT s.service, ', ') AS service, 
+        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis,
+        status, ud."UID",
+        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
+        a.date, a.time
+        FROM otcv_appointment_schedule a
+        INNER JOIN otcv_service s
+        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
+        INNER JOIN otcv_diagnosis d
+        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
+        INNER JOIN otcv_pets pt
+        ON pt."PETID" = pt."PETID"
+        INNER JOIN otcv_user_details ud
+        ON ud."UID" = pt."pet_owner"
+        WHERE ud."UID" = $1
+        AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
+        AND s."SERVICEID" = ANY(a."SERVICEIDS")
+        AND d."DIAGID" = ANY(a."DIAGNOSIS")
+        AND a.date >= CURRENT_DATE
+        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
+        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        AND a.status = 'Scheduled'
+        GROUP BY 
+        a."ASID", a."PETID", a."PGID", pt.nickname, 
+        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
+        a.date, a.time
+        ORDER BY date ASC
+        `,
+        [id]
+    );
+    return res.rows;
+}
+
+export const getAppointmentsScheduleCountByUserService = async (id) => {
     const res = await pool.query(`
         SELECT 	a."ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, 
         STRING_AGG(DISTINCT s.service, ', ') AS service, 
@@ -109,77 +173,22 @@ export const getAppointmentsScheduleByUserService = async (id) => {
     return res.rows;
 }
 
-export const getAppointmentsScheduleCountByUserService = async (id) => {
-    const res = await pool.query(`
-        SELECT 	a."ASID", a."PETID", a."PGID", pg."GROUP_NICKNAME" as client, 
-        STRING_AGG(DISTINCT s.service, ', ') AS service, 
-        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis, status, ud."UID",
-        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
-        a.date, a.time
-        FROM otcv_appointment_schedule a
-        INNER JOIN otcv_service s
-        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
-        INNER JOIN otcv_diagnosis d
-        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
-        INNER JOIN otcv_pet_group pg
-        ON pg."PGID" = a."PGID"
-        INNER JOIN otcv_user_details ud
-        ON ud."UID" = pg."PET_OWNER"
-        WHERE ud."UID" = 'UID100000' 
-        AND a."PGID" IS NOT NULL AND pg."PGID" = a."PGID"
-        AND s."SERVICEID" = ANY(a."SERVICEIDS")
-        AND d."DIAGID" = ANY(a."DIAGNOSIS")
-        AND a.date >= CURRENT_DATE
-        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
-        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
-        GROUP BY 
-        a."ASID", a."PETID", a."PGID" ,  pg."GROUP_NICKNAME", 
-        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
-        a.date, a.time
-        UNION
-        SELECT a."ASID", a."PETID", a."PGID", pt.nickname as client, 
-        STRING_AGG(DISTINCT s.service, ', ') AS service, 
-        STRING_AGG(DISTINCT d.diagnosis, ', ') AS diagnosis,
-        status, ud."UID",
-        ud.firstname || ' ' || ud.middlename || ' ' || ud.surname as fullname, 
-        a.date, a.time
-        FROM otcv_appointment_schedule a
-        INNER JOIN otcv_service s
-        ON a."SERVICEIDS" && (SELECT array_agg("SERVICEID") FROM otcv_service)
-        INNER JOIN otcv_diagnosis d
-        ON a."DIAGNOSIS" && (SELECT array_agg("DIAGID") FROM otcv_diagnosis)
-        INNER JOIN otcv_pets pt
-        ON pt."PETID" = pt."PETID"
-        INNER JOIN otcv_user_details ud
-        ON ud."UID" = pt."pet_owner"
-        WHERE ud."UID" = 'UID100000'
-        AND a."PETID" IS NOT NULL AND pt."PETID" = a."PETID"
-        AND s."SERVICEID" = ANY(a."SERVICEIDS")
-        AND d."DIAGID" = ANY(a."DIAGNOSIS")
-        AND a.date >= CURRENT_DATE
-        AND EXTRACT(MONTH FROM a.date) = EXTRACT(MONTH FROM CURRENT_DATE)
-        AND EXTRACT(YEAR FROM a.date) = EXTRACT(YEAR FROM CURRENT_DATE)
-        GROUP BY 
-        a."ASID", a."PETID", a."PGID", pt.nickname, 
-        a.status, ud."UID", ud.firstname, ud.middlename, ud.surname, 
-        a.date, a.time
-        ORDER BY date ASC
-        `,
-        [id]
-    );
-    return res.rows;
-}
-
 
 export const getAllUpcomingAppointmentScheduleService = async () => {
     const res = await pool.query(`
-    SELECT *
+    SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p
     ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg
     ON pg."PGID" = sched."PGID"
+    LEFT JOIN otcv_service s
+    ON s."SERVICEID" = ANY(sched."SERVICEIDS")
+    LEFT JOIN otcv_diagnosis d
+    ON d."DIAGID" = ANY(sched."DIAGNOSIS")
     WHERE date >= CURRENT_DATE AND status = 'Scheduled'
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
     ORDER BY date ASC, time ASC;
     `);
     return res.rows;
@@ -187,13 +196,20 @@ export const getAllUpcomingAppointmentScheduleService = async () => {
 
 export const getAllRecentAppointmentScheduleService = async () => {
     const res = await pool.query(`
-    SELECT *
+    SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p
     ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg
     ON pg."PGID" = sched."PGID"
-    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE - INTERVAL '1 days'
+    LEFT JOIN otcv_service s
+    ON s."SERVICEID" = ANY(sched."SERVICEIDS")
+    LEFT JOIN otcv_diagnosis d
+    ON d."DIAGID" = ANY(sched."DIAGNOSIS")
+    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE
+    OR sched.status = 'Done'
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
     ORDER BY date DESC, time ASC;
     `);
     return res.rows;
@@ -201,11 +217,17 @@ export const getAllRecentAppointmentScheduleService = async () => {
 
 export const getAllAppointmentScheduleService = async () => {
     const res = await pool.query(`
-    SELECT *
+    SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
+    LEFT JOIN otcv_service s
+    ON s."SERVICEID" = ANY(sched."SERVICEIDS")
+    LEFT JOIN otcv_diagnosis d
+    ON d."DIAGID" = ANY(sched."DIAGNOSIS")
     WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
     ORDER BY date, time ASC;
     `);
     return res.rows;
@@ -251,8 +273,8 @@ export const getAppointmentScheduleTimeslotsPerDateService = async () => {
     return res.rows;
 }
 
-export const updateAppointmentStatusService = async (status, asid) => {
-    await pool.query(`UPDATE otcv_appointment_schedule SET status = $1 WHERE "ASID" = $2`, [status, asid])
+export const updateAppointmentStatusService = async (status, asid, remarks) => {
+    await pool.query(`UPDATE otcv_appointment_schedule SET status = $1, remarks = $2 WHERE "ASID" = $3`, [status, remarks, asid])
 }
 
 export const getAppointmentStatsService = async() => {

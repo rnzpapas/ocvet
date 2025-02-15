@@ -50,6 +50,7 @@ function UserLogin() {
                     localStorage.setItem("user", JSON.stringify(userData));
                     sessionStorage.setItem('jwt-token', response.access_token);
                     navigate('/user/home');
+                    // if admin
                 })
                 .catch(err => {
                   console.error(err)

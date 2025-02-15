@@ -17,15 +17,13 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
     const [formFields, setFormFields] = useState(fields);
 
     const handleFieldChange = (index, event) => {
-      const updatedFields = [...formFields];
-      const { name, value } = event.target;
-    
-      updatedFields[index] = {
-        ...updatedFields[index],
-        txtContent: value
-      };
-  
-      setFormFields(updatedFields);
+        const updatedFields = [...formFields];
+        const { name, value } = event.target;
+        updatedFields[index] = {
+            ...updatedFields[index],
+            txtContent: value
+        };
+        setFormFields(updatedFields);
     };
   
     const togglePasswordField = () => {
@@ -43,7 +41,6 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
 
     useEffect(() => {
         isActive ? setIsModalActive((isOpen) => isOpen = true) : setIsModalActive((isOpen) => isOpen = false);
-        console.log(formFields)
     },[isActive])
     return (
         <>
@@ -84,9 +81,15 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                                         <InputField type={field.type} isReadOnly={field.readOnly} value={field.txtContent} name={field.headers} onChangeFunc={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))} style={inputStyle} />
                                                         :
                                                         <select className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light" value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}>
-                                                            {field.options.map((option, index) => (
-                                                                <option key={index} value={option}>{option}</option>
-                                                            ))}
+                                                            <option value="" >None</option>
+                                                            {
+                                                                field.options && (
+                                                                    field.options.map((option, index) => (
+                                                                        <option key={index} value={option}>{option}</option>
+                                                                    
+                                                                    ))
+                                                                )
+                                                            }
                                                         </select>
                                                     :
                                                     <textarea className={`${textAreaHeight} w-full resize-none font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light `} readOnly={field.readOnly} value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}></textarea>
