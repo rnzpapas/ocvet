@@ -21,7 +21,24 @@ export const deleteAnnouncementService = async (id) => {
 
 // upnext
 export const getAnnouncementForRecipientsService = async(uaid) => {
-    const result = await pool.query('SELECT * FROM otcv_announcements WHERE $1 = ANY("UAID")', 
+    const result = await pool.query(`
+        SELECT 
+        a.*, 
+        mg.group_nickname,
+        STRING_AGG(concat(ud.firstname, ' ', ud.middlename, ' ', ud.surname) , ', ') AS user_names, 
+        STRING_AGG(ua.email, ', ') AS user_emails,
+        STRING_AGG(mg."TGID"::TEXT, ', ') AS mail_groups
+        FROM otcv_announcements a
+        LEFT JOIN otcv_user_details ud
+        ON ud."UAID" = ANY(a."UAID")
+        LEFT JOIN otcv_user_accounts ua
+        ON ua."UAID" = ud."UAID"
+        LEFT JOIN otcv_mail_groups mg
+        ON mg."TGID" = ANY(a."TGIDS")
+        WHERE $1 = ANY(a."UAID")
+        OR $1 = ANY(mg.target_audience)
+        GROUP BY a."ANNID", mg.group_nickname;  
+        `, 
         [uaid]);
     return result.rows;
 }

@@ -92,7 +92,7 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                                             }
                                                         </select>
                                                     :
-                                                    <textarea className={`${textAreaHeight} w-full resize-none font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light `} readOnly={field.readOnly} value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}></textarea>
+                                                    <textarea className={`${textAreaHeight} w-full resize-none font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light ${field.readOnly ? 'bg-silver/50' : 'bg-none'} `} readOnly={field.readOnly} value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}></textarea>
                                                 }
                                             </section>
                                     }

@@ -213,6 +213,7 @@ function StaffAppointments() {
       onUpdateAppointmentStatus('Done', fields[0].content || '');
     }
   }
+
   const onUpdateAppointmentStatus = async (status, remarks) => {
     const formData = new FormData();
     formData.append('status', status);
@@ -275,7 +276,7 @@ function StaffAppointments() {
               <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
             </div>
           </section>
-          <section className="flex flex-wrap justify-between w-fit">
+          <section className="flex flex-wrap justify-between w-fit pr-10">
             <section className={`${tab === 1 ? 'w-full' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
@@ -299,14 +300,14 @@ function StaffAppointments() {
                 }
                 
             </section>
-            <section className={`${tab === 2 ? 'w-[75%]' : 'hidden'}`}>
+            <section className={`${tab === 2 ? 'w-[95%]' : 'hidden'}`}>
               {
                 RAData.length > 0 && (
                   <Table headers={HEADERS} data={RAData} tableW={"w-full"} tableH={'h-fit'}/>
                 )
               }
             </section>
-            <section className={`${tab === 3 ? 'w-[75%]' : 'hidden'}`}>
+            <section className={`${tab === 3 ? 'w-[95%]' : 'hidden'}`}>
               {
                 AHData.length > 0 && (
                   <Table headers={HEADERS} data={AHData} tableW={"w-full"} tableH={'h-fit'}/>

@@ -48,17 +48,19 @@ function MngrPetOwners() {
         )
         .then((res) => {
             let petOwnerList = res.data.data;
-            petOwnerList.map((petOwner, index) => {
-                let po = {
-                    "ID": petOwner.UAID,
-                    "fullname": `${petOwner.firstname} ${petOwner.surname}`,
-                    "email": petOwner.email,
-                    "usename": petOwner.username,
-                    "joined_date": convertDate( petOwner.date_joined)
-                }
+            if(petOwnerList.length > 0){
+                petOwnerList.map((petOwner, index) => {
+                    let po = {
+                        "ID": petOwner.UAID,
+                        "fullname": `${petOwner.firstname} ${petOwner.surname}`,
+                        "email": petOwner.email,
+                        "usename": petOwner.username,
+                        "joined_date": convertDate( petOwner.date_joined)
+                    }
 
-                petOwnersArr.push(po);
-            })
+                    petOwnersArr.push(po);
+                })
+            }
         }).catch(err => console.error(err))
         return petOwnersArr;
     }
@@ -137,7 +139,7 @@ function MngrPetOwners() {
                     {/* <Button txtContent={"Search"} isActive={true} /> */}
                 </section>
                 {
-                    petOwnersDetails && (
+                    petOwnersDetails && petOwnersDetails.length > 0 &&(
                         <Table headers={HEADERS} data={petOwnersDetails}/>
                     )
                 }

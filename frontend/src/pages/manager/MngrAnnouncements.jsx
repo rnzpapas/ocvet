@@ -2,35 +2,23 @@ import { useEffect, useState } from "react";
 import Emails from "../../components/Emails"
 import MngrNav from "../../components/navbars/MngrNav"
 import Button from "../../components/button";
+import axios from 'axios'
+import { convertEmailDate, convertTime } from '../../utils/datetimeUtils'
+import EmailChip from "../../components/EmailChip";
+
 
 const MAX_CHARACTERS = 500;
 
 function MngrAnnouncements() {
-    const [emails, setEmails] = useState([
-        {
-          "id": "MAIL100",
-          "recipient": "OCVET_EMPLOYEES",
-          "subject": "Medical Allowance 2025",
-          "body": "We are pleased to announce that the company will now be offering a medical allowance to all eligible employees to help cover healthcare expenses. Further details on eligibility and the application process will be shared shortly. We encourage everyone to take advantage of this benefit for their well-being.",
-          "date_sent": "Jan 12"
-        },
-        {
-          "id": "MAIL101",
-          "recipient": "OCVET_EMPLOYEES",
-          "subject": "Raffle Winners",
-          "body": "We are excited to announce the winners of our recent raffle! Congratulations to all winners! – please stay tuned for more details on how to claim your prizes.",
-          "date_sent": "Dec 29"
-        },
-        {
-          "id": "MAIL102",
-          "recipient": "OCVET_EMPLOYEES",
-          "subject": "13th Month Pay Announcement",
-          "body": "We are pleased to inform you that the 13th month pay will be distributed today latest at 8PM. Please feel free to reach out if you have any questions regarding this payment.",
-          "date_sent": "Dec 14"
-        },
-    ]);
+    const userParsed = JSON.parse(localStorage.getItem('user'));
+
+    const [selectedRecipients, setSelectedRecipients] = useState([]);
+    const [emails, setEmails] = useState([]);
+    const [mailGroups, setMailGroups] = useState([]);
     const [numOfChar, setNumOfChar] = useState(0);
     const [isMaxCharReached, setIsMaxCharReached] = useState(false);
+    const [isCreateMssgOpened, setIsCreateMssgOpened] = useState(false);
+    const [isEmailsDpOpened, setIsEmailDpOpened] = useState(false);
 
     const onMessageChange = (evt) => {
         let charLength = evt.target.value.length
@@ -39,18 +27,107 @@ function MngrAnnouncements() {
         setNumOfChar(n => n = charLength);
     }
 
+    const onClickRecipient = (evt, id) => {
+        evt.preventDefault()
+        console.log(id)
+    }
+
+    const onChangeRecipient = (evt) => {
+
+    }
+
+    const loadUserSearched = async () => {
+        
+    }
+
+    const openEmailDp = () => {setIsEmailDpOpened(true)}
+    const closeEmailDp = () => {setIsEmailDpOpened(false)}
+
+    const openCreateMssg = () => {setIsCreateMssgOpened(!isCreateMssgOpened)}
+
+    const loadEmails = async () => {
+        let em = [];
+        await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+        .then(res => {
+          let emailResponse = res.data.data;
+          emailResponse.map(er => {
+            let emailObj = {
+              "id": er.ANNID,
+              "recipient": er.group_nickname || er.user_emails,
+              "subject": er.announcement_title,
+              "body": er.message,
+              "date_sent": convertEmailDate(er.date),
+              "time_sent": convertTime(er.time)
+            }
+            em.push(emailObj)
+          })
+        })
+        return em;
+    }
+    
+    const loadMailGroups = async () => {
+        let mg = [];
+        await axios.get('http://localhost:5001/api/mail-groups')
+        .then(res => {
+            let mailGroupsData = res.data.data;
+            mailGroupsData.map((mgd) => {
+                mg.push(mgd)
+            })
+        })
+        .catch(err => console.error(err))
+        return mg;
+    }
+
     useEffect(() => {}, [numOfChar]);
     useEffect(() => {}, [isMaxCharReached]);
+    useEffect(() => {}, [isCreateMssgOpened]);
+
+    useEffect(() => {
+        let emailPromise = loadEmails();
+        emailPromise.then((ep) => setEmails(ep))
+        let mailPromise = loadMailGroups();
+        mailPromise.then((mp) => setMailGroups(mp))
+    }, []);
+
 
     return (
         <section className="flex w-full">
             <MngrNav />
             <section className="px-5 py-5 w-full">
-                <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">new message</h5>
-                <section className="flex flex-col gap-2 h-[50%]">
-                    <section className="flex gap-2 border-b border-b-silver py-2">
-                        <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">To:</label>
-                        <input type="text" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
+                <section className={`absolute ${isCreateMssgOpened ? 'top-1 right-2 px-3 py-3' : 'top-12 right-2  px-3 py-4' } flex justify-center items-center gap-2 bg-raisin-black rounded-full cursor-pointer hover:bg-raisin-black-light`} onClick={openCreateMssg}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={`${isCreateMssgOpened ? 'hidden' : 'w-[16px] h-[16px] fill-white-smoke'}`}>
+                        <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"  className={`${isCreateMssgOpened ? 'w-[16px] h-[16px] fill-white-smoke' : 'hidden'}`}>
+                        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"/>
+                    </svg>
+                    <h5 className={`${isCreateMssgOpened ? 'hidden' : 'font-lato font-semibold text-content-md capitalize text-white-smoke'}`}>
+                        create message 
+                    </h5>
+                </section>
+                <section className={`${isCreateMssgOpened ? 'flex flex-col gap-2 h-[50%]' : 'hidden'}`}>
+                    <section className="flex gap-2 border-b border-b-silver py-2 relative">
+                        <section className="flex">
+                            <label htmlFor="to" className="text-silver font-lato font-bold text-content-lrg">To:</label>
+                            <section className="flex gap-2">
+                                <EmailChip email={"papas@gmail.com"}/>
+                                <input type="text" name="to" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none" onFocus={openEmailDp} onBlur={closeEmailDp} onChange={e => onChangeRecipient(e)}/>
+                            </section>
+                        </section>
+                        <section className={`${isEmailsDpOpened ? 'bg-white-smoke w-full h-fit a absolute top-12 ' : 'hidden'}`}>
+                            <section className="border-b-silver px-2 py-2">
+                                {
+                                    mailGroups.length > 0 && (
+                                        mailGroups.map((mg, index) => (
+                                            <h5 key={mg.TGID} className="font-lato text-raisin-black hover:bg-raisin-black hover:text-white-smoke cursor-pointer" onMouseDown={(e) => onClickRecipient(e, mg.TGID)}> {mg.group_nickname} </h5>
+                                        ))
+                                    )
+                                }
+                            </section>
+                            <section>
+                                {/*  filtering  */}
+                            </section>
+                        </section>
                     </section>
                     <section className="flex gap-2 border-b border-b-silver py-2">
                         <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">Subject:</label>
@@ -71,7 +148,7 @@ function MngrAnnouncements() {
                     </section>
                 </section>
                 <section className="flex justify-between mt-5">
-                    <section className="flex flex-col gap-5">
+                    <section className="flex flex-col gap-5 w-full">
                         <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">announcements</h5>
                         <Emails mails={emails} isBodyIncluded={true}/>
                     </section>

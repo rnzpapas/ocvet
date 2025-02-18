@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Modal from "./Modal"
 
-function Emails({mails = {}, isBodyIncluded = true}) {
+function Emails({mails = {}, isRecipientsIncluded = true, isBodyIncluded = true}) {
     const [emailSelected, setEmailSelected] = useState([]);
     const [isModalActive, setIsModalActive] = useState(false);
     const [numberOfEmail, setNumberOfEmail] = useState(0);
@@ -19,23 +19,28 @@ function Emails({mails = {}, isBodyIncluded = true}) {
                     "headers": "To:",
                     "txtContent": RECIPIENT,
                     "type": "text",
+                    "readOnly": true
                 },
                 {
                     "headers": "Subject:",
                     "txtContent": SUBJECT,
-                    "type": "text"
+                    "type": "text",
+                    "readOnly": true
                 },
                 {
                     "headers": "Message:",
                     "txtContent": MESSAGE,
                     "type": "textarea",
+                    "readOnly": true
                 }
             ];
-            setEmailSelected((e) => e = EMAIL);
+            setEmailSelected(EMAIL);
             setIsModalActive(true)
         }
     }
-
+    const closeModal = () => {
+        setIsModalActive(false)
+    }
     const checkEmail = (evt) => {
         if(evt.target.checked){
             evt.target.parentElement.classList.add('bg-raisin-black');
@@ -68,7 +73,11 @@ function Emails({mails = {}, isBodyIncluded = true}) {
 
     return (
         <section>
-            <Modal headline="E-Mail" fields={emailSelected} isActive={isModalActive} onClose={() => setIsModalActive(isOpen => isOpen = false)} isReadOnly={true} />
+            {
+                emailSelected.length > 0 && (
+                    <Modal headline="E-Mail" fields={emailSelected} isActive={isModalActive} onClose={closeModal} />
+                )
+            }
             {numberOfEmail > 0 && (
                 <section className="flex items-center justify-between">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="fill-fire-engine-red w-[20px] h-[20px] ml-1 cursor-pointer">
@@ -80,11 +89,13 @@ function Emails({mails = {}, isBodyIncluded = true}) {
             {mails.map((mail,index) => (
                 <section key={index} className="relative hover:bg-raisin-black group">
                     <input type="checkbox" name="" id={mail.id} className="w-5 h-5 border-2 border-silver rounded-sm appearance-none checked:bg-fire-engine-red checked:border-fire-engine-red absolute left-1 top-2" onClick={checkEmail}/>
-                    <section className="flex items-center justify-center gap-5 border-b-silver border-b-2 cursor-pointer py-1.5 px-2" onClick={(el) => openModal(el)}>
-                        <h5 className="font-lato font-semibold w-fit text-content-xtrasm md:text-content-md group-hover:text-white-smoke ml-10">{mail.recipient}</h5>
-                        <h5 className="font-lato font-semibold w-[200px] md:w-[250px] lg:[270px] text-content-xtrasm md:text-content-md group-hover:text-white-smoke">{mail.subject}</h5>
-                        <p className={`font-lato w-[300px] md:w-[320px] lg:w-[340px] truncate text-content-xtrasm md:text-content-md text-silver group-hover:text-white-smoke ${isBodyIncluded ? 'block' : 'hidden'} `}>{mail.body}</p>
-                        <h5 className="font-lato font-semibold w-fit text-content-xtrasm md:text-content-md group-hover:text-white-smoke">{mail.date_sent}</h5>
+                    <section className="gap-5 border-b-silver border-b-2 cursor-pointer py-1.5 px-2" onClick={(el) => openModal(el)}>
+                        <section className="flex items-center ml-10 gap-2">
+                            <h5 className={`font-lato font-semibold w-fit text-content-xtrasm md:text-content-md group-hover:text-white-smoke ${isRecipientsIncluded ? 'block' : 'hidden'}`}>{mail.recipient}</h5>
+                            <h5 className="font-lato font-semibold w-[20%] text-content-xtrasm md:text-content-md group-hover:text-white-smoke">{mail.subject}</h5>
+                            <p className={`font-lato w-[75%] truncate text-content-xtrasm md:text-content-md text-silver group-hover:text-white-smoke ${isBodyIncluded ? 'block' : 'hidden'} `}>{mail.body}</p>
+                            <h5 className="font-lato font-semibold text-content-xtrasm md:text-content-md group-hover:text-white-smoke w-[10%] text-center">{mail.date_sent}</h5>
+                        </section>
                     </section>
                 </section>
              ))}

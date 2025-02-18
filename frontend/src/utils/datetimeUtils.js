@@ -37,3 +37,12 @@ export const convertTime = (time) => {
 
 
 }
+
+export const convertEmailDate = (date) => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    let d = new Date(date);
+    let dNow = new Date()
+    let dateConverted = d.getFullYear() == dNow.getFullYear() ? `${months[d.getMonth()]} ${d.getDate()}` : `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
+   
+    return dateConverted;
+}
