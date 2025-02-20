@@ -6,6 +6,7 @@ import axios from 'axios';
 import useRedirectUser from '../../auth/useRedirectUser';
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
+import { capitalizeFirstLetter } from '../../utils/textUtils'
 import PersonalDetails from '../../components/PersonalDetails';
 import InputField from '../../components/InputField';
 import Button from '../../components/button';
@@ -43,6 +44,11 @@ function MngrSettings() {
     const [animalType, setAnimalType] = useState([]);
     const [vaccines, setVaccines] = useState([]);
     const [emailGroups, setEmailGroups] = useState([]);
+    const [serviceField, setServiceField] = useState();
+    const [diagnosisField, setDiagnosisField] = useState();
+    const [animalTypeField, setAnimalTypeField] = useState();
+    const [vaccineField, setVaccineField] = useState();
+    const [emailGroupField, setEmailGroupField] = useState();
 
 
 
@@ -226,6 +232,78 @@ function MngrSettings() {
       return arr;
     }
 
+    const onChangeServiceField = async (evt) => {
+      setServiceField(evt.target.value)
+    }
+
+    const onChangeDiagnosisField = async (evt) => {
+      setDiagnosisField(evt.target.value)
+      
+    }
+
+    const onChangeAnimalTypeField = async (evt) => {
+      setAnimalTypeField(evt.target.value)
+      
+    }
+
+    const onChangeVaccinesField = async (evt) => {
+      setVaccineField(evt.target.value)
+      
+    }
+
+    const addService = async () => {
+      if(!serviceField || serviceField.trim().length === 0) return alert('Please fill out fields.')
+      const formData = new FormData();
+      formData.append('service', serviceField);
+      await axios.post('http://localhost:5001/api/service/add', formData, {headers: {"Content-Type": 'application/json'}})
+      .then(() => window.location.reload())
+
+    }
+
+    const addDiagnosis = async () => {
+      if(!diagnosisField || diagnosisField.trim().length === 0) return alert('Please fill out fields.')
+        const formData = new FormData();
+        formData.append('diagnosis', diagnosisField);
+        await axios.post('http://localhost:5001/api/diagnosis/add', formData, {headers: {"Content-Type": 'application/json'}})
+        .then(() => window.location.reload())
+    }
+
+    const addAnimalType = async () => {
+      if(!animalTypeField || animalTypeField.trim().length === 0) return alert('Please fill out fields.')
+        const formData = new FormData();
+        formData.append('animal_type', animalTypeField);
+        await axios.post('http://localhost:5001/api/atypes/add', formData, {headers: {"Content-Type": 'application/json'}})
+        .then(() => window.location.reload())
+    }
+
+    const addVaccines = async () => {
+      if(!vaccineField || vaccineField.trim().length === 0) return alert('Please fill out fields.')
+        const formData = new FormData();
+        formData.append('vaccine', vaccineField);
+        await axios.post('http://localhost:5001/api/vaccine/add', formData, {headers: {"Content-Type": 'application/json'}})
+        .then(() => window.location.reload())
+    }
+
+    const removeService = async (id) => {
+      await axios.delete(`http://localhost:5001/api/service/remove/${id}`)
+      .then(() => window.location.reload())
+    }
+
+    const removeDiagnosis = async (id) => {
+      await axios.delete(`http://localhost:5001/api/diagnosis/remove/${id}`)
+      .then(() => window.location.reload())
+    }
+
+    const removeAnimalType = async (id) => {
+      await axios.delete(`http://localhost:5001/api/atypes/remove/${id}`)
+      .then(() => window.location.reload())
+    }
+
+    const removeVaccine = async (id) => {
+      await axios.delete(`http://localhost:5001/api/vaccine/remove/${id}`)
+      .then(() => window.location.reload())
+    }
+
     useEffect( () => {
         let userPromise = getUserFullDetails();
         !userData && (
@@ -356,12 +434,13 @@ function MngrSettings() {
             </section>
             )}
           </section>
+          {/* services */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Clinic Service</h5>
             <section>
               <section className='flex gap-3 mb-3'>
-                <InputField />
-                <Button txtContent={"add"} style={`h-11`}/>
+                <InputField onChangeFunc={(e) => onChangeServiceField(e)}/>
+                <Button txtContent={"add"} style={`h-11`} onClickFunc={addService}/>
               </section>
               <table className='border-collapse'>
                 <thead>
@@ -376,7 +455,10 @@ function MngrSettings() {
                       services.map(s => (
                         <tr>
                           <td className='border border-raisin-black font-lato text-center'>{s.service}</td>
-                          <td className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'>Remove</td>
+                          <td 
+                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                          onClick={() => removeService(s.SERVICEID)}
+                          >Remove</td>
                         </tr>
                       ))
                     )
@@ -386,12 +468,13 @@ function MngrSettings() {
               </table>
             </section>
           </section>
+          {/* diagnosis */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Diagnosis List</h5>
             <section>
               <section className='flex gap-3 mb-3'>
-                <InputField />
-                <Button txtContent={"add"} style={`h-11`}/>
+                <InputField onChangeFunc={(e) => onChangeDiagnosisField(e)}/>
+                <Button txtContent={"add"} style={`h-11`} onClickFunc={addDiagnosis}/>
               </section>
               <table className='border-collapse'>
                 <thead>
@@ -406,7 +489,10 @@ function MngrSettings() {
                       diagnosis.map(d => (
                         <tr>
                           <td className='border border-raisin-black font-lato text-center'>{d.diagnosis}</td>
-                          <td className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'>Remove</td>
+                          <td 
+                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                          onClick={() => removeDiagnosis(d.DIAGID)}
+                          >Remove</td>
                         </tr>
                       ))
                     )
@@ -416,12 +502,13 @@ function MngrSettings() {
               </table>
             </section>
           </section>
+          {/* animal type */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Animal Types</h5>
             <section>
               <section className='flex gap-3 mb-3'>
-                <InputField />
-                <Button txtContent={"add"} style={`h-11`}/>
+                <InputField onChangeFunc={(e) => onChangeAnimalTypeField(e)}/>
+                <Button txtContent={"add"} style={`h-11`} onClickFunc={addAnimalType}/>
               </section>
               <table className='border-collapse'>
                 <thead>
@@ -435,8 +522,11 @@ function MngrSettings() {
                     animalType.length > 0 && (
                       animalType.map(a => (
                         <tr>
-                          <td className='border border-raisin-black font-lato text-center'>{a.animal_type}</td>
-                          <td className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'>Remove</td>
+                          <td className='border border-raisin-black font-lato text-center'>{capitalizeFirstLetter(a.animal_type)}</td>
+                          <td 
+                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                          onClick={() => removeAnimalType(a.ATYPEID)}
+                          >Remove</td>
                         </tr>
                       ))
                     )
@@ -446,12 +536,13 @@ function MngrSettings() {
               </table>
             </section>
           </section>
+          {/* vaccines */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Vaccines</h5>
             <section>
               <section className='flex gap-3 mb-3'>
-                <InputField />
-                <Button txtContent={"add"} style={`h-11`}/>
+                <InputField onChangeFunc={(e) => onChangeVaccinesField(e)}/>
+                <Button txtContent={"add"} style={`h-11`} onClickFunc={addVaccines}/>
               </section>
               <table className='border-collapse'>
                 <thead>
@@ -466,7 +557,10 @@ function MngrSettings() {
                       vaccines.map(v => (
                         <tr>
                           <td className='border border-raisin-black font-lato text-center'>{v.vaccine_name}</td>
-                          <td className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'>Remove</td>
+                          <td 
+                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                          onClick={() => removeVaccine(v.VACCID)}
+                          >Remove</td>
                         </tr>
                       ))
                     )
@@ -476,13 +570,10 @@ function MngrSettings() {
               </table>
             </section>
           </section>
+          {/* email group */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Email Groups</h5>
             <section>
-              <section className='flex gap-3 mb-3'>
-                <InputField />
-                <Button txtContent={"add"} style={`h-11`}/>
-              </section>
               <table className='border-collapse'>
                 <thead>
                   <tr>
@@ -498,7 +589,7 @@ function MngrSettings() {
                           <tr>
                             <td className='border border-raisin-black font-lato text-center'>{eg.group_nickname}</td>
                             <td className='border border-raisin-black font-lato text-center'>{eg.target_audience}</td>
-                            <td className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'>Remove</td>
+                            <td className='border border-raisin-black font-lato text-center text-chefchaouen-blue hover:underline cursor-pointer'>Edit</td>
                           </tr>
                         ))
                       )
