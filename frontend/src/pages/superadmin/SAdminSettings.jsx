@@ -26,7 +26,7 @@ const pwFields = [
     }
 ]
 
-function SAdminUserInfo() {
+function SAdminSettings() {
     const navigate = useNavigate();
     const [accFields, setAccFields] = useState();
     const [personalFields, setPersonalFields] = useState();
@@ -272,4 +272,4 @@ function SAdminUserInfo() {
     )
 }
 
-export default SAdminUserInfo
+export default SAdminSettings

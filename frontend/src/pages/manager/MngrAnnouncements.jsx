@@ -11,32 +11,70 @@ const MAX_CHARACTERS = 500;
 
 function MngrAnnouncements() {
     const userParsed = JSON.parse(localStorage.getItem('user'));
+    const sessionToken = sessionStorage.getItem('jwt-token')
 
     const [selectedRecipients, setSelectedRecipients] = useState([]);
+    const [suggestedEmails, setSuggestedEmails] = useState([]);
     const [emails, setEmails] = useState([]);
     const [mailGroups, setMailGroups] = useState([]);
     const [numOfChar, setNumOfChar] = useState(0);
     const [isMaxCharReached, setIsMaxCharReached] = useState(false);
     const [isCreateMssgOpened, setIsCreateMssgOpened] = useState(false);
     const [isEmailsDpOpened, setIsEmailDpOpened] = useState(false);
+    const [emailSubject, setEmailSubject] = useState();
+    const [emailMessage, setEmailMessage] = useState();
+
 
     const onMessageChange = (evt) => {
         let charLength = evt.target.value.length
         charLength > MAX_CHARACTERS ? setIsMaxCharReached(isMax => isMax = true) : setIsMaxCharReached(isMax => isMax = false) 
         
         setNumOfChar(n => n = charLength);
+        setEmailMessage(evt.target.value);
     }
 
-    const onClickRecipient = (evt, id) => {
-        evt.preventDefault()
-        console.log(id)
+    const onSubjectChange = (evt) => {
+        setEmailSubject(evt.target.value);
     }
 
-    const onChangeRecipient = (evt) => {
-
+    const onClickRecipient = (evt, id, email) => {
+        evt.preventDefault();
+        let selectedRecipientObj = {
+            id: id,
+            email: email
+        }
+        let isExistingEmail = selectedRecipients.some(s => s.email === email)
+        if(!isExistingEmail) setSelectedRecipients((prevstate) => [...prevstate, selectedRecipientObj])
     }
 
-    const loadUserSearched = async () => {
+    const onRemoveRecipient = (email) => {
+        let filteredRecipients = selectedRecipients.filter(em => em.email !== email)
+        setSelectedRecipients(filteredRecipients)
+    }
+
+    const onEmailSearch = async (evt) => {
+        setSuggestedEmails(s => s = [])
+        let email = evt.target.value;
+        let emails = [];
+
+        await axios.get(`http://localhost:5001/api/admin/email?email=${email}`,
+        {headers: {'Authorization': `Bearer ${sessionToken}`}}
+        )
+        .then((res) => {
+            let adminEmailRes = res.data.data;
+            adminEmailRes.map(e => {
+                let isNotSelected = selectedRecipients.some(em => em.email != e.email)
+                if(isNotSelected){
+                    let adminEmailObj = {
+                        uaid: e.UAID,
+                        email: e.email
+                    }
+                    emails.push(adminEmailObj)
+                }
+            })
+            setSuggestedEmails(emails);
+        })
+        .catch(err => console.error(err))
         
     }
 
@@ -47,7 +85,8 @@ function MngrAnnouncements() {
 
     const loadEmails = async () => {
         let em = [];
-        await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+        await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`, 
+        {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => {
           let emailResponse = res.data.data;
           emailResponse.map(er => {
@@ -78,9 +117,25 @@ function MngrAnnouncements() {
         return mg;
     }
 
+    const onSubmitAnnouncement = async () => {
+        let tgids = selectedRecipients.filter(u => u.id.includes("TGID")).map(sr => sr.id)
+        let uaids = selectedRecipients.filter(u => u.id.includes("UAID")).map(sr => sr.id)
+        if(selectedRecipients.length === 0 || !emailSubject || !emailMessage) alert('Please fill out all required fields for announcements.')
+        const formData = new FormData();
+        formData.append('tgid', tgids);
+        formData.append('uaid', uaids);
+        formData.append('announcement_title', emailSubject)
+        formData.append('message', emailMessage)
+
+        await axios.post('http://localhost:5001/api/announcement/create', formData, {headers: {"Content-Type": 'application/json'}})
+        .then(() => {window.location.reload()})
+        .catch(err => console.error(err))
+    }
+
     useEffect(() => {}, [numOfChar]);
     useEffect(() => {}, [isMaxCharReached]);
     useEffect(() => {}, [isCreateMssgOpened]);
+    useEffect(() => {}, [suggestedEmails]);
 
     useEffect(() => {
         let emailPromise = loadEmails();
@@ -107,31 +162,43 @@ function MngrAnnouncements() {
                 </section>
                 <section className={`${isCreateMssgOpened ? 'flex flex-col gap-2 h-[50%]' : 'hidden'}`}>
                     <section className="flex gap-2 border-b border-b-silver py-2 relative">
-                        <section className="flex">
+                        <section className="flex gap-2">
                             <label htmlFor="to" className="text-silver font-lato font-bold text-content-lrg">To:</label>
                             <section className="flex gap-2">
-                                <EmailChip email={"papas@gmail.com"}/>
-                                <input type="text" name="to" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none" onFocus={openEmailDp} onBlur={closeEmailDp} onChange={e => onChangeRecipient(e)}/>
+                                {
+                                    selectedRecipients.length > 0 && (
+                                        selectedRecipients.map(sm => (
+                                            <EmailChip key={sm.id} email={sm.email} onRemove={() => onRemoveRecipient(sm.email)}/>
+                                        ))
+                                    )
+                                }
+                                <input type="text" name="to" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none" onFocus={openEmailDp} onBlur={closeEmailDp} onChange={e => onEmailSearch(e)}/>
                             </section>
                         </section>
-                        <section className={`${isEmailsDpOpened ? 'bg-white-smoke w-full h-fit a absolute top-12 ' : 'hidden'}`}>
-                            <section className="border-b-silver px-2 py-2">
+                        <section className={`${isEmailsDpOpened ? `bg-white-smoke w-full h-fit a absolute ${selectedRecipients.length > 0 ? 'top-14' : 'top-12'}` : 'hidden'}`}>
+                            <section className="border-b-silver ">
                                 {
                                     mailGroups.length > 0 && (
                                         mailGroups.map((mg, index) => (
-                                            <h5 key={mg.TGID} className="font-lato text-raisin-black hover:bg-raisin-black hover:text-white-smoke cursor-pointer" onMouseDown={(e) => onClickRecipient(e, mg.TGID)}> {mg.group_nickname} </h5>
+                                            <h5 key={mg.TGID} className="px-2 py-2 font-lato text-raisin-black hover:bg-raisin-black hover:text-white-smoke cursor-pointer" onMouseDown={(e) => onClickRecipient(e, mg.TGID, mg.group_nickname)}> {mg.group_nickname} </h5>
                                         ))
                                     )
                                 }
                             </section>
-                            <section>
-                                {/*  filtering  */}
+                            <section className="border-b-silver">
+                                {
+                                    suggestedEmails.length > 0 && (
+                                        suggestedEmails.map((sm, index) => (
+                                            <h5 key={index} className=" px-2 py-2 font-lato text-raisin-black hover:bg-raisin-black hover:text-white-smoke cursor-pointer" onMouseDown={(e) => onClickRecipient(e, sm.uaid, sm.email)}> {sm.email} </h5>
+                                        ))
+                                    )
+                                }
                             </section>
                         </section>
                     </section>
                     <section className="flex gap-2 border-b border-b-silver py-2">
                         <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">Subject:</label>
-                        <input type="text" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none"/>
+                        <input type="text" className="font-lato text-raisin-black w-[90%] text-content-lrg focus:outline-none" onChange={(e) => onSubjectChange(e)}/>
                     </section>
                     <section className="">
                         <section className="flex justify-between mb-1">
@@ -140,7 +207,7 @@ function MngrAnnouncements() {
                         </section>
                         <textarea onChange={(el) => onMessageChange(el)} name="" id="" className="px-2 w-full h-[150%] border border-silver resize-none font-lato text-content-lrg"></textarea>
                         <section className="relative w-fit mt-1">
-                            <Button txtContent={"send message"} />
+                            <Button txtContent={"send message"} onClickFunc={onSubmitAnnouncement}/>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[16px] fill-white-smoke absolute top-2 right-3">
                                 <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480l0-83.6c0-4 1.5-7.8 4.2-10.8L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/>
                             </svg>

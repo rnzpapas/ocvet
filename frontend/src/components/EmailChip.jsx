@@ -1,11 +1,11 @@
 import React from 'react';
 
-function EmailChip({email, onRemove}) {
+function EmailChip({key, email, onRemove}) {
     const images = import.meta.glob('../assets/icons/*.png', { eager: true });
     const getIcon = (name) => images[`../assets/icons/${name}.png`]?.default;
 
   return (
-    <div className='flex items-center justify-center px-2 py-2 bg-raisin-black rounded-full min-w-fit'>
+    <div className='flex items-center justify-center px-2 py-2 bg-raisin-black rounded-full min-w-fit' key={key}>
         <section className='flex items-center gap-2 w-fit'>
             <img src={getIcon(email[0].toUpperCase())} alt="Icon" className='w-[30px] h-[30px]'/>
             <h5 className='font-lato text-white-smoke text-content-sm font-semibold'>{email}</h5>

@@ -23,8 +23,8 @@ function MngrNav() {
             "targetElement": "/mngr/announcements"
         },,
         {
-            "txtContent": "Account",
-            "targetElement": "/mngr/account"
+            "txtContent": "Settings",
+            "targetElement": "/mngr/settings"
         },
 
     ]

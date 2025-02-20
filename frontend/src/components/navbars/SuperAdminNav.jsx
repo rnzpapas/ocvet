@@ -23,8 +23,8 @@ function SuperAdminNav() {
             "targetElement": "/sadm/appointments"
         },
         {
-            "txtContent": "Account",
-            "targetElement": "/sadm/account"
+            "txtContent": "Settings",
+            "targetElement": "/sadm/settings"
         },
 
     ]

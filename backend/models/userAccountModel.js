@@ -135,3 +135,14 @@ export const verifyUserOtpService = async (uaid, otp) => {
     )
     return result.rows
 }
+
+export const getAdminEmailService = async (email) => {
+    let emailQuery = `%${email}%`
+    let result = await pool.query(`
+        SELECT "UAID", email 
+        FROM otcv_user_accounts 
+        WHERE role = ANY('{Super Administrator, Manager, Staff}') 
+        AND email LIKE $1;
+    `,[emailQuery])
+    return result.rows;
+}

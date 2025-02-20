@@ -4,7 +4,8 @@ import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAc
 sortUsernameDesc, loginUserAccount, updateUserAccountPassword, updateUserOtp, verifyUserOtp, recoversUserAccountPassword, 
 getAllPetOwnersAccount,
 getAllAdministrators,
-generateAllPetOwnersPdf} from '../controllers/userAccountsController.js';
+generateAllPetOwnersPdf,
+getAdminEmail} from '../controllers/userAccountsController.js';
 import { createUser, getUserFullDetails, getUserCompleteDetailByNameEmail } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
@@ -14,6 +15,8 @@ const ROUTER = express.Router();
 
 // admin
 ROUTER.get('/admin/all', authenticateAdminJwt, getAllAdministrators);
+ROUTER.get('/admin/email', authenticateAdminJwt, getAdminEmail);
+
 // common
 ROUTER.post("/user/register", createUser);
 ROUTER.get("/user/account/full-details/:id", authenticateUserJwt,  getUserFullDetails);

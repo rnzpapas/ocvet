@@ -53,7 +53,8 @@ function UserLogin() {
                     // if admin
                 })
                 .catch(err => {
-                  console.error(err)
+                    navigate('/admin/role');
+
                 })
         })
         .catch(err => {

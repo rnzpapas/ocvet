@@ -1,4 +1,4 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAdminEmailService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
@@ -84,6 +84,16 @@ export const generateAllPetOwnersPdf = async (req, res, next) => {
     }
 }
 
+export const getAdminEmail = async (req, res, next) => {
+    const email = req.query.email;
+    try{
+        const users = await getAdminEmailService(email);
+        if(!users) return handleResponse(res, 404, "Data retrieval failed");
+        return handleResponse(res, 200, "Data retrieval success", users);
+    }catch(err) {
+        return next(err);
+    }
+}
 
 export const getUserAccountById = async (req, res, next) => {
     try{

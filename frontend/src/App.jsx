@@ -31,14 +31,12 @@ import StaffUserInfo from "./pages/staff/StaffUserInfo"
 import MngrHome from "./pages/manager/MngrHome"
 import MngrPetList from "./pages/manager/MngrPetList"
 import MngrPetOwners from "./pages/manager/MngrPetOwners"
-import MngrUserInfo from "./pages/manager/MngrUserInfo"
 import MngrAppointments from "./pages/manager/MngrAppointments"
 import MngrAnnouncements from "./pages/manager/MngrAnnouncements"
 import SAdminAppointments from "./pages/superadmin/SAdminAppointments"
 import SAdminHome from "./pages/superadmin/SAdminHome"
 import SAdminPetList from "./pages/superadmin/SAdminPetList"
 import SAdminPetOwners from "./pages/superadmin/SAdminPetOwners"
-import SAdminUserInfo from "./pages/superadmin/SAdminUserInfo"
 import SAdminListAdmin from "./pages/superadmin/SAdminListAdmin"
 import LandingPage from "./pages/LandingPage";
 import { Route, Routes } from "react-router"
@@ -47,6 +45,8 @@ import NotFound from "./pages/NotFound"
 import UserPetGroupRegistration from "./pages/user/UserPetGroupRegistration"
 import UserPetGroupPage from "./pages/user/UserPetGroupPage"
 import ForbiddenAccess from "./pages/ForbiddenAccess"
+import MngrSettings from "./pages/manager/MngrSettings"
+import SAdminSettings from "./pages/superadmin/SAdminSettings"
 
 function App() {
   const checkBtn = () => {
@@ -217,7 +217,7 @@ function App() {
           <Route path="owners" element={<MngrPetOwners />}/>
           <Route path="appointments" element={<MngrAppointments />}/>
           <Route path="announcements" element={<MngrAnnouncements />}/>
-          <Route path="account" element={<MngrUserInfo />}/>
+          <Route path="settings" element={<MngrSettings />}/>
         </Route>
         {/* super admin routes */}
         <Route path="/sadm/">
@@ -226,7 +226,7 @@ function App() {
           <Route path="owners" element={<SAdminPetOwners />}/>
           <Route path="appointments" element={<SAdminAppointments />}/>
           <Route path="admins" element={<SAdminListAdmin />}/>
-          <Route path="account" element={<SAdminUserInfo />}/>
+          <Route path="settings" element={<SAdminSettings />}/>
         </Route>
         {/* staff, mngr, super administrator login (IN-PROGESS) */}
         <Route path="/admin/">
