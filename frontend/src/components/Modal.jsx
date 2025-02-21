@@ -18,11 +18,25 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
 
     const handleFieldChange = (index, event) => {
         const updatedFields = [...formFields];
-        const { name, value } = event.target;
-        updatedFields[index] = {
-            ...updatedFields[index],
-            txtContent: value
-        };
+        const { type, name, checked, value } = event.target;
+    
+        if (type === "checkbox") {
+            if (!updatedFields[index].txtContent) {
+                updatedFields[index].txtContent = [];
+            }
+            if (checked) {
+                updatedFields[index].txtContent.push(name);
+            } else {
+                updatedFields[index].txtContent = updatedFields[index].txtContent.filter(item => item !== name);
+            }
+        } else {
+            // For regular inputs
+            updatedFields[index] = {
+                ...updatedFields[index],
+                txtContent: value
+            };
+        }
+    
         setFormFields(updatedFields);
     };
   
@@ -75,10 +89,23 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                                 </section>
                                             </section>
                                             :
-                                            <section className="flex flex-col gap-1">
+                                            <section className="flex flex-col gap-1 overflow-y-auto max-h-[100px]">
                                                 {field.type !== "textarea" ? 
                                                     field.type !== 'select' ?
-                                                        <InputField type={field.type} isReadOnly={field.readOnly} value={field.txtContent} name={field.headers} onChangeFunc={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))} style={inputStyle} />
+                                                        field.type !== 'checkbox' ?
+                                                            <InputField type={field.type} isReadOnly={field.readOnly} value={field.txtContent} name={field.headers} onChangeFunc={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))} style={inputStyle} />
+                                                        :
+                                                            (
+                                                                field.options && (
+                                                                    field.options.map((option, checkboxIndex) => (
+                                                                        <section key={ checkboxIndex} className="flex gap-2 items-center">
+                                                                            <input type="checkbox" name={option} id="" onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}/>
+                                                                            <label htmlFor={option}>{option}</label>
+                                                                        </section>
+    
+                                                                    ))
+                                                                )
+                                                            )
                                                         :
                                                         <select className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light" value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}>
                                                             <option value="" >None</option>

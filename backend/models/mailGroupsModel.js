@@ -18,7 +18,14 @@ export const deleteMailGroupsService = async (id) => {
 }
 
 export const getMailGroupsService = async () => {
-    const res = await pool.query('SELECT * FROM otcv_mail_groups ORDER BY group_nickname ASC');
+    const res = await pool.query(`
+        SELECT mg."TGID", mg.group_nickname, mg.target_audience, STRING_AGG(ua.email, ', ') as email 
+        FROM otcv_mail_groups mg
+        LEFT JOIN otcv_user_accounts ua
+        ON ua."UAID" = ANY(mg.target_audience)
+        GROUP BY mg."TGID", mg.group_nickname, mg.target_audience
+        ORDER BY group_nickname ASC
+    `);
     return res.rows;
 }
 

@@ -146,3 +146,12 @@ export const getAdminEmailService = async (email) => {
     `,[emailQuery])
     return result.rows;
 }
+
+export const getAllAdminEmailService = async () => {
+    let result = await pool.query(`
+        SELECT "UAID", email 
+        FROM otcv_user_accounts 
+        WHERE role = ANY('{Super Administrator, Manager, Staff}') 
+    `,)
+    return result.rows;
+}

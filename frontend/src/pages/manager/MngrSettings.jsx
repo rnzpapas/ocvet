@@ -31,14 +31,13 @@ const pwFields = [
 
 function MngrSettings() {
     const navigate = useNavigate();
+
     const [accFields, setAccFields] = useState();
     const [personalFields, setPersonalFields] = useState();
     const [userData, setUserData] = useState();
     const [isAccModalNotOpen, setIsAccModalNotOpen] = useState(false);
     const [isPersonalModalNotOpen, setIsPersonalModalNotOpen] = useState(false);
     const [isChangePwModalNotOpen, setIsChangePwModalNotOpen] = useState(false);
-    const [petCount, setPetCount] = useState(0);
-    const [perPetCount, setPerPetCount] = useState();
     const [services, setServices] = useState([]);
     const [diagnosis, setDiagnosis] = useState([]);
     const [animalType, setAnimalType] = useState([]);
@@ -49,12 +48,14 @@ function MngrSettings() {
     const [animalTypeField, setAnimalTypeField] = useState();
     const [vaccineField, setVaccineField] = useState();
     const [emailGroupField, setEmailGroupField] = useState();
-
-
-
+    const [isMailGroupModalOpen, setIsMailGroupModalOpen] = useState(false);
+    const [mailGroupFields, setMailGroupFields] = useState([]);
+    const [adminObj, setAdminObj] = useState([])
+    
     // useRedirectUser(``);
     let userParsed = JSON.parse(localStorage.getItem('user'));
-    
+    let sessionToken = sessionStorage.getItem('jwt-token');
+
     const getUserFullDetails = async (id) => {
         let sessionToken = sessionStorage.getItem('jwt-token');
         let userFullDetails;
@@ -71,6 +72,13 @@ function MngrSettings() {
         return userFullDetails;
     }
     
+    const onOpenMailGroup = () => {
+      
+      setIsMailGroupModalOpen(true)
+
+    }
+
+  
     const onOpenAccountEdit = () => {
         setIsAccModalNotOpen(true);
         document.body.style.overflow = 'hidden';
@@ -85,6 +93,10 @@ function MngrSettings() {
         setIsChangePwModalNotOpen(true);
         setIsAccModalNotOpen(false);
         document.body.style.overflow = 'hidden';
+    }
+
+    const onCloseOpenMailGroup = (process) => {
+      setIsMailGroupModalOpen(false);
     }
 
     const onCloseAccountEdit = () => {
@@ -284,6 +296,27 @@ function MngrSettings() {
         .then(() => window.location.reload())
     }
 
+    const addMailGroup = async(fields) => {
+      let groupNickname = fields[0].content;
+      let chosenEmails = fields[1].content
+      let members = adminObj.filter(admin => 
+        chosenEmails.includes(admin.email) 
+      );
+      let ids = [];
+      members.map(member => ids.push(member.UAID));
+      const formData = new FormData();
+      formData.append('audience', ids);
+      formData.append('nickname', groupNickname);
+
+      await axios.post('http://localhost:5001/api/mail-groups/add', formData, {headers: {'Content-Type': 'application/json'}})
+      .then(() => window.location.reload())
+    }
+
+    const removeMailGroup = async (tgid) => {
+      await axios.delete(`http://localhost:5001/api/mail-groups/remove/${tgid}`)
+      .then(() => window.location.reload())
+    }
+
     const removeService = async (id) => {
       await axios.delete(`http://localhost:5001/api/service/remove/${id}`)
       .then(() => window.location.reload())
@@ -302,6 +335,19 @@ function MngrSettings() {
     const removeVaccine = async (id) => {
       await axios.delete(`http://localhost:5001/api/vaccine/remove/${id}`)
       .then(() => window.location.reload())
+    }
+
+    const loadAdminEmail = async () => {
+      let email = [];
+      await axios.get('http://localhost:5001/api/admin/email/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+      .then(res => {
+        let emailRes = res.data.data;
+        emailRes.map(em => {
+          email.push(em)
+        })
+      })
+      .catch(err => console.error(err));
+      return email;
     }
 
     useEffect( () => {
@@ -368,10 +414,33 @@ function MngrSettings() {
       
 
     },[])
+
+    useEffect(() => {
+      let adminEmailpromise = loadAdminEmail();
+      adminEmailpromise.then(res => {
+        setAdminObj(res)
+        setMailGroupFields(() => [
+          {
+            'type': 'text',
+            'txtContent': '',
+            'headers': 'Group Nickname'
+          },
+          {
+            'type': 'checkbox',
+            'options': res.map(e => e.email),
+            'headers': 'Members'
+          }
+        ])
+      })
+     
+
+    }, [isMailGroupModalOpen]);
+
     return (
         <section className="flex w-full">
         <MngrNav />
         <section className='h-screen overflow-y-auto w-full'>
+          {/* user info */}
           <section className='px-5 py-5'>
             <h5 className='font-instrument-sans text-headline-lrg font-bold'>Account and Personal Details</h5>
             {userData && (
@@ -572,7 +641,22 @@ function MngrSettings() {
           </section>
           {/* email group */}
           <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Email Groups</h5>
+            <section className='flex items-center gap-3'>
+              <h5 className='font-instrument-sans text-headline-lrg font-bold'>Email Groups</h5>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
+              className="w-[24px] fill-azure hover:fill-chefchaouen-blue cursor-pointer"
+              onClick={onOpenMailGroup}
+              >
+                  <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+              </svg>
+              {
+                mailGroupFields.length > 0 && (
+                  <Modal headline={'E-Mail Group'} isActive={isMailGroupModalOpen} fields={mailGroupFields} onClose={onCloseOpenMailGroup} button={{isDisplayed: true, txtContent:'REGISTER GROUP'}} onSubmitFunc={addMailGroup}/>
+
+                )
+              }
+
+            </section>
             <section>
               <table className='border-collapse'>
                 <thead>
@@ -587,9 +671,9 @@ function MngrSettings() {
                       emailGroups.length > 0 && (
                         emailGroups.map(eg => (
                           <tr>
-                            <td className='border border-raisin-black font-lato text-center'>{eg.group_nickname}</td>
-                            <td className='border border-raisin-black font-lato text-center'>{eg.target_audience}</td>
-                            <td className='border border-raisin-black font-lato text-center text-chefchaouen-blue hover:underline cursor-pointer'>Edit</td>
+                            <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.group_nickname}</td>
+                            <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.email}</td>
+                            <td className='px-2 py-2 border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer' onClick={() => removeMailGroup(eg.TGID)}>Remove</td>
                           </tr>
                         ))
                       )

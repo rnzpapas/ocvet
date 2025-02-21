@@ -67,7 +67,6 @@ function UserPetInformation() {
       .then(response => {
         let appDatas = response.data.data
           appDatas.map((appData) => {
-            console.log(appData)
               let data = {
                   "number" : appData.ASID,
                   "service": appData.services,

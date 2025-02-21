@@ -5,7 +5,7 @@ export const createMailGroups = async (req, res, next) => {
     const { audience, nickname } = req.body;
     try{
         if(audience.length > 0 && nickname.length > 0){
-            const result = await createMailGroupsService(audience, nickname);
+            const result = await createMailGroupsService(audience.split(','), nickname);
             return handleResponse(res, 201, "Mail group successfully added.");
         }
         return handleResponse(res, 400, "Mail group failed to be added.");

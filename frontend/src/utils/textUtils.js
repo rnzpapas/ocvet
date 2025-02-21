@@ -5,9 +5,13 @@ export const capitalizeFirstLetter = (word) => {
 
 export const convertObjectArrayToString = (obj) => {
     let str = '';
-    obj.forEach(word => {
-        str = str + word;
-        (str.length > 0 && obj.length > 1) && (str = str + ', ');
-    })
+    try{
+        obj.forEach(word => {
+            str = str + word;
+            (str.length > 0 && obj.length > 1) && (str = str + ', ');
+        })
+    }catch{
+        console.log(obj)
+    }
     return str;
 }   
