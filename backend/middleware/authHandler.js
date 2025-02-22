@@ -72,13 +72,13 @@ export const authenticateAdminJwt = async (req, res,  next) => {
   const tokenVerified = verifyToken(token);
 
   if(tokenVerified){
+      req.user = await tokenVerified;
+      if(req.user){
       let adminRoles = ['Staff', 'Manager', 'Super Administrator'];
-      req.user = await tokenVerified
       let role = req.user.role.trim();
       let isValidRole = adminRoles.some((r) => r === role);
-      
       if(!isValidRole) return handleResponse(res, 403, 'Invalid access.');
-
+    } 
       return next();
   }
 

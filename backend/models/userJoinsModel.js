@@ -71,3 +71,11 @@ export const createUserService = async(fn, mn, sn, gd, adrs, un, pw, em, rl, dj)
 
     return userIds;
 }
+
+export const deleteUserService = async(id) => {
+    let userUidQuery = await pool.query('SELECT "UID" FROM otcv_user_details WHERE "UAID" = $1', [id])
+    let userUid = userUidQuery.rows[0]
+    await pool.query('DELETE FROM otcv_user_details WHERE "UID" = $1', [userUid.UID]);
+    await pool.query('DELETE FROM otcv_user_accounts WHERE "UAID" = $1', [id]);
+
+}

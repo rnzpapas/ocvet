@@ -11,7 +11,7 @@ export const convertObjectArrayToString = (obj) => {
             (str.length > 0 && obj.length > 1) && (str = str + ', ');
         })
     }catch{
-        console.log(obj)
+        // console.log(obj)
     }
     return str;
 }   

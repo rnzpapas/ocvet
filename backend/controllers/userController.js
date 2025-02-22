@@ -1,6 +1,6 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { getUserAccountByEmailService, getUserAccountByUsernameService } from "../models/userAccountModel.js";
-import { createUserService, getUserCompleteDetailByIdService, getUserCompleteDetailByNameEmailService } from "../models/userJoinsModel.js";
+import { createUserService, deleteUserService, getUserCompleteDetailByIdService, getUserCompleteDetailByNameEmailService } from "../models/userJoinsModel.js";
 
 export const getUserFullDetails = async (req, res, next) => {
     try{
@@ -34,6 +34,34 @@ export const createUser = async (req, res, next) => {
             return handleResponse(res, 201, "User created successfully.", userIDs);
         }
     }catch(err) {
+
+        return next(err);
+    }
+}
+
+export const createAdmin = async (req, res, next) => {
+    const {  firstname, surname,email, username, password,role, date_joined } = req.body;
+    console.log(date_joined)
+    const formattedDateJoined = new Date(date_joined);
+    const splitDateJoined = formattedDateJoined.toISOString().split('T')[0];
+    const existing_username = await getUserAccountByUsernameService(username);
+    const existing_email = await getUserAccountByEmailService(email);
+    try{
+        if(username.length === 0 || password.length === 0 || email.length === 0 ||
+                role.length === 0 || date_joined.length === 0 || firstname.length === 0 ||
+                surname.length === 0) {
+            return handleResponse(res, 400, "Please fill out all fields.");
+        }else if(password.length < 6){
+            return handleResponse(res, 400, "Password must be minimum of 6 characters.");
+        }else if(existing_username.length > 0){
+            return handleResponse(res, 400, "Username already taken.");
+        }else if(existing_email.length > 0){
+            return handleResponse(res, 400, "Email already taken.");
+        }else{
+            const userIDs = await createUserService(firstname,'', surname, 'Male', 'Philippines', username, password, email, role, splitDateJoined);
+            return handleResponse(res, 201, "User created successfully.", userIDs);
+        }
+    }catch(err) {
         return next(err);
     }
 }
@@ -48,3 +76,13 @@ export const getUserCompleteDetailByNameEmail = async(req, res, next) => {
     }
 }
 
+
+export const deleteUserDetail = async (req, res, next) => {
+    const id = req.params.id;
+    try{
+        await deleteUserService(id);
+        return handleResponse(res, 200, 'User information change success.');
+    }catch(err){
+        return next(err)
+    }
+}

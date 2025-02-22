@@ -684,7 +684,6 @@ function MngrSettings() {
             </section>
           </section>
         </section>
-        
     </section>
     )
 }

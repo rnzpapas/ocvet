@@ -1,4 +1,4 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAdminEmailService, getAllAdminEmailService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAdminEmailService, getAllAdminCountService, getAllAdminEmailService, getAllAdministratorsFilteredService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
@@ -50,6 +50,16 @@ export const getAllAdministrators = async (req, res, next) => {
     }
 }
 
+export const getAllAdministratorsFiltered = async (req, res, next) => {
+    let query = req.query.query;
+    try{
+        const users = await getAllAdministratorsFilteredService(query);
+        if(!users) return handleResponse(res, 404, "Data retrieval failed");
+        return handleResponse(res, 200, "Data retrieval success", users);
+    }catch(err) {
+        return next(err);
+    }
+}
 export const getAllUsersAccount = async (req, res, next) => {
     try{
         const users = await getAllUsersAccountService();
@@ -103,6 +113,7 @@ export const getAllAdminEmail = async (req, res, next) => {
         return next(err);
     }
 }
+
 export const getUserAccountById = async (req, res, next) => {
     try{
         const user = await getUserAccountByIdService(req.params.id);
@@ -276,5 +287,15 @@ export const sortDateJoinedDesc = async (req, res, next) => {
         return handleResponse(res, 200, "User order by date joined descending successfully established.", dateDesc);
     }catch(err){
         return next(err)
+    }
+}
+
+export const getAllAdminCount = async (req, res, next) => {
+    try{
+        let result = await getAllAdminCountService();
+        return handleResponse(res, 200, "Admin count .", result);
+
+    }catch{
+        return next()
     }
 }

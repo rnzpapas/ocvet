@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { convertObjectArrayToString } from "../utils/textUtils";
 
 function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment}) {
     const MAX_ROWS = 10;
     const [pageData, setPageData] = useState([]);
-    const [sorted, setIsSorted] = useState({keyToSort: "Client", sortMode: "asc"});
-    const [isMarkedChecked, setIsMarkedChecked] = useState(false);
-    const [isMarkedX, setIsMarkedX] = useState(false)
+    const [sorted, setSorted] = useState({keyToSort: "", sortMode: "asc"});
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 
     const sortCol = (key) => {
         if(sorted.sortMode === "desc"){
-            setIsSorted({keyToSort: key, sortMode: "asc"})
+            setSorted({keyToSort: key, sortMode: "asc"})
         }
         if(sorted.sortMode === "asc"){
-            setIsSorted({keyToSort: key, sortMode: "desc"})
+            setSorted({keyToSort: key, sortMode: "desc"})
         }
+
     }
 
     const goToNextPage = () => {
@@ -43,10 +42,15 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
         if(data) {
             setTotalPages(Math.ceil(data.length / MAX_ROWS));
             let dataSliced = data.slice(((currentPage - 1) * MAX_ROWS), ((currentPage - 1) * MAX_ROWS) + MAX_ROWS - 1)
-            setPageData((prevState) => prevState = dataSliced);
+            setPageData(() => dataSliced);
         }
     },[currentPage])
 
+
+    useEffect(() => {
+        console.log(sorted)
+
+    },[sorted])
     return (
         <section className={`flex flex-col max-h-fit ${tableW} ${tableH} ${style}`}>
             <section className="overflow-y-auto overflow-x-auto">
@@ -55,7 +59,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                         <tr>
                             {headers.map((header, index) => (
                                 <th key={`${index+1}-${header.key}`} className={` text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 ${header.isSortable ? 'cursor-pointer' : ''}`} onClick={() => sortCol(header.key)}> 
-                                    <section className="flex gap-2 items-center justify-center relative">
+                                    <section className="flex gap-2 items-center justify-center relative text-nowrap">
                                         <p>{header.key} </p>
                                         {header.isSortable ? 
                                             <section>
@@ -81,7 +85,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                     index < MAX_ROWS && (
                                         <tr key={index} className="border-b-2 border-silver hover:bg-silver">
                                             {Object.keys(info).map((key, index) => (
-                                                key !== "status" && typeof info[key] == "object" ?
+                                                key !== "status" && typeof info[key] == "object"  && !(React.isValidElement(info[key])) ?
                                                     <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
                                                         {convertObjectArrayToString(info[key])} 
                                                     </td>

@@ -1,13 +1,15 @@
 import express from 'express';
-import { getAllUsersDetail, getUserDetailById, updateUserDetail, deleteUserDetail  } from '../controllers/userDetailsController.js';
+import { getAllUsersDetail, getUserDetailById, updateUserDetail  } from '../controllers/userDetailsController.js';
 import { getAllUsersAccount, getUserAccountById, updateUserAccount, deleteUserAccount, countAllUserAccount, countAllUserAccountByDate, sortDateJoinedAsc, sortDateJoinedDesc, sortUsernameAsc, 
 sortUsernameDesc, loginUserAccount, updateUserAccountPassword, updateUserOtp, verifyUserOtp, recoversUserAccountPassword, 
 getAllPetOwnersAccount,
 getAllAdministrators,
 generateAllPetOwnersPdf,
 getAdminEmail,
-getAllAdminEmail} from '../controllers/userAccountsController.js';
-import { createUser, getUserFullDetails, getUserCompleteDetailByNameEmail } from '../controllers/userController.js';
+getAllAdminEmail,
+getAllAdministratorsFiltered,
+getAllAdminCount} from '../controllers/userAccountsController.js';
+import { createUser, getUserFullDetails, getUserCompleteDetailByNameEmail, createAdmin, deleteUserDetail } from '../controllers/userController.js';
 import { authenticateUserJwt, authenticateAdminJwt, authenticateSuperAdminJwt } from '../middleware/authHandler.js';
 
 
@@ -16,8 +18,12 @@ const ROUTER = express.Router();
 
 // admin
 ROUTER.get('/admin/all', authenticateAdminJwt, getAllAdministrators);
+ROUTER.get('/admin/all/find', authenticateAdminJwt, getAllAdministratorsFiltered);
 ROUTER.get('/admin/email', authenticateAdminJwt, getAdminEmail);
 ROUTER.get('/admin/email/all', authenticateAdminJwt, getAllAdminEmail);
+ROUTER.post("/admin/register", authenticateAdminJwt, createAdmin);
+ROUTER.delete("/admin/:id", authenticateAdminJwt, deleteUserDetail);
+ROUTER.get("/admin/count", authenticateAdminJwt, getAllAdminCount);
 
 
 
@@ -36,7 +42,6 @@ ROUTER.post("/user/account-recovery/otp-changpw", recoversUserAccountPassword);
 ROUTER.get("/user", authenticateAdminJwt, getAllUsersDetail);
 ROUTER.get("/user/:id", getUserDetailById);
 ROUTER.put("/user/:id", authenticateUserJwt, updateUserDetail);
-ROUTER.delete("/user/:id", authenticateAdminJwt, deleteUserDetail);
 
 // USER ACCOUNTS
 ROUTER.get("/user/account/all", authenticateAdminJwt, getAllUsersAccount);

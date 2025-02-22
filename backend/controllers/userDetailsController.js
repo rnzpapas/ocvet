@@ -25,6 +25,3 @@ export const updateUserDetail = async (req, res, next) => {
     }
 }
 
-export const deleteUserDetail = async (req, res, next) => {
-
-}

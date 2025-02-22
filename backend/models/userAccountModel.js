@@ -55,6 +55,19 @@ export const getAllAdministratorsService = async () => {
     return r.rows;
 }
 
+export const getAllAdministratorsFilteredService = async (query) => {
+    let q = `%${query}%`
+    let r = await pool.query(`
+        SELECT * FROM otcv_user_accounts ua
+        INNER JOIN otcv_user_details ud
+        ON ua."UAID" = ud."UAID"
+        WHERE (ud.firstname LIKE $1 OR ud.surname LIKE $1 OR ua.email LIKE $1) AND
+        (role = 'Staff' OR role = 'Manager' OR role = 'Super Administrator')
+    `,[q])
+    return r.rows;
+}
+
+
 export const getUserAccountByUsernameService = async(un) => {
     const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
     return u.rows;
@@ -152,6 +165,15 @@ export const getAllAdminEmailService = async () => {
         SELECT "UAID", email 
         FROM otcv_user_accounts 
         WHERE role = ANY('{Super Administrator, Manager, Staff}') 
+    `,)
+    return result.rows;
+}
+
+export const getAllAdminCountService = async () => {
+    let result = await pool.query(`
+        SELECT count(*)
+        FROM otcv_user_accounts 
+        WHERE role = ANY('{Manager, Staff}') 
     `,)
     return result.rows;
 }
