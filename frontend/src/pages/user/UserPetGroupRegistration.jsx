@@ -3,8 +3,7 @@ import Footer from "../../components/Footer"
 import InputField from "../../components/InputField"
 import UserNav from "../../components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
-import Pomeranian from "../../assets/pomeranian.png"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from "../../utils/textUtils";
 import axios from 'axios';
 import { useNavigate } from "react-router";

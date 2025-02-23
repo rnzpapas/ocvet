@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import Emails from "../../components/Emails";
 import SuperAdminNav from "../../components/navbars/SuperAdminNav";
 import DoughnutChart from "../../components/charts/DoughnutChart";
 import BarChart from "../../components/charts/BarChart";

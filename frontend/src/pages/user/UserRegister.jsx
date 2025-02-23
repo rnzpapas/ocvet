@@ -3,7 +3,6 @@ import InputField from "../../components/InputField";
 import Button from "../../components/button"
 import SideLogo from "../../components/SideLogo"
 import { Link, useNavigate } from "react-router";
-import useRedirectUser from '../../auth/useRedirectUser';
 import axios from 'axios'
 
 function UserRegister() {

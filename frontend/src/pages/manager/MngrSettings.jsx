@@ -3,7 +3,6 @@ import MngrNav from '../../components/navbars/MngrNav'
 import AccountInfo from '../../components/AccountInfo'
 import Modal from '../../components/Modal';
 import axios from 'axios';
-import useRedirectUser from '../../auth/useRedirectUser';
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
 import { capitalizeFirstLetter } from '../../utils/textUtils'

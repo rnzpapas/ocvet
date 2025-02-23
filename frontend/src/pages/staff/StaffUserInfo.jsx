@@ -3,7 +3,6 @@ import StaffNav from '../../components/navbars/StaffNav'
 import AccountInfo from '../../components/AccountInfo'
 import Modal from '../../components/Modal';
 import axios from 'axios';
-import useRedirectUser from '../../auth/useRedirectUser';
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
 import PersonalDetails from '../../components/PersonalDetails';
