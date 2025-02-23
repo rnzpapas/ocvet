@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
 import fs from 'fs'
 import { generatePdf } from "../utils/reportUtils.js";
@@ -31,9 +31,11 @@ export const createPet = async (req, res, next) => {
 export const updatePet = async (req, res, next) => {
     const petid = req.query.petid;
     const { pet_owner, atypeid, nickname } = req.body;
+    const pet = await getPetService(petid);
+    console.log(pet)
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
     try{
-        if(existing_nickname.length > 0){
+        if(existing_nickname.length > 0 && pet.nickname !== nickname){
             return handleResponse(res, 400, "Pet nickname already taken.");
         }
 
@@ -167,6 +169,15 @@ export const getAllPetsByType = async (req, res, next) => {
     const atypeid  = req.query.atypeid;
     try{
         const result = await getAllPetsByTypeService(atypeid);
+        return handleResponse(res, 200, "Pets successfully fetched.", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getPetsCountByType = async (req, res, next) => {
+    try{
+        const result = await getPetsCountByTypeService();
         return handleResponse(res, 200, "Pets successfully fetched.", result);
     }catch(err) {
         return next(err);

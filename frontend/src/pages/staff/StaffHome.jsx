@@ -61,8 +61,8 @@ function StaffHome() {
     <section className="flex w-full">
         <StaffNav />
         <section className="px-5 py-5 w-full">
-            <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">dashboard</h5>
-            <section className="grid grid-cols-3 gap-7">
+            <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">announcements</h5>
+            {/* <section className="grid grid-cols-3 gap-7">
                 <section className="flex flex-col gap-5 items-center">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
                     <section className="h-60">
@@ -95,9 +95,8 @@ function StaffHome() {
                     }
                 </section>
                 </section>
-            </section>
+            </section> */}
             <section className="flex flex-col gap-5">
-                <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Announcements</h5>
                 <Emails mails={emails} isRecipientsIncluded={false} isBodyIncluded={true}/>
             </section>
         </section>

@@ -3,7 +3,7 @@ import AdminNav from "./AdminNav"
 function StaffNav() {
     const staffLinks = [
         {
-            "txtContent": "Dashboard",
+            "txtContent": "Announcements",
             "targetElement": "/staff/dashboard"
         },
         {

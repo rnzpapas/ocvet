@@ -1,4 +1,4 @@
-
+import { capitalizeFirstLetter } from '../utils/textUtils'
 function PersonalDetails({fullName = "Rando Ballosteros", gender = "randob@gmail.com", address =  "rando182025", style, onEditClick}) {
     return (
       <section className="flex">
@@ -20,7 +20,7 @@ function PersonalDetails({fullName = "Rando Ballosteros", gender = "randob@gmail
                   </section>
                   <section className="flex items-center gap-2">
                       <h5 className="font-instrument-sans font-semibold text-raisin-black">Gender:</h5>
-                      <p className="font-lato text-raisin-black text-content-sm">{gender}</p>
+                      <p className="font-lato text-raisin-black text-content-sm">{capitalizeFirstLetter(gender)}</p>
                   </section>
               </section>
           </section>

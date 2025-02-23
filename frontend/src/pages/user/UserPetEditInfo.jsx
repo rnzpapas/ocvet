@@ -35,8 +35,6 @@ function UserPetEditInfo() {
         return types;
     }
 
-    
-
     const onChangeNickname = (evt) => {
         setNickname(evt.target.value);
     }

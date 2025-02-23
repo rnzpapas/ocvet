@@ -117,7 +117,7 @@ function SAdminPetOwners() {
     },[search]);
 
     return (
-        <section className="flex w-full">
+        <section className="flex w-screen h-screen overflow-hidden">
             <SuperAdminNav />
             <section className="px-5 py-5 w-full">
                 <section className="flex gap-5">

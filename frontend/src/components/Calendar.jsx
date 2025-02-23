@@ -141,7 +141,7 @@ const Calendar = ({onSelectDate}) => {
                     {week.map((day, dayIndex) => (
                         <section key={dayIndex}>
                             {
-                                day < currentDay || (monthFullyBooked === currentMonth && day === dayFullyBooked)? 
+                                day < currentDay || (monthFullyBooked === currentMonth && day === dayFullyBooked || dayIndex === 0)? 
                                 <div key={dayIndex} className={`font-lato w-10 h-10 flex items-center justify-center text-content-xtrasm ${day ? 'text-silver line-through' : 'text-transparent'}`}>
                                     {day || ''}
                                 </div>

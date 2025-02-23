@@ -23,6 +23,10 @@ function SuperAdminNav() {
             "targetElement": "/sadm/appointments"
         },
         {
+            "txtContent": "Announcements",
+            "targetElement": "/sadm/announcements"
+        },
+        {
             "txtContent": "Settings",
             "targetElement": "/sadm/settings"
         },

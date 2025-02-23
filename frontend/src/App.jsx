@@ -47,6 +47,7 @@ import UserPetGroupPage from "./pages/user/UserPetGroupPage"
 import ForbiddenAccess from "./pages/ForbiddenAccess"
 import MngrSettings from "./pages/manager/MngrSettings"
 import SAdminSettings from "./pages/superadmin/SAdminSettings"
+import SAdminAnnouncements from "./pages/superadmin/SAdminAnnouncements"
 
 function App() {
   const checkBtn = () => {
@@ -225,6 +226,7 @@ function App() {
           <Route path="pets" element={<SAdminPetList />}/>
           <Route path="owners" element={<SAdminPetOwners />}/>
           <Route path="appointments" element={<SAdminAppointments />}/>
+          <Route path="announcements" element={<SAdminAnnouncements />}/>
           <Route path="admins" element={<SAdminListAdmin />}/>
           <Route path="settings" element={<SAdminSettings />}/>
         </Route>

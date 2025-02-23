@@ -6,7 +6,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axios from "axios";
 import { convertDate, convertTime } from "../../utils/datetimeUtils";
-
+import { capitalizeFirstLetter } from "../../utils/textUtils"
 const headers = [
   {
       "key": "ID",
@@ -57,7 +57,6 @@ function UserPetInformation() {
       await axios.get(`http://localhost:5001/api/pets/details?petid=${id}`)
       .then((response) => pet = response.data.data)
       .catch(err => console.error(err))
-
       return pet;
     }
 
@@ -154,6 +153,7 @@ function UserPetInformation() {
                     </section>
                 </section>
                 <h5 className="font-instrument-sans font-semibold text-headline-md"> {petInfo.nickname} </h5>
+                <h5 className="font-instrument-sans text-content-md italic"> {capitalizeFirstLetter(petInfo.animal_type)} </h5>
               </section>
               <section className="absolute top-10 right-10  flex flex-col gap-2">
                 <section className="flex items-center cursor-pointer">

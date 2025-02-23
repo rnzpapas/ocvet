@@ -201,3 +201,13 @@ export const getAllPetsByRangeDateService = async (todate, fromdate) => {
     return result.rows;
 }
 
+
+export const getPetsCountByTypeService = async () => {
+    const result = await pool.query(`
+    SELECT at."ATYPEID", at.animal_type, COUNT(p."PETID") AS total_population
+    FROM public.otcv_animal_types at
+    LEFT JOIN public.otcv_pets p ON at."ATYPEID" = p."ATYPEID"
+    GROUP BY at."ATYPEID", at.animal_type
+    ORDER BY total_population DESC;`);
+    return result.rows;
+}

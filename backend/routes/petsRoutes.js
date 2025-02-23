@@ -5,7 +5,8 @@ getAllPetsByOwnerDescending, getAllPetsByRangeDate, getAllPetsByType, getAllPets
 getAllPetsCount, getPet, getPetByNickname, updatePet, updatePetImage, getAllCountPetsByOwner, getAllCountPetsByOwnerAndPets,
 getAllPetsAndOwnerByType,
 getPetByNicknameAdmin,
-getAllPetsPdf} from "../controllers/petsController.js"
+getAllPetsPdf,
+getPetsCountByType} from "../controllers/petsController.js"
 import { authenticateAdminJwt, authenticateUserJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
@@ -29,5 +30,7 @@ ROUTER.post("/pets/nickname", getPetByNickname);
 ROUTER.get("/pets/admin/nickname", authenticateAdminJwt, getPetByNicknameAdmin);
 ROUTER.put("/pets/update", updatePet);
 
+// admin
+ROUTER.get("/pets/type/count", authenticateAdminJwt, getPetsCountByType);
 
 export default ROUTER;
