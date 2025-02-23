@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Emails from "../../components/Emails"
-import MngrNav from "../../components/navbars/MngrNav"
-import Button from "../../components/button";
+import Emails from "@/components/Emails"
+import MngrNav from "@/components/navbars/MngrNav"
+import Button from "@/components/button";
 import axios from 'axios'
 import { convertEmailDate, convertTime } from '../../utils/datetimeUtils'
-import EmailChip from "../../components/EmailChip";
+import EmailChip from "@/components/EmailChip";
 
 
 const MAX_CHARACTERS = 500;

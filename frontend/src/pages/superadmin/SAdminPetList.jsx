@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import InputField from '../../components/InputField';
-import SuperAdminNav from '../../components/navbars/SuperAdminNav';
-import PetCard from '../../components/PetCard';
+import InputField from '@/components/InputField';
+import SuperAdminNav from '@/components/navbars/SuperAdminNav';
+import PetCard from '@/components/PetCard';
 import axios from 'axios';
-import Modal from '../../components/Modal';
+import Modal from '@/components/Modal';
 import { capitalizeFirstLetter } from '../../utils/textUtils';
 
 function SAdminPetList() {

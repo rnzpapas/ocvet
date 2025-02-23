@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";;
-import InputField from "../../components/InputField";
-import StaffNav from "../../components/navbars/StaffNav";
-import Table from "../../components/Table";
+import InputField from "@/components/InputField";
+import StaffNav from "@/components/navbars/StaffNav";
+import Table from "@/components/Table";
 import axios from 'axios';
 import { convertDate } from "../../utils/datetimeUtils"
 const HEADERS = [

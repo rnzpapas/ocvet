@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import StaffNav from '../../components/navbars/StaffNav'
-import Table from '../../components/Table';
+import StaffNav from '@/components/navbars/StaffNav'
+import Table from '@/components/Table';
 import axios from 'axios';
 import { convertDate, convertTime } from '../../utils/datetimeUtils';
-import Modal from '../../components/Modal';
+import Modal from '@/components/Modal';
 
 const HEADERS = [
     {

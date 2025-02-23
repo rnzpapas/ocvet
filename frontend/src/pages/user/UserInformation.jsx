@@ -1,14 +1,14 @@
 import { useNavigate, useParams } from "react-router"
 import useRedirectUser from "../../auth/useRedirectUser"
-import AccountInfo from "../../components/AccountInfo"
-import PersonalDetails from "../../components/PersonalDetails"
-import Footer from "../../components/Footer"
-import UserNav from "../../components/navbars/UserNav"
+import AccountInfo from "@/components/AccountInfo"
+import PersonalDetails from "@/components/PersonalDetails"
+import Footer from "@/components/Footer"
+import UserNav from "@/components/navbars/UserNav"
 import axios from "axios"
 import { useEffect, useState } from "react"
-import Modal from "../../components/Modal"
+import Modal from "@/components/Modal"
 import { convertDate } from "../../utils/datetimeUtils"
-import DoughnutChart from "../../components/charts/DoughnutChart"
+import DoughnutChart from "@/components/charts/DoughnutChart"
 import { capitalizeFirstLetter } from '../../utils/textUtils';
 
 const pwFields = [

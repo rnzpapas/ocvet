@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import Emails from "../../components/Emails";
-import MngrNav from "../../components/navbars/MngrNav";
-import BarChart from "../../components/charts/BarChart";
-import DoughnutChart from "../../components/charts/DoughnutChart";
+import Emails from "@/components/Emails";
+import MngrNav from "@/components/navbars/MngrNav";
+import BarChart from "@/components/charts/BarChart";
+import DoughnutChart from "@/components/charts/DoughnutChart";
 import axios from 'axios';
 import { convertEmailDate, convertTime } from '../../utils/datetimeUtils'
 

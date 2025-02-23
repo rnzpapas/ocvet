@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import MngrNav from '../../components/navbars/MngrNav'
-import AccountInfo from '../../components/AccountInfo'
-import Modal from '../../components/Modal';
+import MngrNav from '@/components/navbars/MngrNav'
+import AccountInfo from '@/components/AccountInfo'
+import Modal from '@/components/Modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
 import { capitalizeFirstLetter } from '../../utils/textUtils'
-import PersonalDetails from '../../components/PersonalDetails';
-import InputField from '../../components/InputField';
-import Button from '../../components/button';
+import PersonalDetails from '@/components/PersonalDetails';
+import InputField from '@/components/InputField';
+import Button from '@/components/button';
 
 const pwFields = [
     {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import Footer from "../../components/Footer"
-import UserNav from "../../components/navbars/UserNav"
+import Footer from "@/components/Footer"
+import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
-import Calendar from "../../components/Calendar";
+import Calendar from "@/components/Calendar";
 import { adjustDayVisuals, adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
 import axios from 'axios'
 

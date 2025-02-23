@@ -1,7 +1,7 @@
 import OcvetLogo from "../../assets/logo_img.png";
-import InputField from "../../components/InputField"
+import InputField from "@/components/InputField"
 import { useEffect, useState } from "react";
-import Button from "../../components/button";
+import Button from "@/components/button";
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 

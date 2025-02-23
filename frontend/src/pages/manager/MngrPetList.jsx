@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import Button from '../../components/button';
-import InputField from '../../components/InputField';
-import PetCard from '../../components/PetCard';
+import Button from '@/components/button';
+import InputField from '@/components/InputField';
+import PetCard from '@/components/PetCard';
 import axios from 'axios';
-import Modal from '../../components/Modal';
+import Modal from '@/components/Modal';
 import { capitalizeFirstLetter } from '../../utils/textUtils';
-import MngrNav from '../../components/navbars/MngrNav';
+import MngrNav from '@/components/navbars/MngrNav';
 
 function MngrPetList() {
     let sessionToken = sessionStorage.getItem('jwt-token');

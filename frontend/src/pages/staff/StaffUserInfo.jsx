@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import StaffNav from '../../components/navbars/StaffNav'
-import AccountInfo from '../../components/AccountInfo'
-import Modal from '../../components/Modal';
+import StaffNav from '@/components/navbars/StaffNav'
+import AccountInfo from '@/components/AccountInfo'
+import Modal from '@/components/Modal';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
-import PersonalDetails from '../../components/PersonalDetails';
+import PersonalDetails from '@/components/PersonalDetails';
 
 const pwFields = [
     {

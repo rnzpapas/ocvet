@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";;
-import InputField from "../../components/InputField";
-import SuperAdminNav from "../../components/navbars/SuperAdminNav";
-import Table from "../../components/Table";
+import InputField from "@/components/InputField";
+import SuperAdminNav from "@/components/navbars/SuperAdminNav";
+import Table from "@/components/Table";
 import axios from 'axios';
 import { convertDate } from "../../utils/datetimeUtils"
 

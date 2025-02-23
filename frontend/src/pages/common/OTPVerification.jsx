@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import SideLogo from "../../components/SideLogo"
-import InputField from "../../components/InputField"
-import Button from "../../components/button"
-import Link from "../../components/Link";
+import SideLogo from "@/components/SideLogo"
+import InputField from "@/components/InputField"
+import Button from "@/components/button"
+import Link from "@/components/Link";
 import axios from "axios";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 

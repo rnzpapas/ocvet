@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import InputField from "../../components/InputField";
-import UserNav from "../../components/navbars/UserNav";
-import Footer from "../../components/Footer";
-import Button from "../../components/button";
-import PetCard from "../../components/PetCard";
+import InputField from "@/components/InputField";
+import UserNav from "@/components/navbars/UserNav";
+import Footer from "@/components/Footer";
+import Button from "@/components/button";
+import PetCard from "@/components/PetCard";
 import { Link } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axios from "axios";

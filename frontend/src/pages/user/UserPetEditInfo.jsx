@@ -1,7 +1,7 @@
-import Button from "../../components/button"
-import Footer from "../../components/Footer"
-import InputField from "../../components/InputField"
-import UserNav from "../../components/navbars/UserNav"
+import Button from "@/components/button"
+import Footer from "@/components/Footer"
+import InputField from "@/components/InputField"
+import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useRef, useState } from "react";

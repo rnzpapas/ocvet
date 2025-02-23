@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Footer from "../../components/Footer";
-import UserNav from "../../components/navbars/UserNav";
-import Table from "../../components/Table";
+import Footer from "@/components/Footer";
+import UserNav from "@/components/navbars/UserNav";
+import Table from "@/components/Table";
 import { Link, useNavigate, useParams } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axios from "axios";

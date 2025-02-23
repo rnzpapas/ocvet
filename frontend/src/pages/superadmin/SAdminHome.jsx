@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import SuperAdminNav from "../../components/navbars/SuperAdminNav";
-import DoughnutChart from "../../components/charts/DoughnutChart";
-import BarChart from "../../components/charts/BarChart";
+import SuperAdminNav from "@/components/navbars/SuperAdminNav";
+import DoughnutChart from "@/components/charts/DoughnutChart";
+import BarChart from "@/components/charts/BarChart";
 import axios from "axios";
 import { convertEmailDate, convertTime } from "../../utils/datetimeUtils";
 import { capitalizeFirstLetter } from '../../utils/textUtils'

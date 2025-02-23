@@ -1,13 +1,13 @@
 import { useNavigate, useParams } from "react-router"
-import Footer from "../../components/Footer"
-import UserNav from "../../components/navbars/UserNav"
+import Footer from "@/components/Footer"
+import UserNav from "@/components/navbars/UserNav"
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from '../../utils/textUtils'
 import { convertDate, convertTime } from '../../utils/datetimeUtils'
-import Table from "../../components/Table";
-import Modal from "../../components/Modal";
-import Button from "../../components/button";
+import Table from "@/components/Table";
+import Modal from "@/components/Modal";
+import Button from "@/components/button";
 
 
 const headers = [

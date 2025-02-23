@@ -1,7 +1,7 @@
 import { useState } from "react"
-import InputField from "../../components/InputField"
-import SideLogo from "../../components/SideLogo"
-import Button from "../../components/button";
+import InputField from "@/components/InputField"
+import SideLogo from "@/components/SideLogo"
+import Button from "@/components/button";
 import { useNavigate } from "react-router";
 import axios from "axios";
 

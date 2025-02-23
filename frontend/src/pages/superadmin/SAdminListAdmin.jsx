@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import InputField from "../../components/InputField";
-import Table from "../../components/Table";
-import SuperAdminNav from "../../components/navbars/SuperAdminNav";
+import InputField from "@/components/InputField";
+import Table from "@/components/Table";
+import SuperAdminNav from "@/components/navbars/SuperAdminNav";
 import axios from 'axios';
 import { convertDate } from "../../utils/datetimeUtils"
-import Modal from '../../components/Modal';
+import Modal from '@/components/Modal';
 
 
 const HEADERS = [

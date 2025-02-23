@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Button from "../../components/button";
-import InputField from "../../components/InputField";
-import SideLogo from "../../components/SideLogo";
+import Button from "@/components/button";
+import InputField from "@/components/InputField";
+import SideLogo from "@/components/SideLogo";
 import { Link as RouterLink, useNavigate} from "react-router";
-import Link from "../../components/Link";
+import Link from "@/components/Link";
 import axios from "axios";
 import useRedirectUser from '../../auth/useRedirectUser';
 

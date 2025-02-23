@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import StaffNav from "../../components/navbars/StaffNav"
-import Emails from "../../components/Emails";
+import StaffNav from "@/components/navbars/StaffNav"
+import Emails from "@/components/Emails";
 import axios from 'axios';
 import { convertEmailDate, convertTime } from "../../utils/datetimeUtils";
 
