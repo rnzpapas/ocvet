@@ -5,7 +5,6 @@ import useRedirectUser from '../../auth/useRedirectUser';
 import Calendar from "../../components/Calendar";
 import { adjustDayVisuals, adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
 import axios from 'axios'
-import e from "cors";
 
 const timeSlot = [
   '08:00 AM', 

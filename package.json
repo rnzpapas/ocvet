@@ -1,32 +1,17 @@
 {
-    "name": "b1",
-    "version": "1.0.0",
-    "description": "",
-    "scripts": {
-        "dev": "npm run server & npm run client",
-        "start": "concurrently \"npm run server\" \"npm run client\"",
-        "server": "npm run dev --prefix backend",
-        "client": "npm run dev --prefix frontend"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "chart.js": "^4.4.7",
-        "concurrently": "^9.1.2",
-        "cors": "^2.8.5",
-        "dotenv": "^16.4.7",
-        "express": "^4.21.2",
-        "joi": "^17.13.3",
-        "multer": "^1.4.5-lts.1",
-        "nodemailer": "^6.10.0",
-        "pg": "^8.13.1",
-        "pg-hstore": "^2.3.4",
-        "react-chartjs-2": "^5.3.0",
-        "sequelize": "^6.37.5",
-        "vite": "^6.1.1"
-    },
-    "devDependencies": {
-        "nodemon": "^3.1.9"
-    }
+  "name": "ocvet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run server & npm run client",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix frontend"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
