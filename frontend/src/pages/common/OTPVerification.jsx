@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import SideLogo from "@/components/SideLogo"
-import InputField from "@/components/InputField"
-import Button from "@/components/Button"
+import SideLogo from "@/components/SideLogo";
+import InputField from "@/components/InputField";
+import Button from "@/components/Button";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router";
-
 
 const DEFAULT_SECONDS = 15;
 const SECOND_DECREMENT = 1;
