@@ -1,10 +1,10 @@
-import Button from "@/components/button"
+import Button from "@/components/Button"
 import Footer from "@/components/Footer"
 import InputField from "@/components/InputField"
 import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
 import { useNavigate, useParams } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from '../../utils/textUtils'
 import axios from "axios";
 

@@ -8,7 +8,7 @@ import { convertDate } from '../../utils/datetimeUtils';
 import { capitalizeFirstLetter } from '../../utils/textUtils'
 import PersonalDetails from '@/components/PersonalDetails';
 import InputField from '@/components/InputField';
-import Button from '@/components/button';
+import Button from '@/components/Button';
 
 const pwFields = [
     {

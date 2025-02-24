@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Button from '@/components/button';
+import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import PetCard from '@/components/PetCard';
 import axios from 'axios';

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
 import PersonalDetails from '@/components/PersonalDetails';
 import InputField from '@/components/InputField';
-import Button from '@/components/button';
+import Button from '@/components/Button';
 import { capitalizeFirstLetter } from '../../utils/textUtils';
 
 const pwFields = [

@@ -7,7 +7,7 @@ import { capitalizeFirstLetter } from '../../utils/textUtils'
 import { convertDate, convertTime } from '../../utils/datetimeUtils'
 import Table from "@/components/Table";
 import Modal from "@/components/Modal";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 
 
 const headers = [

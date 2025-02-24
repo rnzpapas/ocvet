@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";;
+import { useEffect, useState } from "react";
 import InputField from "@/components/InputField";
 import StaffNav from "@/components/navbars/StaffNav";
 import Table from "@/components/Table";
