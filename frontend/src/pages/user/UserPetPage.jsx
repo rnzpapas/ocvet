@@ -31,7 +31,7 @@ function UserPetPage() {
                 'pet_owner': userParsed.uid,
                 'nickname': search
             }
-            await axiosInstance.post('http://localhost:5001/api/pets/nickname', body, {headers: {"Content-Type":  'application/json'}})
+            await axiosInstance.post('http://localhost:5001/api/pets/nickname', body)
             .then(res => {
                 if(res.data.data.length > 0) {
                     setIsDefaultView(false)
@@ -49,11 +49,8 @@ function UserPetPage() {
     }
 
     const loadAllPets = async () => {
-        let sessionToken = sessionStorage.getItem('jwt-token')
         let pets;
-        await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
-            {headers: {'Authorization': `Bearer ${sessionToken}`}}
-        )
+        await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`)
         .then(response => {
             pets = response.data.data
         })

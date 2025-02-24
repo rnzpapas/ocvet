@@ -45,10 +45,8 @@ function UserInformation() {
   let userParsed = JSON.parse(localStorage.getItem('user'));
   
   const getUserFullDetails = async (id) => {
-    let sessionToken = sessionStorage.getItem('jwt-token');
     let userFullDetails;
-    await axiosInstance.get(`http://localhost:5001/api/user/account/full-details/${id}`, 
-    {headers: {'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get(`http://localhost:5001/api/user/account/full-details/${id}`)
     .then(response => {
       userFullDetails = response.data.data;
     })
