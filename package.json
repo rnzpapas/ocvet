@@ -7,7 +7,7 @@
     "dev": "npm run server & npm run client",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "npm run start --prefix backend",
-    "client": "npm run build --prefix frontend"
+    "client": "npm run dev --prefix frontend"
   },
   "author": "",
   "license": "ISC",
