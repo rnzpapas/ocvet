@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "@/components/button";
+import Button from "@/components/Button";
 import InputField from "@/components/InputField";
 import SideLogo from "@/components/SideLogo";
 import { useNavigate, useSearchParams } from "react-router";
