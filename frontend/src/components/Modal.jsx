@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import InputField from "./InputField"
-import Button from "./button"
+import Button from "./Button"
 import Link from "./Link"
 
 function Modal({headline, fields, isActive = false, onClose, img, inputStyle, 
