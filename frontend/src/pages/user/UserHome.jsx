@@ -4,7 +4,8 @@ import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
 import Calendar from "@/components/Calendar";
 import { adjustDayVisuals, adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
-import axios from 'axios'
+import axiosInstance from "@/config/AxiosConfig.jsx"
+
 
 const timeSlot = [
   '08:00 AM', 
@@ -45,7 +46,7 @@ function UserHome() {
   const loadPets = async () => {
     let p;
     let sessionToken = sessionStorage.getItem('jwt-token');
-    await axios.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
+    await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
       {
         headers : {
           'Authorization': `Bearer ${sessionToken}`
@@ -61,7 +62,7 @@ function UserHome() {
 
   const loadPetGroup = async () => {
     let p;
-    await axios.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+    await axiosInstance.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
     .then(res => {
       p = res.data.data
     })
@@ -71,7 +72,7 @@ function UserHome() {
 
   const loadClinicAppointment = async () => {
     let appointmentSchedObj = [];
-    await axios.get('http://localhost:5001/api/appointment/all')
+    await axiosInstance.get('http://localhost:5001/api/appointment/all')
     .then((res) => {
       let apiResponse = res.data.data;
       let dateObj;
@@ -102,7 +103,7 @@ function UserHome() {
 
   const loadAppointment = async () => {
     let apts;
-    await axios.get(`http://localhost:5001/api/appointment/user?id=${userParsed.uid}`,
+    await axiosInstance.get(`http://localhost:5001/api/appointment/user?id=${userParsed.uid}`,
       {headers: {'Authorization': `Bearer ${sessionToken}`}}
     )
     .then(res => apts = res.data.data)
@@ -112,7 +113,7 @@ function UserHome() {
 
   const loadServices = async () => {
     let svcs;
-    await axios.get(`http://localhost:5001/api/service`)
+    await axiosInstance.get(`http://localhost:5001/api/service`)
     .then(res => svcs = res.data.data)
     .catch(err => console.error(err));
     return svcs;
@@ -120,7 +121,7 @@ function UserHome() {
 
   const loadDiagnosis = async () => {
     let dgs;
-    await axios.get(`http://localhost:5001/api/diagnosis`)
+    await axiosInstance.get(`http://localhost:5001/api/diagnosis`)
     .then(res => dgs = res.data.data)
     .catch(err => console.error(err));
     return dgs;
@@ -217,7 +218,7 @@ function UserHome() {
     formData.append("date", dateOfAppointment)
     formData.append("time", timeOfAppointment)
 
-    await axios.post('http://localhost:5001/api/appointment/create', formData, 
+    await axiosInstance.post('http://localhost:5001/api/appointment/create', formData, 
     {
       headers:{
         'Content-Type': 'application/json'

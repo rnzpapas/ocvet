@@ -3,7 +3,7 @@ import InputField from "@/components/InputField";
 import Button from "@/components/Button"
 import SideLogo from "@/components/SideLogo"
 import { Link, useNavigate } from "react-router";
-import axios from 'axios'
+import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function UserRegister() {
     const navigate = useNavigate()
@@ -90,7 +90,7 @@ function UserRegister() {
         formData.append('role', "User");
         formData.append('date_joined', dateStr);
 
-        await axios.post('http://localhost:5001/api/user/register', formData, 
+        await axiosInstance.post('http://localhost:5001/api/user/register', formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

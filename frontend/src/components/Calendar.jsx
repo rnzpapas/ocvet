@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import React, { useEffect, useState } from 'react';
 import { convertDate, convertTime } from '../utils/datetimeUtils';
 // Helper functions for date management
@@ -74,7 +74,7 @@ const Calendar = ({onSelectDate}) => {
             '04:00 PM',
             '05:00 PM'
         ];
-        await axios.get('http://localhost:5001/api/appointment/datetime')
+        await axiosInstance.get('http://localhost:5001/api/appointment/datetime')
         .then((res) => {
             let apppointments = res.data.data;
             apppointments.map((apppointment) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SideLogo from "@/components/SideLogo";
 import InputField from "@/components/InputField";
 import Button from "@/components/Button";
-import axios from "axios";
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useNavigate, useSearchParams } from "react-router";
 
 const DEFAULT_SECONDS = 15;
@@ -20,7 +20,7 @@ function OTPVerification() {
     
     const resendCode = async () => {
         if (!isCountdownRunning) {
-            await axios.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${searchParams.get('unmail')}`)
+            await axiosInstance.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${searchParams.get('unmail')}`)
             .then((res) => {
                 setSeconds(s => s = DEFAULT_SECONDS);
             })
@@ -38,7 +38,7 @@ function OTPVerification() {
     const verifyOTP = async () => {
         const formData = new FormData();
         formData.append('otp', OTP);
-        await axios.post(`http://localhost:5001/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
+        await axiosInstance.post(`http://localhost:5001/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

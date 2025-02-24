@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import StaffNav from "@/components/navbars/StaffNav"
 import Emails from "@/components/Emails";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertEmailDate, convertTime } from "../../utils/datetimeUtils";
 
 function StaffHome() {
@@ -12,7 +12,7 @@ function StaffHome() {
 
   const loadAppointmentStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -20,7 +20,7 @@ function StaffHome() {
 
   const loadAppointmentSuccessStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats/success")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats/success")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -28,7 +28,7 @@ function StaffHome() {
 
   const loadEmails = async () => {
     let em = [];
-    await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+    await axiosInstance.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
     .then(res => {
       let emailResponse = res.data.data;
       emailResponse.map(er => {

@@ -3,7 +3,7 @@ import Emails from "@/components/Emails";
 import MngrNav from "@/components/navbars/MngrNav";
 import BarChart from "@/components/charts/BarChart";
 import DoughnutChart from "@/components/charts/DoughnutChart";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertEmailDate, convertTime } from '../../utils/datetimeUtils'
 
 
@@ -15,7 +15,7 @@ function MngrHome() {
 
   const loadAppointmentStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -23,7 +23,7 @@ function MngrHome() {
 
   const loadAppointmentSuccessStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats/success")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats/success")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -31,7 +31,7 @@ function MngrHome() {
 
   const loadEmails = async () => {
     let em = [];
-    await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+    await axiosInstance.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
     .then(res => {
       let emailResponse = res.data.data;
       emailResponse.map(er => {

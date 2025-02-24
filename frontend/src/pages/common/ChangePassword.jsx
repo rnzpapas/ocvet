@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import InputField from "@/components/InputField";
 import SideLogo from "@/components/SideLogo";
 import { useNavigate, useSearchParams } from "react-router";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function ChangePassword() {
     const [searchParams] = useSearchParams();
@@ -25,7 +25,7 @@ function ChangePassword() {
         formData.append('cpw', confirmPassword)
         formData.append('uaid', searchParams.get('uaid'));
 
-        await axios.post(`http://localhost:5001/api/user/account-recovery/otp-changpw`, formData, 
+        await axiosInstance.post(`http://localhost:5001/api/user/account-recovery/otp-changpw`, formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

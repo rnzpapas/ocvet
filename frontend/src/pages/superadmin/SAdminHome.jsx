@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import SuperAdminNav from "@/components/navbars/SuperAdminNav";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import BarChart from "@/components/charts/BarChart";
-import axios from "axios";
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertEmailDate, convertTime } from "../../utils/datetimeUtils";
 import { capitalizeFirstLetter } from '../../utils/textUtils'
 
@@ -16,7 +16,7 @@ function SAdminHome() {
   const [employeePopulation, setEmployeePopulation] = useState(0);
   const loadAppointmentStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -24,7 +24,7 @@ function SAdminHome() {
 
   const loadAppointmentSuccessStats = async () => {
     let a;
-    await axios.get("http://localhost:5001/api/appointment/stats/success")
+    await axiosInstance.get("http://localhost:5001/api/appointment/stats/success")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -32,7 +32,7 @@ function SAdminHome() {
 
   const loadEmails = async () => {
     let em = [];
-    await axios.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+    await axiosInstance.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
     .then(res => {
       let emailResponse = res.data.data;
       emailResponse.map(er => {
@@ -52,7 +52,7 @@ function SAdminHome() {
 
   const employeeCount = async () => {
     let n;
-    await axios.get('http://localhost:5001/api/admin/count',{headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('http://localhost:5001/api/admin/count',{headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => n = res.data.data[0].count)
     .catch(err => console.error(err))
     console.log(n)
@@ -61,7 +61,7 @@ function SAdminHome() {
 
   const animalTypeCount = async () => {
     let a;
-    await axios.get('http://localhost:5001/api/pets/type/count',{headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('http://localhost:5001/api/pets/type/count',{headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => a = res.data.data)
     .catch(err => console.error(err))
     return a;

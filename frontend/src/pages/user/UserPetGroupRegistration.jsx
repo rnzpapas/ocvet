@@ -5,7 +5,7 @@ import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
 import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from "../../utils/textUtils";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useNavigate } from "react-router";
 
 function UserPetGroupRegistration() {
@@ -23,7 +23,7 @@ function UserPetGroupRegistration() {
 
     const loadPetType = async () => {
         let types;
-        await axios.get('http://localhost:5001/api/atypes/sort')
+        await axiosInstance.get('http://localhost:5001/api/atypes/sort')
         .then(res => types = res.data.data)
         .catch(err => console.error(err))
         return types;
@@ -32,7 +32,7 @@ function UserPetGroupRegistration() {
     const loadPets = async () => {
         let sessionToken = sessionStorage.getItem('jwt-token')
         let pet;
-        await axios.get(`http://localhost:5001/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
+        await axiosInstance.get(`http://localhost:5001/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
             {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => pet = res.data.data)
         .catch(err => console.error(err))
@@ -41,7 +41,7 @@ function UserPetGroupRegistration() {
  
     const loadPet = async (id) => {
         let pet;
-        await axios.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+        await axiosInstance.get(`http://localhost:5001/api/pets/details?petid=${id}`)
         .then((response) => pet = response.data.data)
         .catch((err) => console.error(err))
         return pet
@@ -98,7 +98,7 @@ function UserPetGroupRegistration() {
         formData.append("POPULATION", 0) :
         formData.append("POPULATION", population)
         
-        await axios.post(`http://localhost:5001/api/animal/group/create`, formData, 
+        await axiosInstance.post(`http://localhost:5001/api/animal/group/create`, formData, 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`,

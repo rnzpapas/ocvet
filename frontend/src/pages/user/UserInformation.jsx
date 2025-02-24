@@ -4,7 +4,7 @@ import AccountInfo from "@/components/AccountInfo"
 import PersonalDetails from "@/components/PersonalDetails"
 import Footer from "@/components/Footer"
 import UserNav from "@/components/navbars/UserNav"
-import axios from "axios"
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useEffect, useState } from "react"
 import Modal from "@/components/Modal"
 import { convertDate } from "../../utils/datetimeUtils"
@@ -47,7 +47,7 @@ function UserInformation() {
   const getUserFullDetails = async (id) => {
     let sessionToken = sessionStorage.getItem('jwt-token');
     let userFullDetails;
-    await axios.get(`http://localhost:5001/api/user/account/full-details/${id}`, 
+    await axiosInstance.get(`http://localhost:5001/api/user/account/full-details/${id}`, 
     {headers: {'Authorization': `Bearer ${sessionToken}`}})
     .then(response => {
       userFullDetails = response.data.data;
@@ -98,7 +98,7 @@ function UserInformation() {
     formData.append('username', info[1].content);
     formData.append('email', info[0].content);
 
-    await axios.put(`http://localhost:5001/api/user/account/details/update`, formData, 
+    await axiosInstance.put(`http://localhost:5001/api/user/account/details/update`, formData, 
       {
         headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -120,7 +120,7 @@ function UserInformation() {
     formData.append('address', info[1].content);
     formData.append('gender', info[2].content);
 
-    await axios.put(`http://localhost:5001/api/user/${userData.UID}`, formData, 
+    await axiosInstance.put(`http://localhost:5001/api/user/${userData.UID}`, formData, 
       {
         headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -140,7 +140,7 @@ function UserInformation() {
     formData.append('uaid', userParsed.uaid)
 
 
-    await axios.put(`http://localhost:5001/api/user/account/pw`, formData, 
+    await axiosInstance.put(`http://localhost:5001/api/user/account/pw`, formData, 
       {
         headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -157,7 +157,7 @@ function UserInformation() {
   const loadAllPetCount = async () => {
     let sessionToken = sessionStorage.getItem('jwt-token');
     let count;
-    await axios.get(`http://localhost:5001/api/pets/owner/count?uid=${userParsed.uid}`, 
+    await axiosInstance.get(`http://localhost:5001/api/pets/owner/count?uid=${userParsed.uid}`, 
       {'headers': {'Authorization': `Bearer ${sessionToken}`}})
     .then((response) => count = response.data.data.count)
     .catch(err => console.error(err));
@@ -167,7 +167,7 @@ function UserInformation() {
   const loadPerPetCount = async () => {
     let sessionToken = sessionStorage.getItem('jwt-token');
     let pets;
-    await axios.get(`http://localhost:5001/api/pets/owner/pet/count?uid=${userParsed.uid}`, 
+    await axiosInstance.get(`http://localhost:5001/api/pets/owner/pet/count?uid=${userParsed.uid}`, 
       {'headers': {'Authorization': `Bearer ${sessionToken}`}})
     .then((response) => pets = response.data.data)
     .catch(err => console.error(err));

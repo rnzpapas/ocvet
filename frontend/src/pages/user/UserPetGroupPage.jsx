@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router"
 import Footer from "@/components/Footer"
 import UserNav from "@/components/navbars/UserNav"
-import axios from "axios";
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from '../../utils/textUtils'
 import { convertDate, convertTime } from '../../utils/datetimeUtils'
@@ -76,18 +76,18 @@ function UserPetGroupPage() {
     }
 
     const addPetToGroupDb = async (petid) => {
-        await axios.put(`http://localhost:5001/api/animal/group/pet/add?petid=${petid}&pgid=${id}`)
+        await axiosInstance.put(`http://localhost:5001/api/animal/group/pet/add?petid=${petid}&pgid=${id}`)
     }
 
     const removePetToGroup = async (petid) => {
-        await axios.put(`http://localhost:5001/api/animal/group/pet/remove?petid=${petid}&pgid=${id}`)
+        await axiosInstance.put(`http://localhost:5001/api/animal/group/pet/remove?petid=${petid}&pgid=${id}`)
 
     }
 
     const loadPetsList = async () => {
         let sessionToken = sessionStorage.getItem('jwt-token')
         let pet;
-        await axios.get(`http://localhost:5001/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
+        await axiosInstance.get(`http://localhost:5001/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
             {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => pet = res.data.data)
         .catch(err => console.error(err))
@@ -96,7 +96,7 @@ function UserPetGroupPage() {
 
     const loadPetGroup = async () => {
         let pg;
-        await axios.get(`http://localhost:5001/api/animal/group?pgid=${id}`)
+        await axiosInstance.get(`http://localhost:5001/api/animal/group?pgid=${id}`)
         .then(response => pg = response.data.data[0])
         .catch(err => console.error(err))
         return pg;
@@ -104,7 +104,7 @@ function UserPetGroupPage() {
 
     const loadPetType = async (atypeid) => {
         let at;
-        await axios.get(`http://localhost:5001/api/atypes?id=${atypeid}`)
+        await axiosInstance.get(`http://localhost:5001/api/atypes?id=${atypeid}`)
         .then((response) => at = response.data.data)
         .catch((err) => console.error(err))
         return at;
@@ -112,7 +112,7 @@ function UserPetGroupPage() {
 
     const loadAppointment = async (pgid) => {
         let app = [];
-        await axios.get(`http://localhost:5001/api/appointment/pet?id=${pgid}`)
+        await axiosInstance.get(`http://localhost:5001/api/appointment/pet?id=${pgid}`)
         .then((response) =>{ 
             let appDatas = response.data.data
             appDatas.map((appData) => {
@@ -137,7 +137,7 @@ function UserPetGroupPage() {
 
     const loadPets = async () => {
         let pets;
-        await axios.get(`http://localhost:5001/api/animal/group/petowner?id=${userParsed.uid}`)
+        await axiosInstance.get(`http://localhost:5001/api/animal/group/petowner?id=${userParsed.uid}`)
         .then((response) => pets = response.data.data)
         .catch((err) => console.error(err));
         return pets;
@@ -167,7 +167,7 @@ function UserPetGroupPage() {
     
     const loadPet = async (id) => {
         let pet;
-        await axios.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+        await axiosInstance.get(`http://localhost:5001/api/pets/details?petid=${id}`)
         .then((response) => pet = response.data.data)
         .catch((err) => console.error(err))
         return pet
@@ -214,7 +214,7 @@ function UserPetGroupPage() {
         formData.append("PGID", id);
         formData.append("GROUP_NICKNAME", f[0].content);
 
-        await axios.put('http://localhost:5001/api/animal/group/update', formData, {
+        await axiosInstance.put('http://localhost:5001/api/animal/group/update', formData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -223,7 +223,7 @@ function UserPetGroupPage() {
     }
 
     const removePetGroup = async () => {
-        await axios.delete(`http://localhost:5001/api/animal/group/remove?id=${id}`)
+        await axiosInstance.delete(`http://localhost:5001/api/animal/group/remove?id=${id}`)
         .then(() => navigate('/user/pets'))
     }
 

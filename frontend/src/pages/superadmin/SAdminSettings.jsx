@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SuperAdminNav from '@/components/navbars/SuperAdminNav'
 import AccountInfo from '@/components/AccountInfo'
 import Modal from '@/components/Modal';
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useNavigate } from 'react-router';
 import { convertDate } from '../../utils/datetimeUtils';
 import PersonalDetails from '@/components/PersonalDetails';
@@ -58,7 +58,7 @@ function SAdminSettings() {
   const getUserFullDetails = async (id) => {
       let sessionToken = sessionStorage.getItem('jwt-token');
       let userFullDetails;
-      await axios.get(`http://localhost:5001/api/user/account/admin-full-details/${userParsed.uaid}`, 
+      await axiosInstance.get(`http://localhost:5001/api/user/account/admin-full-details/${userParsed.uaid}`, 
       {headers: {'Authorization': `Bearer ${sessionToken}`}})
       .then(response => {
           userFullDetails = response.data.data;
@@ -121,7 +121,7 @@ function SAdminSettings() {
       formData.append('username', info[1].content);
       formData.append('email', info[0].content);
 
-      await axios.put(`http://localhost:5001/api/user/account/details/update`, formData, 
+      await axiosInstance.put(`http://localhost:5001/api/user/account/details/update`, formData, 
       {
           headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -143,7 +143,7 @@ function SAdminSettings() {
       formData.append('address', info[1].content);
       formData.append('gender', info[2].content);
 
-      await axios.put(`http://localhost:5001/api/user/${userData.UID}`, formData, 
+      await axiosInstance.put(`http://localhost:5001/api/user/${userData.UID}`, formData, 
       {
           headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -163,7 +163,7 @@ function SAdminSettings() {
       formData.append('uaid', userParsed.uaid)
 
 
-      await axios.put(`http://localhost:5001/api/user/account/pw`, formData, 
+      await axiosInstance.put(`http://localhost:5001/api/user/account/pw`, formData, 
       {
           headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -186,7 +186,7 @@ function SAdminSettings() {
   const loadService = async () => {
     let arr = [];
 
-    await axios.get('http://localhost:5001/api/service')
+    await axiosInstance.get('http://localhost:5001/api/service')
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -198,7 +198,7 @@ function SAdminSettings() {
   const loadDiagnosis = async () => {
     let arr = [];
 
-    await axios.get('http://localhost:5001/api/diagnosis')
+    await axiosInstance.get('http://localhost:5001/api/diagnosis')
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -210,7 +210,7 @@ function SAdminSettings() {
   const loadAnimalTypes = async () => {
     let arr = [];
 
-    await axios.get('http://localhost:5001/api/atypes/sort')
+    await axiosInstance.get('http://localhost:5001/api/atypes/sort')
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -222,7 +222,7 @@ function SAdminSettings() {
   const loadVaccines = async () => {
     let arr = [];
 
-    await axios.get('http://localhost:5001/api/vaccine')
+    await axiosInstance.get('http://localhost:5001/api/vaccine')
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -234,7 +234,7 @@ function SAdminSettings() {
   const loadMailGroups = async () => {
     let arr = [];
 
-    await axios.get('http://localhost:5001/api/mail-groups')
+    await axiosInstance.get('http://localhost:5001/api/mail-groups')
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -266,7 +266,7 @@ function SAdminSettings() {
     if(!serviceField || serviceField.trim().length === 0) return alert('Please fill out fields.')
     const formData = new FormData();
     formData.append('service', serviceField);
-    await axios.post('http://localhost:5001/api/service/add', formData, {headers: {"Content-Type": 'application/json'}})
+    await axiosInstance.post('http://localhost:5001/api/service/add', formData, {headers: {"Content-Type": 'application/json'}})
     .then(() => window.location.reload())
 
   }
@@ -275,7 +275,7 @@ function SAdminSettings() {
     if(!diagnosisField || diagnosisField.trim().length === 0) return alert('Please fill out fields.')
       const formData = new FormData();
       formData.append('diagnosis', diagnosisField);
-      await axios.post('http://localhost:5001/api/diagnosis/add', formData, {headers: {"Content-Type": 'application/json'}})
+      await axiosInstance.post('http://localhost:5001/api/diagnosis/add', formData, {headers: {"Content-Type": 'application/json'}})
       .then(() => window.location.reload())
   }
 
@@ -283,7 +283,7 @@ function SAdminSettings() {
     if(!animalTypeField || animalTypeField.trim().length === 0) return alert('Please fill out fields.')
       const formData = new FormData();
       formData.append('animal_type', animalTypeField);
-      await axios.post('http://localhost:5001/api/atypes/add', formData, {headers: {"Content-Type": 'application/json'}})
+      await axiosInstance.post('http://localhost:5001/api/atypes/add', formData, {headers: {"Content-Type": 'application/json'}})
       .then(() => window.location.reload())
   }
 
@@ -291,7 +291,7 @@ function SAdminSettings() {
     if(!vaccineField || vaccineField.trim().length === 0) return alert('Please fill out fields.')
       const formData = new FormData();
       formData.append('vaccine', vaccineField);
-      await axios.post('http://localhost:5001/api/vaccine/add', formData, {headers: {"Content-Type": 'application/json'}})
+      await axiosInstance.post('http://localhost:5001/api/vaccine/add', formData, {headers: {"Content-Type": 'application/json'}})
       .then(() => window.location.reload())
   }
 
@@ -307,38 +307,38 @@ function SAdminSettings() {
     formData.append('audience', ids);
     formData.append('nickname', groupNickname);
 
-    await axios.post('http://localhost:5001/api/mail-groups/add', formData, {headers: {'Content-Type': 'application/json'}})
+    await axiosInstance.post('http://localhost:5001/api/mail-groups/add', formData, {headers: {'Content-Type': 'application/json'}})
     .then(() => window.location.reload())
   }
 
   const removeMailGroup = async (tgid) => {
-    await axios.delete(`http://localhost:5001/api/mail-groups/remove/${tgid}`)
+    await axiosInstance.delete(`http://localhost:5001/api/mail-groups/remove/${tgid}`)
     .then(() => window.location.reload())
   }
 
   const removeService = async (id) => {
-    await axios.delete(`http://localhost:5001/api/service/remove/${id}`)
+    await axiosInstance.delete(`http://localhost:5001/api/service/remove/${id}`)
     .then(() => window.location.reload())
   }
 
   const removeDiagnosis = async (id) => {
-    await axios.delete(`http://localhost:5001/api/diagnosis/remove/${id}`)
+    await axiosInstance.delete(`http://localhost:5001/api/diagnosis/remove/${id}`)
     .then(() => window.location.reload())
   }
 
   const removeAnimalType = async (id) => {
-    await axios.delete(`http://localhost:5001/api/atypes/remove/${id}`)
+    await axiosInstance.delete(`http://localhost:5001/api/atypes/remove/${id}`)
     .then(() => window.location.reload())
   }
 
   const removeVaccine = async (id) => {
-    await axios.delete(`http://localhost:5001/api/vaccine/remove/${id}`)
+    await axiosInstance.delete(`http://localhost:5001/api/vaccine/remove/${id}`)
     .then(() => window.location.reload())
   }
 
   const loadAdminEmail = async () => {
     let email = [];
-    await axios.get('http://localhost:5001/api/admin/email/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('http://localhost:5001/api/admin/email/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then(res => {
       let emailRes = res.data.data;
       emailRes.map(em => {

@@ -3,7 +3,7 @@ import InputField from "@/components/InputField"
 import SideLogo from "@/components/SideLogo"
 import Button from "@/components/Button";
 import { useNavigate } from "react-router";
-import axios from "axios";
+import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function ForgotPassword() {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ function ForgotPassword() {
     }
 
     const sendOtp = () => {
-        axios.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${unmail}`)
+        axiosInstance.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${unmail}`)
         .then(() => {})
         .catch((err) => {
             alert(err.response.data.message);

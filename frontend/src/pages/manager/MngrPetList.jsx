@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import Button from '@/components/Button';
 import InputField from '@/components/InputField';
 import PetCard from '@/components/PetCard';
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import Modal from '@/components/Modal';
 import { capitalizeFirstLetter } from '../../utils/textUtils';
 import MngrNav from '@/components/navbars/MngrNav';
@@ -57,7 +56,7 @@ function MngrPetList() {
 
     const loadPetDetails = async () => {
         let p;
-        await axios.get('http://localhost:5001/api/pets/all', 
+        await axiosInstance.get('http://localhost:5001/api/pets/all', 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`
@@ -73,7 +72,7 @@ function MngrPetList() {
 
     const searchPetDetails = async () => {
         let p;
-        await axios.get(`http://localhost:5001/api/pets/admin/nickname?pet=${search}`, 
+        await axiosInstance.get(`http://localhost:5001/api/pets/admin/nickname?pet=${search}`, 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`
@@ -88,7 +87,7 @@ function MngrPetList() {
     }
 
     const exportPets = async () => {
-        await axios.get('http://localhost:5001/api/pets/all/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+        await axiosInstance.get('http://localhost:5001/api/pets/all/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
         .then(res => {
           const disposition = res.headers['content-disposition'];
           const matches = /filename="(.+)"/.exec(disposition);

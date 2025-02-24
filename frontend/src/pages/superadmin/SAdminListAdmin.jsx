@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import InputField from "@/components/InputField";
 import Table from "@/components/Table";
 import SuperAdminNav from "@/components/navbars/SuperAdminNav";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertDate } from "../../utils/datetimeUtils"
 import Modal from '@/components/Modal';
 
@@ -88,7 +88,7 @@ function SAdminListAdmin() {
         let searchedContent = evt.target.value;
         let a = [];
 
-        await axios.get(`http://localhost:5001/api/admin/all/find?query=${searchedContent}`, {headers:{'Authorization': `Bearer ${sessionToken}`}})
+        await axiosInstance.get(`http://localhost:5001/api/admin/all/find?query=${searchedContent}`, {headers:{'Authorization': `Bearer ${sessionToken}`}})
         .then((res) => {
             let admins = res.data.data;
             admins.map((admin) => {
@@ -107,14 +107,14 @@ function SAdminListAdmin() {
     }
 
     const deleteAdmin = async (id) => {
-        await axios.delete(`http://localhost:5001/api/admin/${id}`, {headers:{'Authorization': `Bearer ${sessionToken}`}})
+        await axiosInstance.delete(`http://localhost:5001/api/admin/${id}`, {headers:{'Authorization': `Bearer ${sessionToken}`}})
         .then(() => window.location.reload())
         .catch(err => console.error(err))
     }
 
     const loadAdmin = async () => {
         let a = [];
-        await axios.get('http://localhost:5001/api/admin/all', {headers: {'Authorization': `Bearer ${sessionToken}`}})
+        await axiosInstance.get('http://localhost:5001/api/admin/all', {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => {
             let admins = res.data.data;
             admins.map((admin) => {
@@ -164,7 +164,7 @@ function SAdminListAdmin() {
         formData.append('role', role);
         formData.append('date_joined', dateStr)
 
-        await axios.post('http://localhost:5001/api/admin/register', formData, {headers: {'Authorization': `Bearer ${sessionToken}`, 'Content-Type': 'application/json'}})
+        await axiosInstance.post('http://localhost:5001/api/admin/register', formData, {headers: {'Authorization': `Bearer ${sessionToken}`, 'Content-Type': 'application/json'}})
         .then(() => window.location.reload())
         .catch(err => alert(err.data.message))
     }

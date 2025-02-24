@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import PetCard from "@/components/PetCard";
 import { Link } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
-import axios from "axios";
+import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function UserPetPage() {
     let user = localStorage.getItem("user");
@@ -31,7 +31,7 @@ function UserPetPage() {
                 'pet_owner': userParsed.uid,
                 'nickname': search
             }
-            await axios.post('http://localhost:5001/api/pets/nickname', body, {headers: {"Content-Type":  'application/json'}})
+            await axiosInstance.post('http://localhost:5001/api/pets/nickname', body, {headers: {"Content-Type":  'application/json'}})
             .then(res => {
                 if(res.data.data.length > 0) {
                     setIsDefaultView(false)
@@ -51,7 +51,7 @@ function UserPetPage() {
     const loadAllPets = async () => {
         let sessionToken = sessionStorage.getItem('jwt-token')
         let pets;
-        await axios.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
+        await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
             {headers: {'Authorization': `Bearer ${sessionToken}`}}
         )
         .then(response => {
@@ -65,7 +65,7 @@ function UserPetPage() {
 
     const loadRecentVaccinations = async () => {
         let rv;
-        await axios.get(`http://localhost:5001/api/vaccinations/owner/latest?uid=${userParsed.uid}`)
+        await axiosInstance.get(`http://localhost:5001/api/vaccinations/owner/latest?uid=${userParsed.uid}`)
         .then(response => rv = response.data.data)
         .catch(err => console.error(err))
         return rv;
@@ -73,7 +73,7 @@ function UserPetPage() {
 
     const loadPetGroups = async () => {
         let pg;
-        await axios.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+        await axiosInstance.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
         .then(response => pg = response.data.data)
         .catch(err => console.error(err))
         return pg;

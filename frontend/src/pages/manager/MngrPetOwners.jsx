@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";;
 import InputField from "@/components/InputField";
 import MngrNav from "@/components/navbars/MngrNav";
 import Table from "@/components/Table";
-import axios from 'axios';
+import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertDate } from "../../utils/datetimeUtils"
 
 const HEADERS = [
@@ -40,7 +40,7 @@ function MngrPetOwners() {
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
-        await axios.get(`http://localhost:5001/api/user/account/petowners`, 
+        await axiosInstance.get(`http://localhost:5001/api/user/account/petowners`, 
             {
                 headers: {'Authorization': `Bearer ${sessionToken}`}
             }
@@ -66,7 +66,7 @@ function MngrPetOwners() {
 
     const searchPetOwners = async () => {
         let petOwnersArr = [];
-        await axios.get(`http://localhost:5001/api/user/account/full-details-search?namemail=${search}`,
+        await axiosInstance.get(`http://localhost:5001/api/user/account/full-details-search?namemail=${search}`,
             {
                 headers: {'Authorization': `Bearer ${sessionToken}`}
             }
@@ -93,7 +93,7 @@ function MngrPetOwners() {
     const onChangeSearch = (evt) => {setSearch(evt.target.value)}
 
     const exportPetOwners = async () => {
-        await axios.get('http://localhost:5001/api/user/account/petowners/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+        await axiosInstance.get('http://localhost:5001/api/user/account/petowners/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
         .then(res => {
           const disposition = res.headers['content-disposition'];
           const matches = /filename="(.+)"/.exec(disposition);
