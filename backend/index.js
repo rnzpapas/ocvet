@@ -13,6 +13,7 @@ import animalGroupRoutes from './routes/animalGroupRoutes.js';
 import vaccinationsRoutes from './routes/vaccinationsRoutes.js';
 import announcementsRouter from './routes/announcementsRouter.js';
 import errorHandling from './middleware/errorHandler.js';
+import { fileURLToPath } from "url";
 
 const app = express();
 dotenv.config();
