@@ -25,7 +25,7 @@ function ChangePassword() {
         formData.append('cpw', confirmPassword)
         formData.append('uaid', searchParams.get('uaid'));
 
-        await axiosInstance.post(`http://localhost:5001/api/user/account-recovery/otp-changpw`, formData, 
+        await axiosInstance.post(`/api/user/account-recovery/otp-changpw`, formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

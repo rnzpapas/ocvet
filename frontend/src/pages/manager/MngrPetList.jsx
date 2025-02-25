@@ -56,7 +56,7 @@ function MngrPetList() {
 
     const loadPetDetails = async () => {
         let p;
-        await axiosInstance.get('http://localhost:5001/api/pets/all', 
+        await axiosInstance.get('/api/pets/all', 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`
@@ -72,7 +72,7 @@ function MngrPetList() {
 
     const searchPetDetails = async () => {
         let p;
-        await axiosInstance.get(`http://localhost:5001/api/pets/admin/nickname?pet=${search}`, 
+        await axiosInstance.get(`/api/pets/admin/nickname?pet=${search}`, 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`
@@ -87,7 +87,7 @@ function MngrPetList() {
     }
 
     const exportPets = async () => {
-        await axiosInstance.get('http://localhost:5001/api/pets/all/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+        await axiosInstance.get('/api/pets/all/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
         .then(res => {
           const disposition = res.headers['content-disposition'];
           const matches = /filename="(.+)"/.exec(disposition);

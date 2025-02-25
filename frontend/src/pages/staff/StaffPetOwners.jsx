@@ -39,7 +39,7 @@ function StaffPetOwners() {
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
-        await axiosInstance.get(`http://localhost:5001/api/user/account/petowners`, 
+        await axiosInstance.get(`/api/user/account/petowners`, 
             {
                 headers: {'Authorization': `Bearer ${sessionToken}`}
             }
@@ -63,7 +63,7 @@ function StaffPetOwners() {
 
     const searchPetOwners = async () => {
         let petOwnersArr = [];
-        await axiosInstance.get(`http://localhost:5001/api/user/account/full-details-search?namemail=${search}`,
+        await axiosInstance.get(`/api/user/account/full-details-search?namemail=${search}`,
             {
                 headers: {'Authorization': `Bearer ${sessionToken}`}
             }
@@ -90,7 +90,7 @@ function StaffPetOwners() {
     const onChangeSearch = (evt) => {setSearch(evt.target.value)}
 
     const exportPetOwners = async () => {
-        await axiosInstance.get('http://localhost:5001/api/user/account/petowners/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+        await axiosInstance.get('/api/user/account/petowners/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
         .then(res => {
           const disposition = res.headers['content-disposition'];
           const matches = /filename="(.+)"/.exec(disposition);

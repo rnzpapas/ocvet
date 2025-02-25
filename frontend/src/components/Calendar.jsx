@@ -74,7 +74,7 @@ const Calendar = ({onSelectDate}) => {
             '04:00 PM',
             '05:00 PM'
         ];
-        await axiosInstance.get('http://localhost:5001/api/appointment/datetime')
+        await axiosInstance.get('/api/appointment/datetime')
         .then((res) => {
             let apppointments = res.data.data;
             apppointments.map((apppointment) => {

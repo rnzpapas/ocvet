@@ -23,7 +23,7 @@ function UserPetRegistration() {
 
     const loadPetType = async () => {
         let types;
-        await axiosInstance.get('http://localhost:5001/api/atypes/sort')
+        await axiosInstance.get('/api/atypes/sort')
         .then(res => types = res.data.data)
         .catch(err => console.error(err))
         return types;
@@ -53,7 +53,7 @@ function UserPetRegistration() {
 
             reader.readAsDataURL(file);
             setImgFile((fl) => fl = file);
-            // await axiosInstance.put(`http://localhost:5001/api/pets/update/image/${id}`, formData,
+            // await axiosInstance.put(`/api/pets/update/image/${id}`, formData,
             // {
             //     headers: {
             //     'Authorization': `Bearer ${sessionToken}`,
@@ -73,7 +73,7 @@ function UserPetRegistration() {
         formData.append("nickname", nickname);
         formData.append("pet_owner", userParsed.uid);
         formData.append("image", imgFile);
-        await axiosInstance.post(`http://localhost:5001/api/pets/register`, formData, 
+        await axiosInstance.post(`/api/pets/register`, formData, 
             {
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`,

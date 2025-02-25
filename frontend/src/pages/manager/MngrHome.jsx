@@ -15,7 +15,7 @@ function MngrHome() {
 
   const loadAppointmentStats = async () => {
     let a;
-    await axiosInstance.get("http://localhost:5001/api/appointment/stats")
+    await axiosInstance.get("/api/appointment/stats")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -23,7 +23,7 @@ function MngrHome() {
 
   const loadAppointmentSuccessStats = async () => {
     let a;
-    await axiosInstance.get("http://localhost:5001/api/appointment/stats/success")
+    await axiosInstance.get("/api/appointment/stats/success")
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
@@ -31,7 +31,7 @@ function MngrHome() {
 
   const loadEmails = async () => {
     let em = [];
-    await axiosInstance.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`)
+    await axiosInstance.get(`/api/announcement/user?id=${userParsed.uaid}`)
     .then(res => {
       let emailResponse = res.data.data;
       emailResponse.map(er => {

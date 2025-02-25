@@ -21,7 +21,7 @@ function UserPetEditInfo() {
 
     const loadPetInfo = async () => {
         let pet;
-        await axiosInstance.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+        await axiosInstance.get(`/api/pets/details?petid=${id}`)
         .then((response) => pet = response.data.data)
         .catch(err => console.error(err))
         return pet;
@@ -29,7 +29,7 @@ function UserPetEditInfo() {
 
     const loadPetType = async () => {
         let types;
-        await axiosInstance.get('http://localhost:5001/api/atypes/sort')
+        await axiosInstance.get('/api/atypes/sort')
         .then(res => types = res.data.data)
         .catch(err => console.error(err))
         return types;
@@ -49,7 +49,7 @@ function UserPetEditInfo() {
             "atypeid": atypeId || petInfo.ATYPEID, 
             "nickname": nickname || petInfo.nickname
         }
-        await axiosInstance.put(`http://localhost:5001/api/pets/update?petid=${id}`, body,
+        await axiosInstance.put(`/api/pets/update?petid=${id}`, body,
             {headers: {
                 'Content-Type': 'application/json'
             }}

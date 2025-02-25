@@ -42,7 +42,7 @@ function StaffUserInfo() {
     const getUserFullDetails = async (id) => {
         let sessionToken = sessionStorage.getItem('jwt-token');
         let userFullDetails;
-        await axiosInstance.get(`http://localhost:5001/api/user/account/admin-full-details/${userParsed.uaid}`, 
+        await axiosInstance.get(`/api/user/account/admin-full-details/${userParsed.uaid}`, 
         {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(response => {
             userFullDetails = response.data.data;
@@ -94,7 +94,7 @@ function StaffUserInfo() {
         formData.append('username', info[1].content);
         formData.append('email', info[0].content);
 
-        await axiosInstance.put(`http://localhost:5001/api/user/account/details/update`, formData, 
+        await axiosInstance.put(`/api/user/account/details/update`, formData, 
         {
             headers: {
             'Authorization': `Bearer ${sessionToken}`,
@@ -116,7 +116,7 @@ function StaffUserInfo() {
         formData.append('address', info[1].content);
         formData.append('gender', info[2].content);
 
-        await axiosInstance.put(`http://localhost:5001/api/user/${userData.UID}`, formData, 
+        await axiosInstance.put(`/api/user/${userData.UID}`, formData, 
         {
             headers: {
             'Authorization': `Bearer ${sessionToken}`,
@@ -136,7 +136,7 @@ function StaffUserInfo() {
         formData.append('uaid', userParsed.uaid)
 
 
-        await axiosInstance.put(`http://localhost:5001/api/user/account/pw`, formData, 
+        await axiosInstance.put(`/api/user/account/pw`, formData, 
         {
             headers: {
             'Authorization': `Bearer ${sessionToken}`,

@@ -22,13 +22,13 @@ function AdminLogin() {
   const onLogin = async (evt) => {
     evt.preventDefault();
     if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
-    await axiosInstance.post('http://localhost:5001/api/user/login', {
+    await axiosInstance.post('/api/user/login', {
         username: username,
         password: password
     }, {headers: {'Content-Type': 'application/json'}})
     .then(res => {
         const response = res.data.data;
-        axiosInstance.get(`http://localhost:5001/api/user/account/admin-full-details/${response.uaid}`, 
+        axiosInstance.get(`/api/user/account/admin-full-details/${response.uaid}`, 
             {headers: {'Authorization': `Bearer ${response.access_token}`}})
             .then(res => {
                 let userFullDetails = res.data.data;

@@ -64,7 +64,7 @@ function StaffAppointments() {
   const loadVaccines = async () => {
     let v;
     let vaccine_names = [];
-    await axiosInstance.get('http://localhost:5001/api/vaccine')
+    await axiosInstance.get('/api/vaccine')
     .then(res => {
       v = res.data.data
       v.map(vaccine => vaccine_names.push(vaccine.vaccine_name))
@@ -75,7 +75,7 @@ function StaffAppointments() {
 
   const loadAppointmentHistory = async () => {
     let atmt = [];
-    await axiosInstance.get('http://localhost:5001/api/appointment/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('/api/appointment/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => {
       let apps = res.data.data;
       apps.map(app => {
@@ -100,7 +100,7 @@ function StaffAppointments() {
 
   const loadRecentAppointment = async () => {
     let atmt = [];
-    await axiosInstance.get('http://localhost:5001/api/appointment/all/recent', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('/api/appointment/all/recent', {headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => {
       let apps = res.data.data;
       apps.map(app => {
@@ -125,7 +125,7 @@ function StaffAppointments() {
 
   const loadUpcomingAppointment = async () => {
     let atmt = [];
-    await axiosInstance.get('http://localhost:5001/api/appointment/all/upcoming', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+    await axiosInstance.get('/api/appointment/all/upcoming', {headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => {
       let apps = res.data.data;
       setUAFull(apps)
@@ -150,7 +150,7 @@ function StaffAppointments() {
   }
 
   const exportAppointmentHistory = async () => {
-    await axiosInstance.get('http://localhost:5001/api/appointment/all/history/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+    await axiosInstance.get('/api/appointment/all/history/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
     .then(res => {
       const disposition = res.headers['content-disposition'];
       const matches = /filename="(.+)"/.exec(disposition);
@@ -166,7 +166,7 @@ function StaffAppointments() {
   }
 
   const exportUpcomingAppointment = async () => {
-    await axiosInstance.get('http://localhost:5001/api/appointment/all/upcoming/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+    await axiosInstance.get('/api/appointment/all/upcoming/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
     .then(res => {
       const disposition = res.headers['content-disposition'];
       const matches = /filename="(.+)"/.exec(disposition);
@@ -205,7 +205,7 @@ function StaffAppointments() {
       formData.append('petid', filteredUA[0].PETID || null);
       formData.append('pgid', filteredUA[0].PGID || null);
       formData.append('asid', appointmentSelected.asid)
-      await axiosInstance.post('http://localhost:5001/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
+      await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
       .then(() => {
         onUpdateAppointmentStatus('Done', fields[0].content || '');
       })
@@ -219,7 +219,7 @@ function StaffAppointments() {
     formData.append('status', status);
     formData.append('remarks', remarks || '');
 
-    await axiosInstance.put(`http://localhost:5001/api/appointment/status?asid=${appointmentSelected.asid}`, formData, {headers: {'Content-Type': 'application/json'}})
+    await axiosInstance.put(`/api/appointment/status?asid=${appointmentSelected.asid}`, formData, {headers: {'Content-Type': 'application/json'}})
     .then(() => window.location.reload())
   }
 

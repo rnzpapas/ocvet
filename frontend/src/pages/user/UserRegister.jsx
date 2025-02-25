@@ -90,7 +90,7 @@ function UserRegister() {
         formData.append('role', "User");
         formData.append('date_joined', dateStr);
 
-        await axiosInstance.post('http://localhost:5001/api/user/register', formData, 
+        await axiosInstance.post('/api/user/register', formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

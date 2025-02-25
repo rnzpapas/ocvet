@@ -20,7 +20,7 @@ function OTPVerification() {
     
     const resendCode = async () => {
         if (!isCountdownRunning) {
-            await axiosInstance.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${searchParams.get('unmail')}`)
+            await axiosInstance.put(`/api/user/account-recovery/otp-update?unmail=${searchParams.get('unmail')}`)
             .then((res) => {
                 setSeconds(s => s = DEFAULT_SECONDS);
             })
@@ -38,7 +38,7 @@ function OTPVerification() {
     const verifyOTP = async () => {
         const formData = new FormData();
         formData.append('otp', OTP);
-        await axiosInstance.post(`http://localhost:5001/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
+        await axiosInstance.post(`/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
             {
                 headers: {
                     'Content-Type': 'application/json'

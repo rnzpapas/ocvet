@@ -55,7 +55,7 @@ function SAdminAnnouncements() {
         let email = evt.target.value;
         let emails = [];
 
-        await axiosInstance.get(`http://localhost:5001/api/admin/email?email=${email}`,
+        await axiosInstance.get(`/api/admin/email?email=${email}`,
         {headers: {'Authorization': `Bearer ${sessionToken}`}}
         )
         .then((res) => {
@@ -83,7 +83,7 @@ function SAdminAnnouncements() {
 
     const loadEmails = async () => {
         let em = [];
-        await axiosInstance.get(`http://localhost:5001/api/announcement/user?id=${userParsed.uaid}`, 
+        await axiosInstance.get(`/api/announcement/user?id=${userParsed.uaid}`, 
         {headers: {'Authorization': `Bearer ${sessionToken}`}})
         .then(res => {
           let emailResponse = res.data.data;
@@ -104,7 +104,7 @@ function SAdminAnnouncements() {
     
     const loadMailGroups = async () => {
         let mg = [];
-        await axiosInstance.get('http://localhost:5001/api/mail-groups')
+        await axiosInstance.get('/api/mail-groups')
         .then(res => {
             let mailGroupsData = res.data.data;
             mailGroupsData.map((mgd) => {
@@ -125,7 +125,7 @@ function SAdminAnnouncements() {
         formData.append('announcement_title', emailSubject)
         formData.append('message', emailMessage)
 
-        await axiosInstance.post('http://localhost:5001/api/announcement/create', formData, {headers: {"Content-Type": 'application/json'}})
+        await axiosInstance.post('/api/announcement/create', formData, {headers: {"Content-Type": 'application/json'}})
         .then(() => {window.location.reload()})
         .catch(err => console.error(err))
     }

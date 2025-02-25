@@ -46,7 +46,7 @@ function UserHome() {
   const loadPets = async () => {
     let p;
     let sessionToken = sessionStorage.getItem('jwt-token');
-    await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`,
+    await axiosInstance.get(`/api/pets/owner?uid=${userParsed.uid}`,
       {
         headers : {
           'Authorization': `Bearer ${sessionToken}`
@@ -62,7 +62,7 @@ function UserHome() {
 
   const loadPetGroup = async () => {
     let p;
-    await axiosInstance.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+    await axiosInstance.get(`/api/animal/group/owner?id=${userParsed.uid}`)
     .then(res => {
       p = res.data.data
     })
@@ -72,7 +72,7 @@ function UserHome() {
 
   const loadClinicAppointment = async () => {
     let appointmentSchedObj = [];
-    await axiosInstance.get('http://localhost:5001/api/appointment/all')
+    await axiosInstance.get('/api/appointment/all')
     .then((res) => {
       let apiResponse = res.data.data;
       let dateObj;
@@ -103,7 +103,7 @@ function UserHome() {
 
   const loadAppointment = async () => {
     let apts;
-    await axiosInstance.get(`http://localhost:5001/api/appointment/user?id=${userParsed.uid}`,
+    await axiosInstance.get(`/api/appointment/user?id=${userParsed.uid}`,
       {headers: {'Authorization': `Bearer ${sessionToken}`}}
     )
     .then(res => apts = res.data.data)
@@ -113,7 +113,7 @@ function UserHome() {
 
   const loadServices = async () => {
     let svcs;
-    await axiosInstance.get(`http://localhost:5001/api/service`)
+    await axiosInstance.get(`/api/service`)
     .then(res => svcs = res.data.data)
     .catch(err => console.error(err));
     return svcs;
@@ -121,7 +121,7 @@ function UserHome() {
 
   const loadDiagnosis = async () => {
     let dgs;
-    await axiosInstance.get(`http://localhost:5001/api/diagnosis`)
+    await axiosInstance.get(`/api/diagnosis`)
     .then(res => dgs = res.data.data)
     .catch(err => console.error(err));
     return dgs;
@@ -218,7 +218,7 @@ function UserHome() {
     formData.append("date", dateOfAppointment)
     formData.append("time", timeOfAppointment)
 
-    await axiosInstance.post('http://localhost:5001/api/appointment/create', formData, 
+    await axiosInstance.post('/api/appointment/create', formData, 
     {
       headers:{
         'Content-Type': 'application/json'

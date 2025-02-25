@@ -19,7 +19,7 @@ function ForgotPassword() {
     }
 
     const sendOtp = () => {
-        axiosInstance.put(`http://localhost:5001/api/user/account-recovery/otp-update?unmail=${unmail}`)
+        axiosInstance.put(`/api/user/account-recovery/otp-update?unmail=${unmail}`)
         .then(() => {})
         .catch((err) => {
             alert(err.response.data.message);

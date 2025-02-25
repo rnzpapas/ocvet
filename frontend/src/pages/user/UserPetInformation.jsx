@@ -54,7 +54,7 @@ function UserPetInformation() {
   
     const loadPetInfo = async () => {
       let pet;
-      await axiosInstance.get(`http://localhost:5001/api/pets/details?petid=${id}`)
+      await axiosInstance.get(`/api/pets/details?petid=${id}`)
       .then((response) => pet = response.data.data)
       .catch(err => console.error(err))
       return pet;
@@ -62,7 +62,7 @@ function UserPetInformation() {
 
     const loadPetVaccinations = async () => {
       let vaccs = []
-      await axiosInstance.get(`http://localhost:5001/api/appointment/pet?id=${id}`)
+      await axiosInstance.get(`/api/appointment/pet?id=${id}`)
       .then(response => {
         let appDatas = response.data.data
           appDatas.map((appData) => {
@@ -96,7 +96,7 @@ function UserPetInformation() {
         let formData = new FormData();
         formData.append("image", file)
 
-        await axiosInstance.put(`http://localhost:5001/api/pets/update/image/${id}`, formData,
+        await axiosInstance.put(`/api/pets/update/image/${id}`, formData,
           {
             headers: {
               'Authorization': `Bearer ${sessionToken}`,
@@ -111,7 +111,7 @@ function UserPetInformation() {
     
     const deletePet = async () => {
       let sessionToken = sessionStorage.getItem('jwt-token');
-      await axiosInstance.delete(`http://localhost:5001/api/pets/remove/${id}`, 
+      await axiosInstance.delete(`/api/pets/remove/${id}`, 
         {
           headers: {
             'Authorization': `Bearer ${sessionToken}`

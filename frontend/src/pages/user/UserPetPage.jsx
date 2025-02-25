@@ -31,7 +31,7 @@ function UserPetPage() {
                 'pet_owner': userParsed.uid,
                 'nickname': search
             }
-            await axiosInstance.post('http://localhost:5001/api/pets/nickname', body)
+            await axiosInstance.post('/api/pets/nickname', body)
             .then(res => {
                 if(res.data.data.length > 0) {
                     setIsDefaultView(false)
@@ -50,7 +50,7 @@ function UserPetPage() {
 
     const loadAllPets = async () => {
         let pets;
-        await axiosInstance.get(`http://localhost:5001/api/pets/owner?uid=${userParsed.uid}`)
+        await axiosInstance.get(`/api/pets/owner?uid=${userParsed.uid}`)
         .then(response => {
             pets = response.data.data
         })
@@ -62,7 +62,7 @@ function UserPetPage() {
 
     const loadRecentVaccinations = async () => {
         let rv;
-        await axiosInstance.get(`http://localhost:5001/api/vaccinations/owner/latest?uid=${userParsed.uid}`)
+        await axiosInstance.get(`/api/vaccinations/owner/latest?uid=${userParsed.uid}`)
         .then(response => rv = response.data.data)
         .catch(err => console.error(err))
         return rv;
@@ -70,7 +70,7 @@ function UserPetPage() {
 
     const loadPetGroups = async () => {
         let pg;
-        await axiosInstance.get(`http://localhost:5001/api/animal/group/owner?id=${userParsed.uid}`)
+        await axiosInstance.get(`/api/animal/group/owner?id=${userParsed.uid}`)
         .then(response => pg = response.data.data)
         .catch(err => console.error(err))
         return pg;
