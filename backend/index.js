@@ -14,6 +14,7 @@ import vaccinationsRoutes from './routes/vaccinationsRoutes.js';
 import announcementsRouter from './routes/announcementsRouter.js';
 import errorHandling from './middleware/errorHandler.js';
 import { fileURLToPath } from "url";
+import path from "path";
 
 const app = express();
 dotenv.config();
