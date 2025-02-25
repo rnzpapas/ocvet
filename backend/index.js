@@ -29,15 +29,6 @@ app.use(cors({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve the React frontend build
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-app.get("*", (req, res) => {
-res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
-});
-
-
-
 app.use("/api", userRoutes);
 app.use("/api", animalTypesRoutes);
 app.use("/api", serviceRoutes);
@@ -56,6 +47,12 @@ app.get("/", async(req,res) => {
 });
 
 app.use(errorHandling);
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
+});
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port: ${PORT}`);
