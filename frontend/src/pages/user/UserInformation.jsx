@@ -239,89 +239,91 @@ function UserInformation() {
   return (
     <div className={`${!isAccModalNotOpen || !isPersonalModalNotOpen && ("overflow-hidden")}`}>
       <UserNav />
-        {userData && (
           <section className="py-5 lg:py-0 lg:h-dvh gap-10 flex flex-col-reverse lg:flex-row">
-            <section className="flex flex-col gap-5 px-5 py-5 lg:w-[30%]">
-              <section>
-                <AccountInfo style={""} 
-                  eMail={userData.email}
-                  username={userData.username}
-                  onEditClick={onOpenAccountEdit}
-                />
-                <Modal 
-                  headline={"Edit Account Information"}
-                  isActive={isAccModalNotOpen}
-                  fields={accFields}
-                  onClose={onCloseAccountEdit}
-                  button={{
-                    txtContent: 'Update Account Information',
-                    isActive: true,
-                    isDisplayed: true
-                  }}
-                  onSubmitFunc={updateAccInfo}
-                  clickableLink={{"txtContent" : "Change Password?", "isActive" : true, "isDisplayed": true, "onClickFunc": onOpenChangePwEdit}}
-                />
-                <h5 className="text-azure cursor-pointer hover:underline w-fit text-content-sm" onClick={logout}>Logout</h5>
-                <Modal 
-                  headline={"Update Password"}
-                  isActive={isChangePwModalNotOpen}
-                  fields={pwFields}
-                  onClose={onClosePwEdit}
-                  button={{
-                    txtContent: 'Change Password',
-                    isActive: true,
-                    isDisplayed: true
-                  }}
-                  onSubmitFunc={updateChangePwInfo}
-                />
-              </section>
-              <section>
-                <PersonalDetails style={""}
-                  fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
-                  address={userData.address}
-                  gender={capitalizeFirstLetter(userData.gender)}
-                  onEditClick={onOpenPersonalEdit}
-                />
-                <Modal 
-                  headline={"Edit Personal Information"}
-                  isActive={isPersonalModalNotOpen}
-                  fields={personalFields}
-                  onClose={onClosePersonalEdit}
-                  button={{
-                    txtContent: 'Update Personal Information',
-                    isActive: true,
-                    isDisplayed: true
-                  }}
-                  onSubmitFunc={updateDetailsInfo}
-                />
-              </section>
-            </section>
-            <section className="flex justify-evenly gap-2 px-5 lg:py-5 lg:w-[70%]">
-              <section className="w-[180px] h-[130px] xl:w-[300px] px-3 py-2 flex flex-col items-center justify-center shadow-[3px_5px_15px_rgba(0,0,0,0.25)] bg-raisin-black rounded-lg relative">
-                <h5 className="font-lato font-semibold text-headline-sm tracking-wide text-white-smoke absolute top-3 left-5">Registered Pets</h5>
-                <section className="">
-                  <h3 className="font-lato text-headline-xtralrg text-white-smoke">{petCount}</h3>
-                </section>
-              </section>
-              <section className="px-3 py-2 shadow-[3px_5px_15px_rgba(0,0,0,0.25)] rounded-lg h-fit">
-                {
-                  perPetCount && (
-                    <DoughnutChart 
-                      datasetLabel={'Your Pets'}
-                      datasetData={perPetCount.map(animal => {return animal.animal_count})}
-                      labels={perPetCount.map(animal => {return capitalizeFirstLetter(animal.animal_type)})}
-                      optionTooltipLabel={'pets'}
-                      optionLegendPos="top"
-                      chartLabel={'Account Summary'} 
-                      chartW={'w-[180px] xl:w-[300px]'}
-                      chartH={'h-fit'}
+            {userData && (
+              <>
+                <section className="flex flex-col gap-5 px-5 py-5 lg:w-[30%]">
+                  <section>
+                    <AccountInfo style={""} 
+                      eMail={userData.email}
+                      username={userData.username}
+                      onEditClick={onOpenAccountEdit}
                     />
-                  )
-                }
-              </section>
-            </section>
+                    <Modal 
+                      headline={"Edit Account Information"}
+                      isActive={isAccModalNotOpen}
+                      fields={accFields}
+                      onClose={onCloseAccountEdit}
+                      button={{
+                        txtContent: 'Update Account Information',
+                        isActive: true,
+                        isDisplayed: true
+                      }}
+                      onSubmitFunc={updateAccInfo}
+                      clickableLink={{"txtContent" : "Change Password?", "isActive" : true, "isDisplayed": true, "onClickFunc": onOpenChangePwEdit}}
+                    />
+                    <h5 className="text-azure cursor-pointer hover:underline w-fit text-content-sm" onClick={logout}>Logout</h5>
+                    <Modal 
+                      headline={"Update Password"}
+                      isActive={isChangePwModalNotOpen}
+                      fields={pwFields}
+                      onClose={onClosePwEdit}
+                      button={{
+                        txtContent: 'Change Password',
+                        isActive: true,
+                        isDisplayed: true
+                      }}
+                      onSubmitFunc={updateChangePwInfo}
+                    />
+                  </section>
+                  <section>
+                    <PersonalDetails style={""}
+                      fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
+                      address={userData.address}
+                      gender={capitalizeFirstLetter(userData.gender)}
+                      onEditClick={onOpenPersonalEdit}
+                    />
+                    <Modal 
+                      headline={"Edit Personal Information"}
+                      isActive={isPersonalModalNotOpen}
+                      fields={personalFields}
+                      onClose={onClosePersonalEdit}
+                      button={{
+                        txtContent: 'Update Personal Information',
+                        isActive: true,
+                        isDisplayed: true
+                      }}
+                      onSubmitFunc={updateDetailsInfo}
+                    />
+                  </section>
+                </section>
+                <section className="flex justify-evenly gap-2 px-5 lg:py-5 lg:w-[70%]">
+                  <section className="w-[180px] h-[130px] xl:w-[300px] px-3 py-2 flex flex-col items-center justify-center shadow-[3px_5px_15px_rgba(0,0,0,0.25)] bg-raisin-black rounded-lg relative">
+                    <h5 className="font-lato font-semibold text-headline-sm tracking-wide text-white-smoke absolute top-3 left-5">Registered Pets</h5>
+                    <section className="">
+                      <h3 className="font-lato text-headline-xtralrg text-white-smoke">{petCount}</h3>
+                    </section>
+                  </section>
+                  <section className="px-3 py-2 shadow-[3px_5px_15px_rgba(0,0,0,0.25)] rounded-lg h-fit">
+                    {
+                      perPetCount && (
+                        <DoughnutChart 
+                          datasetLabel={'Your Pets'}
+                          datasetData={perPetCount.map(animal => {return animal.animal_count})}
+                          labels={perPetCount.map(animal => {return capitalizeFirstLetter(animal.animal_type)})}
+                          optionTooltipLabel={'pets'}
+                          optionLegendPos="top"
+                          chartLabel={'Account Summary'} 
+                          chartW={'w-[180px] xl:w-[300px]'}
+                          chartH={'h-fit'}
+                        />
+                      )
+                    }
+                  </section>
+                </section>
+              </>
+            )}
           </section>
-        )}
       <Footer />
     </div>
   )
