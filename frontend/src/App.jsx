@@ -25,7 +25,7 @@ import SAdminPetList from "./pages/superadmin/SAdminPetList"
 import SAdminPetOwners from "./pages/superadmin/SAdminPetOwners"
 import SAdminListAdmin from "./pages/superadmin/SAdminListAdmin"
 import LandingPage from "./pages/LandingPage";
-import { Route, Routes } from "react-router"
+import { Route, Routes } from "react-router-dom"
 import UserHome from "./pages/user/UserHome"
 import NotFound from "./pages/NotFound"
 import UserPetGroupRegistration from "./pages/user/UserPetGroupRegistration"
@@ -43,9 +43,9 @@ function App() {
         <Route path="/" element={<LandingPage />}/>
         {/* user routes */}
         <Route path="/user/">
+          <Route index path="home" element={<UserHome />}/>
           <Route path="login" element={<UserLogin />}/>
           <Route path="register" element={<UserRegister />}/>
-          <Route path="home" element={<UserHome />}/>
           <Route path="pets/">
             <Route path="" element={<UserPetPage />}/>
             <Route path="register" element={<UserPetRegistration />}/>
@@ -66,7 +66,7 @@ function App() {
         </Route>
         {/* mngr routes */}
         <Route path="/mngr/">
-          <Route path="dashboard" element={<MngrHome />}/>
+          <Route index path="dashboard" element={<MngrHome />}/>
           <Route path="pets" element={<MngrPetList />}/>
           <Route path="owners" element={<MngrPetOwners />}/>
           <Route path="appointments" element={<MngrAppointments />}/>
@@ -75,7 +75,7 @@ function App() {
         </Route>
         {/* super admin routes */}
         <Route path="/sadm/">
-          <Route path="dashboard" element={<SAdminHome />}/>
+          <Route index path="dashboard" element={<SAdminHome />}/>
           <Route path="pets" element={<SAdminPetList />}/>
           <Route path="owners" element={<SAdminPetOwners />}/>
           <Route path="appointments" element={<SAdminAppointments />}/>
@@ -85,13 +85,13 @@ function App() {
         </Route>
         {/* staff, mngr, super administrator login (IN-PROGESS) */}
         <Route path="/admin/">
-          <Route path="role" element={<AdminLogin />}/>
+          <Route index path="role" element={<AdminLogin />}/>
           {/* Individual login pages here */}
         </Route>
         {/* Account recovery pages */}
         <Route path="/account-recovery">
+          <Route index path="forgot-password" element={<ForgotPassword />}/>
           <Route path="changepw" element={<ChangePassword />}/>
-          <Route path="forgot-password" element={<ForgotPassword />}/>
           <Route path="OTP" element={<OTPVerification />}/>
         </Route>
         {/* Forbidden */}
