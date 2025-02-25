@@ -13,8 +13,6 @@ import animalGroupRoutes from './routes/animalGroupRoutes.js';
 import vaccinationsRoutes from './routes/vaccinationsRoutes.js';
 import announcementsRouter from './routes/announcementsRouter.js';
 import errorHandling from './middleware/errorHandler.js';
-import { fileURLToPath } from "url";
-import path from "path";
 
 const app = express();
 dotenv.config();
@@ -26,8 +24,6 @@ app.use(cors({
     exposedHeaders: ['Content-Disposition']
   }));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use("/api", userRoutes);
 app.use("/api", animalTypesRoutes);
@@ -47,12 +43,6 @@ app.get("/", async(req,res) => {
 });
 
 app.use(errorHandling);
-
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-app.get("*", (req, res) => {
-res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
-});
 
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port: ${PORT}`);
