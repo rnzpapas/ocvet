@@ -69,7 +69,7 @@ export const getAllAdministratorsFilteredService = async (query) => {
 
 
 export const getUserAccountByUsernameService = async(un, id) => {
-    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1 AND "UAID" = $2', [un, id]);
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un, id]);
     return u.rows;
 }
 
