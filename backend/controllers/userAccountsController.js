@@ -1,4 +1,4 @@
-import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAdminEmailService, getAllAdminCountService, getAllAdminEmailService, getAllAdministratorsFilteredService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByIdService, getUserAccountByUsernameService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
+import { countAllUserAccountByDateService, countAllUserAccountService, deleteUserAccountService, generateAllPetOwnersPdfService, getAdminEmailService, getAllAdminCountService, getAllAdminEmailService, getAllAdministratorsFilteredService, getAllAdministratorsService, getAllPetOwnersService, getAllUsersAccountService, getUserAccountByEmailService, getUserAccountByEmailVerificationService, getUserAccountByIdService, getUserAccountByUsernameService, getUserAccountByUsernameVerificationService, sortDateJoinedAscService, sortDateJoinedDescService, sortUsernameAscService, sortUsernameDescService, updateUserAccountPasswordService, updateUserAccountService, updateUserOtpService, verifyUserOtpService } from "../models/userAccountModel.js";
 import handleResponse from "../middleware/responseHandler.js"
 import { comparePassword } from "../utils/passwordUtils.js";
 import { createToken } from "../utils/jwtAuthUtils.js";
@@ -179,10 +179,11 @@ export const verifyUserOtp = async (req, res, next) => {
 }
 
 export const updateUserAccount = async (req, res, next) => {
-    const { old_username, username, email} = req.body;
-    const old_user = await getUserAccountByUsernameService(old_username);
-    const existing_user = await getUserAccountByUsernameService(username);
-    const existing_email = await getUserAccountByEmailService(email);
+    const { id, old_username, username, email} = req.body;
+    console.log("id: ", id)
+    const old_user = await getUserAccountByUsernameService(old_username, id);
+    const existing_user = await getUserAccountByUsernameVerificationService(username, id);
+    const existing_email = await getUserAccountByEmailVerificationService(email, id);
     
     try{
         if(existing_user.length > 0) return handleResponse(res, 400, "Username already taken.");

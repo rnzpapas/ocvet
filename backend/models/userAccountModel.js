@@ -68,8 +68,13 @@ export const getAllAdministratorsFilteredService = async (query) => {
 }
 
 
-export const getUserAccountByUsernameService = async(un) => {
-    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1', [un]);
+export const getUserAccountByUsernameService = async(un, id) => {
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1 AND "UAID" = $2', [un, id]);
+    return u.rows;
+}
+
+export const getUserAccountByUsernameVerificationService = async(un, id) => {
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE username = $1 AND "UAID" != $2', [un,id]);
     return u.rows;
 }
 
@@ -78,6 +83,10 @@ export const getUserAccountByEmailService = async(em) => {
     return u.rows;
 }
 
+export const getUserAccountByEmailVerificationService = async(em, id) => {
+    const u = await pool.query('SELECT * FROM otcv_user_accounts WHERE email = $1 AND "UAID" != $2', [em, id]);
+    return u.rows;
+}
 export const getUserAccountByIdService = async(id) => {
     const result = await pool.query('SELECT * FROM otcv_user_accounts WHERE "UAID" = $1', [id]);
     return result.rows[0];

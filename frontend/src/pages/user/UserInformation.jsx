@@ -90,8 +90,9 @@ function UserInformation() {
 
   const updateAccInfo = async (info) => {
     let sessionToken = sessionStorage.getItem('jwt-token');
-  
+    if(userData.username.length > 12) return alert("Username must be 12 characters long only.")
     let formData = new FormData();
+    formData.append('id', id);
     formData.append('old_username', userData.username);
     formData.append('username', info[1].content);
     formData.append('email', info[0].content);
@@ -105,6 +106,7 @@ function UserInformation() {
       } 
     )
     .then(() => window.location.reload())
+    .catch(err => alert(err.response.data.message))
   }
 
   const updateDetailsInfo = async (info) => {

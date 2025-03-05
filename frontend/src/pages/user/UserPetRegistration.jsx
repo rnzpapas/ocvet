@@ -82,6 +82,7 @@ function UserPetRegistration() {
             }
         )
         .then(() => navigate('/user/pets'))
+        .catch(err => alert(err))
     };
 
     useEffect(() => {
