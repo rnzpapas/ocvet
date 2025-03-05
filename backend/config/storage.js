@@ -1,8 +1,5 @@
 import multer from "multer";
 import path from "path";
-
-import multer from "multer";
-import path from "path";
 import fs from "fs";
 
 // Define the destination path for file uploads
