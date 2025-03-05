@@ -80,7 +80,7 @@ function AdminLogin() {
           />
           {/* logo title */}
           <section className="flex flex-col items-center">
-            <p className="uppercase md:text-content-sm xl:text-content-md font-lato text-raisin-black">city government of tanuan</p>
+            <p className="uppercase md:text-content-sm xl:text-content-md font-lato text-raisin-black">city government of tanauan</p>
             <div className="w-[300px] h-[2.5px] bg-raisin-black rounded-[5px]"></div>
             <h5 className="uppercase font-extrabold md:text-content-sm xl:text-content-md font-lato text-raisin-black">office of the city veterinarian</h5>
           </section>

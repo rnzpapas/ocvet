@@ -36,7 +36,7 @@ function UserNav() {
           </Link>
             {/* logo title */}
             <section className="hidden md:flex md:flex-col md:items-center md:gap-[2px]">
-                <p className="uppercase text-content-xtrasm lg:text-content-sm font-lato">city government of tanuan</p>
+                <p className="uppercase text-content-xtrasm lg:text-content-sm font-lato">city government of tanauan</p>
                 <div className="w-[220px] lg:w-[275px] h-[2.5px] bg-raisin-black rounded-[5px]"></div>
                 <h5 className="uppercase font-extrabold text-content-xtrasm lg:text-content-sm font-lato">office of the city veterinarian</h5>
             </section>

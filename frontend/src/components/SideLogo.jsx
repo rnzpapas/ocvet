@@ -9,7 +9,7 @@ function SideLogo({style}) {
       />
       {/* logo title */}
       <section className="flex flex-col items-center">
-        <p className="uppercase text-content-sm md:text-content-sm xl:text-content-md font-lato">city government of tanuan</p>
+        <p className="uppercase text-content-sm md:text-content-sm xl:text-content-md font-lato">city government of tanauan</p>
         <div className="w-[300px] h-[2.5px] bg-raisin-black rounded-[5px]"></div>
         <h5 className="uppercase font-extrabold text-content-sm md:text-content-sm xl:text-content-md font-lato">office of the city veterinarian</h5>
       </section>
