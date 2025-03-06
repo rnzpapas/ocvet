@@ -9,6 +9,7 @@ import useRedirectUser from '../../auth/useRedirectUser';
 import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function UserPetPage() {
+    let imgDirSrc = import.meta.env.AWS_BUCKET_CONNECTION;
     let user = localStorage.getItem("user");
     let userParsed = JSON.parse(user);
     useRedirectUser(`pets/`);
@@ -99,7 +100,7 @@ function UserPetPage() {
                             {recentVaccinated && (
                                recentVaccinated.map((pet, index) => (
                                 <div className="w-[50px] h-[50px]" key={index}>
-                                    <img src={`/pet/${pet.image}`} alt={pet.image} className="h-full w-full object-fill rounded-full"/>
+                                    <img src={`${imgDirSrc}/${pet.image}`} alt={pet.image} className="h-full w-full object-fill rounded-full"/>
                                 </div>
                                ))
                             )}

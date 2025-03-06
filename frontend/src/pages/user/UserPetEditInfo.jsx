@@ -9,6 +9,7 @@ import { capitalizeFirstLetter } from '../../utils/textUtils'
 import axiosInstance from "@/config/AxiosConfig.jsx"
 
 function UserPetEditInfo() {
+    let imgDirSrc = import.meta.env.AWS_BUCKET_CONNECTION;
     const {id} = useParams();
     useRedirectUser(`pets/edit/${id}`);
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ function UserPetEditInfo() {
                             <section className="flex flex-col gap-3 mt-5">
                                 <section className="flex justify-center">
                                     <section className="w-[100px] h-[100px] md:w-[125px] md:h-[125px] relative">
-                                        <img src={`/pet/${petInfo.image}`} alt="" className="h-full w-full object-cover bg-azure rounded-full" />
+                                        <img src={`${imgDirSrc}/${petInfo.image}`} alt="" className="h-full w-full object-cover bg-azure rounded-full" />
                                     </section>
                                 </section>
                             </section> 
