@@ -1,5 +1,5 @@
 import express from 'express';
-import {upload} from "../config/storage.js";
+import upload from '../config/storage.js'; 
 import { createPet, deletePet, getAllPets, getAllPetsByDate, getAllPetsByOwner,
 getAllPetsByOwnerDescending, getAllPetsByRangeDate, getAllPetsByType, getAllPetsByTypeDescending,
 getAllPetsCount, getPet, getPetByNickname, updatePet, updatePetImage, getAllCountPetsByOwner, getAllCountPetsByOwnerAndPets,

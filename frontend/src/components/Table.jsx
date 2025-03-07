@@ -48,8 +48,6 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
 
 
     useEffect(() => {
-        console.log(sorted)
-
     },[sorted])
     return (
         <section className={`flex flex-col max-h-fit ${tableW} ${tableH} ${style}`}>

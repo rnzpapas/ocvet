@@ -1,16 +1,14 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import path from "path";
-import fs from 'fs'
 import { generatePdf } from "../utils/reportUtils.js";
+import { DeleteObjectCommand, S3 } from "@aws-sdk/client-s3";
 
 export const createPet = async (req, res, next) => {
     const { atypeid, pet_owner, nickname} = req.body;
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
-    // module to save images on project folder ....
     const imageFile = req.file;
-    const filename = imageFile.originalname.split(".")[0];
-    const image_name = filename + path.extname(imageFile.path);
+    const image_name = imageFile.originalname
     const registration_timestamp = Date.now() / 1000.0;
 
     try{
@@ -20,7 +18,6 @@ export const createPet = async (req, res, next) => {
         if(!imageFile) {
             return handleResponse(res, 400, "No pet image is not uploaded.");
         }
-        const image = imageFile.path;
         const query = await createPetService(atypeid, pet_owner, nickname, image_name, registration_timestamp);
         return handleResponse(res, 201, "Pet successfully registered.");
     }catch(err) {
@@ -32,7 +29,6 @@ export const updatePet = async (req, res, next) => {
     const petid = req.query.petid;
     const { pet_owner, atypeid, nickname } = req.body;
     const pet = await getPetService(petid);
-    console.log(pet)
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
     try{
         if(existing_nickname.length > 0 && pet.nickname !== nickname){
@@ -56,34 +52,28 @@ export const updatePet = async (req, res, next) => {
 export const updatePetImage = async (req, res, next) => {
     const id = req.params.id;
     const imageFile = req.file;
-    const filename = imageFile.originalname.split(".")[0];
-    const image_name = filename + path.extname(imageFile.path);
 
-    try{
-        if(imageFile){
-            const pet_image = await getPetService(id);
-            const pet_last_image = path.join("..", "frontend", "public", "pet", pet_image.image);
-            const pet_last_img_abspath = path.resolve(pet_last_image);
-            
-            if(fs.existsSync(pet_last_img_abspath)){
-                fs.unlink(pet_last_img_abspath, (err) => {
-                    if(err) {
-                        return handleResponse(res, 400, "Failed to delete the previous image.");
-                    }
-                    const image = imageFile.path;
-                    const query = updatePetImageService(id, image_name);
-                    return handleResponse(res, 200, "Pet image successfully updated.");
+    if (!imageFile) {
+        return handleResponse(res, 400, "No image uploaded.");
+    }
+
+    try {
+        const pet = await getPetService(id);
+
+        if (pet && pet.image) {
+            await S3.send(
+                new DeleteObjectCommand({
+                    Bucket: process.env.AWS_S3_BUCKET_NAME,
+                    Key: `pet/${pet.image}`,
                 })
-            }else{
-                const image = imageFile.path;
-                const query = updatePetImageService(id, image_name);
-                return handleResponse(res, 200, "Pet image successfully updated.");
-            }
-        }else{
-            return handleResponse(res, 400, "No pet image uploaded.");
+            );
         }
-    }catch(err) {
-        return next(err);
+        const imageUrl = req.file.location;
+        await updatePetImageService(id, imageFile.originalname);
+        return handleResponse(res, 200, "Pet image successfully updated.", imageUrl || "URL NOT FOUND")
+    } catch (err) {
+        console.error("Error updating pet image:", err);
+        next(err);
     }
 }
 

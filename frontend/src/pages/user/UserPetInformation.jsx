@@ -104,7 +104,7 @@ function UserPetInformation() {
               'Authorization': `Bearer ${sessionToken}`,
               'Content-Type': 'multipart/form-data'}
           })
-          .then((res) => window.location.reload())
+          .then((res) => console.log(res))
       }else{
         alert('Invalid file type')
       }
