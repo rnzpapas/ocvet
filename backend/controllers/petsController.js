@@ -1,9 +1,8 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
-import path from "path";
 import { generatePdf } from "../utils/reportUtils.js";
-import { DeleteObjectCommand, S3 } from "@aws-sdk/client-s3";
-
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { s3 } from "../config/storage.js";
 export const createPet = async (req, res, next) => {
     const { atypeid, pet_owner, nickname} = req.body;
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
@@ -61,7 +60,7 @@ export const updatePetImage = async (req, res, next) => {
         const pet = await getPetService(id);
 
         if (pet && pet.image) {
-            await S3.send(
+            await s3.send(
                 new DeleteObjectCommand({
                     Bucket: process.env.AWS_S3_BUCKET_NAME,
                     Key: `pet/${pet.image}`,
