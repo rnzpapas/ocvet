@@ -43,7 +43,8 @@ const headers = [
   }
 ]
 function UserPetInformation() {
-    let imgDirSrc = import.meta.env.AWS_BUCKET_CONNECTION;
+  let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
+
     const {id} = useParams();
     if(!id) useRedirectUser();
     useRedirectUser(`pets/view/${id}`);
@@ -139,7 +140,7 @@ function UserPetInformation() {
             <section className="py-4 lg:py-6 flex relative items-center justify-center">
               <section className="flex flex-col gap-2 items-center ">
                 <section className="relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] lg:w-[150px] lg:h-[150px]">
-                    <img src={`${imgDirSrc}/${petInfo.image}`} alt="" className=" w-full h-full object-cover bg-azure rounded-full" />
+                    <img src={`${imgDirSrc}/pet/${petInfo.image}`} alt="" className=" w-full h-full object-cover bg-azure rounded-full" />
                     <section className="absolute bottom-0 right-0 md:bottom-1 md:right-1 bg-silver rounded-full h-[26px] w-[26px] md:h-[30px] md:w-[30px] lg:h-[38px] lg:w-[38px] flex items-center justify-center cursor-pointer">
                       <input
                         ref={fileInputRef}
