@@ -30,6 +30,7 @@ function UserLogin() {
     const onLogin = async (evt) => {
         evt.preventDefault();
         if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
+
         try{
             const loginRes = await axiosInstance.post('/api/user/login', {
                 username: username,
@@ -53,7 +54,9 @@ function UserLogin() {
             localStorage.setItem("user", JSON.stringify(userData));
             sessionStorage.setItem('jwt-token', access_token);
             navigate('/user/home');
+
         }catch(err){
+            console.log(err)
             const message = err.response?.data?.message || "Login failed.";
             alert(message);
         }

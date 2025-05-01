@@ -261,7 +261,7 @@ function UserHome() {
   return (
     <section className="overflow-hidden">
       <UserNav />
-      <section className="h-fit flex flex-col lg:flex-row">
+      <section className="h-dvh flex flex-col lg:flex-row">
         <section className="lg:w-[40%] flex justify-center">
           <section className="bg-white-smoke shadow-md px-2 py-5 h-[300px] w-[90%] max-h-[500px] overflow-y-auto mt-16 rounded-md">
             <h5 className="font-lato font-semibold text-headline-md mb-4">Upcoming Appointments</h5>
