@@ -27,39 +27,36 @@ function UserLogin() {
         setIsHiddenPassword(!isHiddenPassword);
     }
 
-    const onLogin = (evt) => {
+    const onLogin = async (evt) => {
         evt.preventDefault();
         if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
-        axiosInstance.post('/api/user/login', {
-            username: username,
-            password: password
-        }, {headers: {'Content-Type': 'application/json'}})
-        .then(res => {
-            const response = res.data.data;
-            axiosInstance.get(`/api/user/account/full-details/${response.uaid}`, 
-                {headers: {'Authorization': `Bearer ${response.access_token}`}})
-                .then(res => {
-                    let userFullDetails = res.data.data;
-                    const userData = {
-                        "uid": userFullDetails.UID,
-                        "uaid": userFullDetails.UAID,
-                        "email": userFullDetails.email,
-                        "role": userFullDetails.role,
-                        "date_joined": userFullDetails.date_joined
-                    }
-                    localStorage.setItem("user", JSON.stringify(userData));
-                    sessionStorage.setItem('jwt-token', response.access_token);
-                    navigate('/user/home');
-                    // if admin
-                })
-                .catch(err => {
-                    navigate('/admin/role');
+        try{
+            const loginRes = await axiosInstance.post('/api/user/login', {
+                username: username,
+                password: password
+            }, {headers: {'Content-Type': 'application/json'}})
+            
+            const { access_token, uaid } = loginRes.data.data;
+    
+            const detailsRes = await axiosInstance.get(`/api/user/account/full-details/${uaid}`, 
+                    {headers: {'Authorization': `Bearer ${access_token}`}})
+            
+            let userFullDetails = detailsRes.data.data;
+            const userData = {
+                "uid": userFullDetails.UID,
+                "uaid": userFullDetails.UAID,
+                "email": userFullDetails.email,
+                "role": userFullDetails.role,
+                "date_joined": userFullDetails.date_joined
+            }
 
-                })
-        })
-        .catch(err => {
-            alert(err.response.data.message);
-        })
+            localStorage.setItem("user", JSON.stringify(userData));
+            sessionStorage.setItem('jwt-token', access_token);
+            navigate('/user/home');
+        }catch(err){
+            const message = err.response?.data?.message || "Login failed.";
+            alert(message);
+        }
     }
 
     useEffect(() => {
