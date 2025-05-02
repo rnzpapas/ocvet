@@ -3,6 +3,7 @@ import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsServic
 import { generatePdf } from "../utils/reportUtils.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/storage.js";
+
 export const createPet = async (req, res, next) => {
     const { atypeid, pet_owner, nickname} = req.body;
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);

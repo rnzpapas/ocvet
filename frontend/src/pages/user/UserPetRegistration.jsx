@@ -73,16 +73,22 @@ function UserPetRegistration() {
         formData.append("nickname", nickname);
         formData.append("pet_owner", userParsed.uid);
         formData.append("image", imgFile);
-        await axiosInstance.post(`/api/pets/register`, formData, 
-            {
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`,
-                    'Content-Type': 'multipart/form-data'
+        try{
+            let res = await axiosInstance.post(`/api/pets/register`, formData, 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
                 }
+            )
+            if(res.status == 201){
+                navigate('/user/pets');
             }
-        )
-        .then(() => navigate('/user/pets'))
-        .catch(err => alert(err))
+        }catch(err){
+            let message = err.response?.data?.message || "Pet registration failed";
+            alert(message);
+        }
     };
 
     useEffect(() => {

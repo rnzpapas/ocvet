@@ -61,6 +61,7 @@ export const getAllAdministratorsFiltered = async (req, res, next) => {
         return next(err);
     }
 }
+
 export const getAllUsersAccount = async (req, res, next) => {
     try{
         const users = await getAllUsersAccountService();
@@ -172,7 +173,7 @@ export const verifyUserOtp = async (req, res, next) => {
             handleResponse(res, 200, "Verified OTP", result) :
             handleResponse(res, 400, "OTP you submitted is invalid. It might incorrect or expired OTP sent.")
         }else{
-            return handleResponse(res, 400, "The username or e-mail you submitted is not on our records.")
+            return handleResponse(res, 404, "The username or e-mail you submitted is not on our records.")
         }
     } catch(err){
         return next(err)
@@ -181,7 +182,6 @@ export const verifyUserOtp = async (req, res, next) => {
 
 export const updateUserAccount = async (req, res, next) => {
     const { id, old_username, username, email} = req.body;
-    console.log("id: ", id)
     const old_user = await getUserAccountByUsernameService(old_username, id);
     const existing_user = await getUserAccountByUsernameVerificationService(username, id);
     const existing_email = await getUserAccountByEmailVerificationService(email, id);

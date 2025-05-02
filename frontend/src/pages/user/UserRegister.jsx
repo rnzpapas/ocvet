@@ -218,7 +218,7 @@ function UserRegister() {
                         <Button txtContent={"next page"} style={`${registerFormPage === 1 ? 'block w-full' : 'hidden'}`} onClickFunc={nextRegisterPage}/>
                     </section>
                 </form>
-                </section>
+            </section>
         </section>
     )
 }

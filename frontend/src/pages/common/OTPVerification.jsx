@@ -38,20 +38,28 @@ function OTPVerification() {
     const verifyOTP = async () => {
         const formData = new FormData();
         formData.append('otp', OTP);
-        await axiosInstance.post(`/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
-            {
-                headers: {
-                    'Content-Type': 'application/json'
+        try{
+            let res = await axiosInstance.post(`/api/user/account-recovery/otp-verify?unmail=${searchParams.get('unmail')}`, formData, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }
+            )
+            
+            if(res.status == 404){
+                alert(res.data.message);
+                navigate("/user/login");
             }
-        )
-        .then((res) => {
-            let uaid = res.data.data[0].UAID
-            navigate(`/account-recovery/changepw?uaid=${uaid}`);
-        })
-        .catch((err) => {
-            alert(err.response.data.message)
-        })
+
+            if(res.data.data){
+                let uaid = res.data.data[0].UAID;
+                navigate(`/account-recovery/changepw?uaid=${uaid}`);
+            }
+
+        }catch(err){
+            let message = 'OTP Verification failed.';
+        }
     }
 
     const cancelOtp = async () => {

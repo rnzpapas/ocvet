@@ -13,6 +13,7 @@ export const getUserFullDetails = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
     const {  firstname, middlename, surname, gender, address, username, password, email, role, date_joined } = req.body;
+
     const formattedDateJoined = new Date(date_joined);
     const splitDateJoined = formattedDateJoined.toISOString().split('T')[0];
     const existing_username = await getUserAccountByUsernameService(username);
