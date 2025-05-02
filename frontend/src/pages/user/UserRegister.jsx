@@ -4,6 +4,7 @@ import Button from "@/components/Button"
 import SideLogo from "@/components/SideLogo"
 import { Link, useNavigate } from "react-router";
 import axiosInstance from "@/config/AxiosConfig.jsx"
+import Spinner from "@/components/Spinner.jsx";
 
 function UserRegister() {
     const navigate = useNavigate()
@@ -18,6 +19,8 @@ function UserRegister() {
     const [password, setPassword] = useState("");
     const [cpassword, setCpassword] = useState("");
     const [registerFormPage, setRegisterFormPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    
 
     const onChangeFirstname = (evt) => {
         setFirstname(evt.target.value);
@@ -68,17 +71,18 @@ function UserRegister() {
     }
 
     const onRegistrationSubmit = async () => {
+        setIsLoading(true);
 
         if(password !== cpassword){
             alert("Two passwords does not match.");
+            setIsLoading(false);
             return;
         }
 
         let dateNow = new Date();
         let dateStr = `${dateNow.getFullYear()}-${dateNow.getMonth()+1}-${dateNow.getDate()}`
         let formData = new FormData();
-        // {  firstname, middlename, surname, gender, address, 
-        // username, password, email, role, date_joined }
+
         formData.append('firstname', firstname);
         formData.append('middlename', middlename);
         formData.append('surname', surname);
@@ -89,27 +93,27 @@ function UserRegister() {
         formData.append('email', email);
         formData.append('role', "User");
         formData.append('date_joined', dateStr);
-
-        await axiosInstance.post('/api/user/register', formData, 
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+        
+        try{
+            let res = await axiosInstance.post('/api/user/register', formData, {headers: {'Content-Type': 'application/json'}})
+            if(res.status == 201){
+                setIsLoading(false);
+                alert("Registration Success.");
+                navigate("/user/login");
             }
-        )
-        .then(() => {
-            alert("Registration Success.");
-            navigate("/user/login")
-        })
-        .catch(err => {
-            alert(err.response.data.message)
+        }catch(err){
             console.error(err)
-        })
-
+            let message = err.response?.data?.message || 'Registration failed.';
+            alert(message);
+            setIsLoading(false);
+        }
     }
 
     return (
-        <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-fit py-5 lg:h-auto">
+        <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-fit lg:h-auto">
+            {
+                isLoading && <Spinner />
+            }
             <SideLogo style={"lg:h-screen lg:w-6/12"}/>
             <section className="flex flex-col gap-5 items-center justify-center lg:w-6/12">
                 <h5 className="font-instrument-sans text-headline-md xl:text-headline-lrg font-bold"> Sign Up</h5>

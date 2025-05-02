@@ -33,8 +33,8 @@ export const createUser = async (req, res, next) => {
             const userIDs = await createUserService(firstname, middlename, surname, gender, address, username, password, email, role, splitDateJoined);
             return handleResponse(res, 201, "User created successfully.", userIDs);
         }
+        
     }catch(err) {
-
         return next(err);
     }
 }

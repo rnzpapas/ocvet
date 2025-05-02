@@ -6,6 +6,7 @@ import { Link as RouterLink, useNavigate} from "react-router";
 import Link from "@/components/Link";
 import useRedirectUser from '@/auth/useRedirectUser';
 import axiosInstance from "@/config/AxiosConfig.jsx"
+import Spinner from "@/components/Spinner";
 
 function UserLogin() {
     useRedirectUser();
@@ -13,6 +14,8 @@ function UserLogin() {
     const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const onChangeUsername = (evt) => {
@@ -28,10 +31,15 @@ function UserLogin() {
     }
 
     const onLogin = async (evt) => {
+
         evt.preventDefault();
-        if(username.length === 0 || password.length === 0) alert("Please fill out all fields.");
+
+        if(username.length === 0 || password.length === 0) {
+            alert("Please fill out all fields.");
+        };
 
         try{
+            setIsLoading(true);
             const loginRes = await axiosInstance.post('/api/user/login', {
                 username: username,
                 password: password
@@ -53,12 +61,14 @@ function UserLogin() {
 
             localStorage.setItem("user", JSON.stringify(userData));
             sessionStorage.setItem('jwt-token', access_token);
+            setIsLoading(false);
             navigate('/user/home');
 
         }catch(err){
             console.log(err)
             const message = err.response?.data?.message || "Login failed.";
             alert(message);
+            setIsLoading(false);
         }
     }
 
@@ -72,6 +82,9 @@ function UserLogin() {
 
     return (
         <section className="flex flex-col lg:flex-row md:w-screen bg-linen lg:bg-opacity-0 h-screen lg:h-auto">
+            {
+                isLoading && <Spinner />
+            }
             <SideLogo style={"lg:h-screen lg:w-6/12"}/>
             <section className="flex flex-col gap-5 items-center justify-center lg:w-6/12">
                 <h5 className="font-instrument-sans text-headline-md xl:text-headline-lrg font-bold"> Sign In</h5>

@@ -36,6 +36,7 @@ export const loginUserAccount = async (req, res, next) => {
         return handleResponse(res, 200, "Successfully login.", response);
 
     }catch(err){
+        console.log(err)
         return next(err);
     }
 }
