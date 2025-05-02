@@ -34,10 +34,6 @@ function UserLogin() {
 
         evt.preventDefault();
 
-        if(username.length === 0 || password.length === 0) {
-            alert("Please fill out all fields.");
-        };
-
         try{
             setIsLoading(true);
             const loginRes = await axiosInstance.post('/api/user/login', {
