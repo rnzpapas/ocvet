@@ -386,7 +386,7 @@ function UserHome() {
                 }
               </section>
               {/* services */}
-              <section className={`${appointmentPage === 3 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'} `}>
+              <section className={`${appointmentPage == 3 ? 'max-w-fit max-h-[500px] px-3 py-3 gap-3 rounded-md grid grid-cols-3' : 'hidden'} `}>
                 {
                   services && (
                     services.map((svcs,index) => (
@@ -401,7 +401,7 @@ function UserHome() {
                 }
               </section>
               {/* pets / pet group*/}
-              <section className={`${appointmentPage === 4 ? 'w-full max-h-[500px] px-3 py-3 gap-3 rounded-md flex flex-col' : 'hidden'}`}>
+              <section className={`${appointmentPage == 4 ? 'w-full max-h-[500px] px-3 py-3 gap-3 rounded-md flex flex-col' : 'hidden'}`}>
                 <section className="w-full h-fit flex flex-col gap-4">
                   {/* PETS */}
                   <section className="h-fit">
@@ -462,7 +462,7 @@ function UserHome() {
                 </section>
               </section>
               {/* diagnosis */}
-              <section className={`${appointmentPage === 5 ? 'max-w-fit max-h-[200px] px-3 py-3 gap-4 rounded-md grid grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden' : 'hidden'} `}>
+              <section className={`${appointmentPage == 5 ? 'max-w-fit max-h-[200px] px-3 py-3 gap-4 rounded-md grid grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden' : 'hidden'} `}>
                 {
                   diagnosis && (
                     diagnosis.map((svcs,index) => (
