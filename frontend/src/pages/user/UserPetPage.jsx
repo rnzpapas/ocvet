@@ -80,15 +80,15 @@ function UserPetPage() {
 
     useEffect(() => {
         let petsPromise = loadAllPets();
-        if(search.length === 0) petsPromise.then(res => setPetsData(res));
-
-        let vaxPromise = loadRecentVaccinations();
-        vaxPromise.then(res => setRecentVaccinated(res));
-
-        let pgPromise = loadPetGroups();
-        pgPromise.then((pg) => setPetGroups(pg))
-
-    },[petsData, recentVaccinated, petGroups, search])
+        if (search.length === 0) {
+            petsPromise.then(res => setPetsData(res));
+        }
+    
+        loadRecentVaccinations().then(res => setRecentVaccinated(res));
+        loadPetGroups().then(pg => setPetGroups(pg));
+    
+    }, [search]);
+    
 
     return (
         <>

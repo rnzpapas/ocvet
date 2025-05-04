@@ -280,7 +280,7 @@ function UserInformation() {
                   </section>
                   <section>
                     <PersonalDetails style={""}
-                      fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
+                      fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename || ""}`}
                       address={userData.address}
                       gender={capitalizeFirstLetter(userData.gender)}
                       onEditClick={onOpenPersonalEdit}
