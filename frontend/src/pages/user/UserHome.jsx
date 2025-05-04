@@ -21,6 +21,8 @@ const timeSlot = [
 ];
 
 function UserHome() {
+  let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
+
   useRedirectUser();
   let userParsed = JSON.parse(localStorage.getItem('user'));
   let sessionToken = sessionStorage.getItem('jwt-token');
@@ -420,7 +422,7 @@ function UserHome() {
                           <section key={pet.PETID} className="relative group cursor-pointer ">
                             <section id={pet.PETID} className="w-full h-full bg-raisin-black absolute rounded-full opacity-0" onClick={(evt) => selectPetForAppointment(evt)}></section>
                             <section className="flex items-center gap-2 px-2 py-2 rounded-full group-hover:bg-chefchaouen-blue">
-                              <img src={`/pet/${pet.image}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
+                              <img src={`${imgDirSrc}/pet/${pet.image}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
                               <h5 className="text-content-sm md:text-content-md w-full font-lato text-raisin-black group group-hover:text-white-smoke group-hover:font-semibold">{pet.nickname}</h5>
                             </section>
                           </section>
