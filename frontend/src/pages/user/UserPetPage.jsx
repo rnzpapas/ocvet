@@ -7,6 +7,7 @@ import PetCard from "@/components/PetCard";
 import { Link } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axiosInstance from "@/config/AxiosConfig.jsx"
+import NoImg from '@/assets/noimg.png';
 
 function UserPetPage() {
     let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
@@ -101,7 +102,10 @@ function UserPetPage() {
                             {recentVaccinated && (
                                recentVaccinated.map((pet, index) => (
                                 <div className="w-[50px] h-[50px]" key={index}>
-                                    <img src={`${imgDirSrc}/pet/${pet.image}`} alt={pet.image} className="h-full w-full object-fill rounded-full"/>
+                                    <img src={pet.image ? `${imgDirSrc}/pet/${pet.image}` : NoImg}
+                                        alt={pet.image || "No Image"} 
+                                        className="h-full w-full object-fill rounded-full"
+                                    />
                                 </div>
                                ))
                             )}
