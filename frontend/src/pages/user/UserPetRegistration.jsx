@@ -85,6 +85,7 @@ function UserPetRegistration() {
     
             data = formData;
             api = '/api/pets/register';
+            headers['Content-Type'] = 'multipart/form-data';
     
         } else {
             data = {
