@@ -22,7 +22,7 @@ function LandingPage() {
           <img src={Logo} alt="logo" className='w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[100px] lg:h-[100px]'/>
           <Button txtContent={"Login"} style={'h-fit py-2'} onClickFunc={redirectLoginPage}/>
       </nav>
-      <section className={`h-full w-full bg-[url('/assets/herobg.jpg')] bg-cover bg-bottom bg-no-repeat`}>
+      <section className={`h-full w-full bg-[url('/assets/herobg.jpg')] bg-cover bg-center bg-no-repeat`}>
         <section className='px-10 xl:px-24 xxl:px-32 xxxl:px-60 h-[70vh] lg:h-[75vh] w-screen flex flex-col justify-end'>
           <h5 className='font-instrument-sans text-headline-xtrasm md:text-headline-md lg:text-headline-lrg xxxl:text-headline-xtralrg text-[#fff] font-bold'>
             Serving the <b className='text-lime-green font-instrument-sans'>health and well-being</b> <br></br> of our nation's animals
