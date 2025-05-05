@@ -56,7 +56,11 @@ function UserPetEditInfo() {
             }}
         )
         .then(() => navigate(`/user/pets/view/${id}`))
-        .catch(err => console.error(err))
+        .catch(err => {
+            let message = err.response?.data?.message || "Update failed.";
+            alert(message);
+            return;
+        })
         
     }
 
