@@ -71,6 +71,7 @@ function StaffPetList() {
     }
 
     const searchPetDetails = async () => {
+        setPets([]);
         let p;
         await axiosInstance.get(`/api/pets/admin/nickname?pet=${search}`, 
             {

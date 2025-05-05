@@ -55,6 +55,7 @@ function MngrPetList() {
     }
 
     const loadPetDetails = async () => {
+        setPets([])
         let p;
         await axiosInstance.get('/api/pets/all', 
             {

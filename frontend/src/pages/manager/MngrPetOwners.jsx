@@ -65,6 +65,7 @@ function MngrPetOwners() {
     }
 
     const searchPetOwners = async () => {
+        setPetOwnerDetails([]);
         let petOwnersArr = [];
         await axiosInstance.get(`/api/user/account/full-details-search?namemail=${search}`,
             {

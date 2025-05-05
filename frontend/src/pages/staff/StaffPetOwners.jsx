@@ -35,7 +35,7 @@ const HEADERS = [
 function StaffPetOwners() {
     let sessionToken = sessionStorage.getItem('jwt-token');
     const [search, setSearch] = useState("");
-    const [petOwnersDetails, setPetOwnerDetails] = useState();
+    const [petOwnersDetails, setPetOwnerDetails] = useState([]);
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
@@ -62,29 +62,34 @@ function StaffPetOwners() {
     }
 
     const searchPetOwners = async () => {
-        let petOwnersArr = [];
-        await axiosInstance.get(`/api/user/account/full-details-search?namemail=${search}`,
-            {
-                headers: {'Authorization': `Bearer ${sessionToken}`}
+        setPetOwnerDetails([]);
+        try{
+            let petOwnersArr = [];
+            let res = await axiosInstance.get(`/api/user/account/full-details-search?namemail=${search}`,
+                {
+                    headers: {'Authorization': `Bearer ${sessionToken}`}
+                }
+            )
+            if(res.data){
+                let petOwnerList = res.data.data;
+                if(petOwnerList.length > 0){
+                    petOwnerList.map((petOwner, index) => {
+                        let po = {
+                            "ID": petOwner.UAID,
+                            "fullname": `${petOwner.firstname} ${petOwner.surname}`,
+                            "email": petOwner.email,
+                            "usename": petOwner.username,
+                            "joined_date": convertDate( petOwner.date_joined)
+                        }
+    
+                        petOwnersArr.push(po);
+                    })
+                }
             }
-        )
-        .then((res) => {
-            let petOwnerList = res.data.data;
-            if(petOwnerList.length > 0){
-                petOwnerList.map((petOwner, index) => {
-                    let po = {
-                        "ID": petOwner.UAID,
-                        "fullname": `${petOwner.firstname} ${petOwner.surname}`,
-                        "email": petOwner.email,
-                        "usename": petOwner.username,
-                        "joined_date": convertDate( petOwner.date_joined)
-                    }
+            return petOwnersArr;
+        }catch(err){
 
-                    petOwnersArr.push(po);
-                })
-            }
-        }).catch(err => console.error(err))
-        return petOwnersArr;
+        }
     }
 
     const onChangeSearch = (evt) => {setSearch(evt.target.value)}
@@ -106,12 +111,14 @@ function StaffPetOwners() {
     }
 
     useEffect(() => {
-        let petOwnerPromise = loadPetOwners();
-        let searchPromise = searchPetOwners();
+        let dataPromise = async () => {
+            let petOwnersData = await loadPetOwners();
+            let searchData = await searchPetOwners();
 
-        search.length === 0 ? 
-        petOwnerPromise.then((po) => setPetOwnerDetails(po)) : 
-        searchPromise.then((po) => setPetOwnerDetails(po))
+            search.length === 0 ? 
+            setPetOwnerDetails(petOwnersData) : setPetOwnerDetails(searchData)
+        }
+        dataPromise();
     },[search]);
 
     return (
