@@ -205,7 +205,7 @@ function MngrAnnouncements() {
                             <label htmlFor="" className="text-silver font-lato font-bold text-content-lrg">Message:</label>
                             <p className={`font-lato ${isMaxCharReached ? 'text-fire-engine-red' : 'text-raisin-black'}`}>{numOfChar} / {MAX_CHARACTERS} characters</p>
                         </section>
-                        <textarea onChange={(el) => onMessageChange(el)} name="" id="" className="px-2 w-full h-[120%] border border-silver resize-none font-lato text-content-lrg"></textarea>
+                        <textarea onChange={(el) => onMessageChange(el)} name="" id="" className="px-2 w-full h-[250px] border border-silver resize-none font-lato text-content-lrg"></textarea>
                         <section className="relative w-fit mt-1">
                             <Button txtContent={"send message"} onClickFunc={onSubmitAnnouncement}/>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-[16px] fill-white-smoke absolute top-2 right-3">
