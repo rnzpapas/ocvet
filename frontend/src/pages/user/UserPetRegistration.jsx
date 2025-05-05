@@ -72,7 +72,9 @@ function UserPetRegistration() {
         formData.append("atypeid", atypeid);
         formData.append("nickname", nickname);
         formData.append("pet_owner", userParsed.uid);
-        formData.append("image", imgFile);
+        if(imgFile){
+            formData.append("image", imgFile);
+        }
         try{
             let res = await axiosInstance.post(`/api/pets/register`, formData, 
                 {
