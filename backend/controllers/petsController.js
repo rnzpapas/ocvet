@@ -15,9 +15,6 @@ export const createPet = async (req, res, next) => {
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");
         }
-        if(!imageFile) {
-            return handleResponse(res, 400, "No pet image is not uploaded.");
-        }
         const query = await createPetService(atypeid, pet_owner, nickname, image_name, registration_timestamp);
         return handleResponse(res, 201, "Pet successfully registered.");
     }catch(err) {
