@@ -80,7 +80,7 @@ function UserPetRegistration() {
                 {
                     headers: {
                         'Authorization': `Bearer ${sessionToken}`,
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': imgFile ? 'multipart/form-data' : 'application/json'
                     }
                 }
             )
