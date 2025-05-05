@@ -64,7 +64,7 @@ function SAdminPetOwners() {
     }
 
     const searchPetOwners = async () => {
-        setPetOwnerDetails([])
+        setPetOwnerDetails([]);
         let petOwnersArr = [];
         await axiosInstance.get(`/api/user/account/full-details-search?namemail=${search}`,
             {
@@ -90,7 +90,10 @@ function SAdminPetOwners() {
         return petOwnersArr;
     }
 
-    const onChangeSearch = (evt) => {setSearch(evt.target.value)}
+    const onChangeSearch = (evt) => {
+        setSearch(evt.target.value)
+
+    }
 
     const exportPetOwners = async () => {
         await axiosInstance.get('/api/user/account/petowners/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
@@ -109,10 +112,14 @@ function SAdminPetOwners() {
     }
 
     useEffect(() => {
-        let petOwnerPromise = loadPetOwners();
-        let searchPromise = searchPetOwners();
-        
-        search.length === 0 ? petOwnerPromise.then((po) => setPetOwnerDetails((pod) => pod = po)) : searchPromise.then((po) => setPetOwnerDetails((pod) => pod = po))
+        const dataPromise = async () => {
+            let petOwnerPromise = loadPetOwners();
+            let searchPromise = searchPetOwners();
+            
+            search.length === 0 ? 
+            setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
+
+        }
 
     },[search]);
 

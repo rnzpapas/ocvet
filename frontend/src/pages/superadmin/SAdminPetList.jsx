@@ -104,11 +104,15 @@ function SAdminPetList() {
       }
 
     useEffect(() => {
-        let petsPromise = loadPetDetails();
-        let searchPromise = searchPetDetails();
+        const dataPromise = async () => {
+            let petsPromise = loadPetDetails();
+            let searchPromise = searchPetDetails();
+    
+            search.length === 0 ? 
+            setPets(petsPromise) :  setPets(searchPromise) 
 
-        search.length === 0 ? petsPromise.then((pt) => setPets(p => p = pt)) :  searchPromise.then((pt) => setPets(p => p = pt)) 
-
+        }
+        dataPromise();
     },[search])
 
     useEffect(() => {}, [petSelected])

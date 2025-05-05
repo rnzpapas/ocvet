@@ -110,11 +110,14 @@ function MngrPetOwners() {
     }
 
     useEffect(() => {
-        let petOwnerPromise = loadPetOwners();
-        let searchPromise = searchPetOwners();
-        
-        search.length === 0 ? petOwnerPromise.then((po) => setPetOwnerDetails((pod) => pod = po)) : searchPromise.then((po) => setPetOwnerDetails((pod) => pod = po))
-
+        const dataPromise = async () => {
+            let petOwnerPromise = await loadPetOwners();
+            let searchPromise = await searchPetOwners();
+            
+            search.length === 0 ? 
+            setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
+        }
+        dataPromise();
     },[search]);
 
     return (

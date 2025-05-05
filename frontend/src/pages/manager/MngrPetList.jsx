@@ -72,6 +72,7 @@ function MngrPetList() {
     }
 
     const searchPetDetails = async () => {
+        setPets([]);
         let p;
         await axiosInstance.get(`/api/pets/admin/nickname?pet=${search}`, 
             {
@@ -104,11 +105,15 @@ function MngrPetList() {
       }
 
     useEffect(() => {
-        let petsPromise = loadPetDetails();
-        let searchPromise = searchPetDetails();
+        const dataPromise = async () => {
+            let petsPromise = await loadPetDetails();
+            let searchPromise = await searchPetDetails();
+    
+            search.length === 0 ? 
+            setPets(petsPromise) :  setPets(searchPromise) 
 
-        search.length === 0 ? petsPromise.then((pt) => setPets(p => p = pt)) :  searchPromise.then((pt) => setPets(p => p = pt)) 
-
+        }
+        dataPromise();
     },[search])
 
     useEffect(() => {}, [petSelected])
