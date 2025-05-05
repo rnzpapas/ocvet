@@ -6,11 +6,13 @@ getAllPetsCount, getPet, getPetByNickname, updatePet, updatePetImage, getAllCoun
 getAllPetsAndOwnerByType,
 getPetByNicknameAdmin,
 getAllPetsPdf,
-getPetsCountByType} from "../controllers/petsController.js"
+getPetsCountByType,
+createPetNoImage} from "../controllers/petsController.js"
 import { authenticateAdminJwt, authenticateUserJwt } from '../middleware/authHandler.js'
 const ROUTER = express.Router();
 
 ROUTER.post("/pets/register", authenticateUserJwt, upload.single('image'), createPet);
+ROUTER.post("/pets/register/noimg", authenticateUserJwt, createPetNoImage);
 ROUTER.put("/pets/update/image/:id", authenticateUserJwt, upload.single("image"), updatePetImage);
 ROUTER.delete("/pets/remove/:id", authenticateUserJwt, deletePet);
 ROUTER.get("/pets/all", authenticateAdminJwt, getAllPets);

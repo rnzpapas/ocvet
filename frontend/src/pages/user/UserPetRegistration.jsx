@@ -68,31 +68,46 @@ function UserPetRegistration() {
     const registerPet = async () => {
         let sessionToken = sessionStorage.getItem('jwt-token');
         let userParsed = JSON.parse(localStorage.getItem('user'));
-        let formData = new FormData();
-        formData.append("atypeid", atypeid);
-        formData.append("nickname", nickname);
-        formData.append("pet_owner", userParsed.uid);
-        if(imgFile){
+    
+        let api = '/api/pets/register/noimg';
+        let headers = {
+            'Authorization': `Bearer ${sessionToken}`,
+        };
+    
+        let data;
+        
+        if (imgFile) {
+            let formData = new FormData();
+            formData.append("atypeid", atypeid);
+            formData.append("nickname", nickname);
+            formData.append("pet_owner", userParsed.uid);
             formData.append("image", imgFile);
+    
+            data = formData;
+            api = '/api/pets/register';
+    
+        } else {
+            data = {
+                atypeid,
+                nickname,
+                pet_owner: userParsed.uid
+            };
+            headers['Content-Type'] = 'application/json';
         }
-        try{
-            let res = await axiosInstance.post(`/api/pets/register`, formData, 
-                {
-                    headers: {
-                        'Authorization': `Bearer ${sessionToken}`,
-                        'Content-Type': imgFile ? 'multipart/form-data' : 'application/json'
-                    }
-                }
-            )
-            if(res.status == 201){
+    
+        try {
+            const res = await axiosInstance.post(api, data, { headers });
+    
+            if (res.status === 201) {
                 navigate('/user/pets');
             }
-        }catch(err){
+        } catch (err) {
             console.error(err);
-            let message = err.response?.data?.message || "Pet registration failed";
+            const message = err.response?.data?.message || "Pet registration failed";
             alert(message);
         }
     };
+    
 
     useEffect(() => {
         let typePromise = loadPetType();
