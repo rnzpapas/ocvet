@@ -88,6 +88,7 @@ function UserPetRegistration() {
                 navigate('/user/pets');
             }
         }catch(err){
+            console.error(err);
             let message = err.response?.data?.message || "Pet registration failed";
             alert(message);
         }

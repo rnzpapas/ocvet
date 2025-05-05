@@ -15,8 +15,8 @@ export const createPet = async (req, res, next) => {
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");
         }
-        const query = await createPetService(atypeid, pet_owner, nickname, image_name, registration_timestamp);
-        return handleResponse(res, 201, "Pet successfully registered.");
+        const query = await createPetService(atypeid, pet_owner, nickname, image_name || null, registration_timestamp);
+        return handleResponse(res, 201, "Pet successfully registered.", query);
     }catch(err) {
         return next(err);
     }
