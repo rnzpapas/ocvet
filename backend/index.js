@@ -19,10 +19,13 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
+const allowedOrigins = ['https://ocvet-1.onrender.com', 'http://localhost:5173', 'http://localhost:5174']
 app.use(express.json());
 app.use(cors({
-    exposedHeaders: ['Content-Disposition']
-  }));
+    exposedHeaders: ['Content-Disposition'],
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 
 
 app.use("/api", userRoutes);
