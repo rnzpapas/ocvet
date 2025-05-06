@@ -13,6 +13,7 @@ function UserPetGroupRegistration() {
     useRedirectUser(`pets/group/register`);
     const navigate = useNavigate();
     let userParsed = JSON.parse(localStorage.getItem('user'));
+    let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
 
     const [petTypes, setPetTypes] = useState();
     const [nickname, setNickname] = useState();
@@ -69,6 +70,7 @@ function UserPetGroupRegistration() {
     }
 
     const onChangePopulation = (evt) => {
+        console.log(evt.target.value)
         setPopulation(evt.target.value)
     }
 
@@ -172,7 +174,7 @@ function UserPetGroupRegistration() {
                                             <section className="font-lato flex gap-2 overflow-x-auto">
                                                 {selectedPets.length > 0 ? selectedPets.map((pet) => (
                                                     <section key={pet.PETID} className={`flex gap-2 items-center px-2 py-2 ${selectedPets.length > 0 && ('mb-2')} rounded-full min-w-fit z-10 bg-raisin-black`}>
-                                                        <img src={`/pet/${pet.image}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
+                                                        <img src={`${pet.image ? `${imgDirSrc}/pet/${pet.image}` : NoImg}`} alt={`${pet.image ? pet.image : "No Image"}`} className="h-[30px] w-[30px] aspect-square rounded-full"/>
                                                         <h5 className="font-lato text-content-sm text-white-smoke">{pet.nickname}</h5>
                                                         <section className="h-full w-5 cursor-pointer flex justify-center relative" >
                                                             <section className="w-full h-full absolute" id={pet.PETID} onClick={e => deselectPet(e)}></section>
@@ -199,7 +201,7 @@ function UserPetGroupRegistration() {
                                                         <section key={pet.PETID} className="h-[50px] group hover:bg-azure relative">
                                                             <section className=" w-full h-full absolute" onClick={selectPet} id={pet.PETID}></section>
                                                             <section className="flex gap-5 items-center px-2 py-2w-full h-full">
-                                                                <img src={`${pet.image ? `/pet/${pet.image}` : NoImg}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
+                                                                <img src={`${pet.image ? `${imgDirSrc}/pet/${pet.image}` : NoImg}`} alt={`${pet.image ? pet.image : "No Image"}`} className="h-[30px] w-[30px] aspect-square rounded-full"/>
                                                                 <h5 className="font-lato group group-hover:text-white-smoke">{pet.nickname}</h5>
                                                             </section>
                                                         </section>
@@ -221,7 +223,7 @@ function UserPetGroupRegistration() {
                                         onChange={onChangePopulation}
                                         value={!population ? "0" : population}
                                     >
-                                        <option value={null}>Select a population</option>
+                                        <option value={null}>Select A Population</option>
                                         <option value="1 to 50"> 1 to 50 </option>
                                         <option value="51 to 100"> 51 to 100 </option>
                                         <option value="101 to 200"> 101 to 200 </option>
