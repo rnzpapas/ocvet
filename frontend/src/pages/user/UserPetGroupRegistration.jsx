@@ -70,8 +70,8 @@ function UserPetGroupRegistration() {
     }
 
     const onChangePopulation = (evt) => {
-        console.log(evt.target.value)
-        setPopulation(evt.target.value)
+        let populationVal = evt.target.value == "" ? null : evt.target.value;
+        setPopulation(populationVal)
     }
 
     const selectPet = (evt) => {
@@ -223,7 +223,7 @@ function UserPetGroupRegistration() {
                                         onChange={onChangePopulation}
                                         value={!population ? "0" : population}
                                     >
-                                        <option value={null}>Select A Population</option>
+                                        <option value="">Select A Population</option>
                                         <option value="1 to 50"> 1 to 50 </option>
                                         <option value="51 to 100"> 51 to 100 </option>
                                         <option value="101 to 200"> 101 to 200 </option>
