@@ -130,7 +130,7 @@ function UserPetRegistration() {
                 <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl">
                     <h5 className="xl:mt-10 font-instrument-sans font-bold lg:text-headline-md">Pet Registration</h5>
                     {
-                        isOnSelection == 1 ? 
+                        isOnSelection ? 
                         <div>
                             <h5 className="font-instrument-sans font-semibold text-headline-md">Choose a Registration Type:</h5>
                             <Button txtContent={"Single Pet Registration"} onClickFunc={showSinglePetRegistrationForm}/>
