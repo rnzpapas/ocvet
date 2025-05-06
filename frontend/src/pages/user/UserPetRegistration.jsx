@@ -128,13 +128,15 @@ function UserPetRegistration() {
             <UserNav />
             <section className="h-dvh flex items-center justify-center">
                 <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl">
-                    <h5 className="xl:mt-10 font-instrument-sans font-bold lg:text-headline-md">Pet Registration</h5>
+                    <h5 className={`xl:mt-10 font-instrument-sans font-bold lg:text-headline-md ${isOnSelection ? 'hidden' : 'block'}`}>Pet Registration</h5>
                     {
                         isOnSelection ? 
                         <div>
                             <h5 className="font-instrument-sans font-semibold text-headline-md">Choose a Registration Type:</h5>
-                            <Button txtContent={"Single Pet Registration"} onClickFunc={showSinglePetRegistrationForm}/>
-                            <Button txtContent={"Multiple Pets Registration"} onClickFunc={redirectToPetGroupRegistration}/>
+                            <div className="flex flex-col gap-2">
+                                <Button txtContent={"Single Pet Registration"} onClickFunc={showSinglePetRegistrationForm} style={'px-2 py-4'}/>
+                                <Button txtContent={"Multiple Pets Registration"} onClickFunc={redirectToPetGroupRegistration} style={'px-2 py-4'}/>
+                            </div>
                         </div>
                         :
                         <form action="" className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8" onSubmit={(e) => e.preventDefault()}>
