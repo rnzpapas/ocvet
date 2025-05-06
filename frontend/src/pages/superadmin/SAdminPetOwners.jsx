@@ -120,7 +120,7 @@ function SAdminPetOwners() {
             setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
 
         }
-
+        dataPromise();
     },[search]);
 
     return (

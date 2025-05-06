@@ -101,7 +101,7 @@ function StaffPetList() {
           window.URL.revokeObjectURL(url); 
       
         })
-      }
+    }
 
     useEffect(() => {
         let petsPromise = loadPetDetails();
