@@ -117,10 +117,13 @@ function MngrPetOwners() {
 
     useEffect(() => {
         const dataPromise = async () => {
+            let searchPromise = [];
             let petOwnerPromise = await loadPetOwners();
-            let searchPromise = await searchPetOwners();
+            if(search){
+                searchPromise = await searchPetOwners();
+            }
             
-            search.length === 0 ? 
+            searchPromise.length === 0 ? 
             setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
         }
         dataPromise();
