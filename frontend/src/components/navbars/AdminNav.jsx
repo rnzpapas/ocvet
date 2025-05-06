@@ -10,7 +10,7 @@ function AdminNav({navLinks}) {
         navigate('/admin/role');
       }
     return (
-        <nav className="w-[280px] h-screen bg-raisin-black flex flex-col items-center">
+        <nav className="w-[280px] h-screen bg-linen flex flex-col items-center">
             <section className="h-[30%] flex items-center justify-center w-full cursor-pointer">
                 <img src={OcvetLogo} alt="ocvet_logo" className="w-[100px] h-[100px]"/>
             </section>
@@ -18,7 +18,7 @@ function AdminNav({navLinks}) {
                 {navLinks.map((navLink, index) => (
                     <Link to={navLink.targetElement} key={index}>
                         <section id={index} className="w-full flex justify-end px-5 py-3 hover:bg-raisin-black-light cursor-pointer"> 
-                                <h5 className=" font-instrument-sans text-headline-md font-semibold text-white-smoke uppercase cursor-pointer">{navLink.txtContent}</h5>
+                                <h5 className=" font-instrument-sans text-headline-md font-semibold text-raisin-black uppercase cursor-pointer">{navLink.txtContent}</h5>
                         </section>
                     </Link>
                 ))}
