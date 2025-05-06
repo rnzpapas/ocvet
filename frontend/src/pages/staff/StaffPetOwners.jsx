@@ -119,12 +119,15 @@ function StaffPetOwners() {
     }
 
     useEffect(() => {
-        let dataPromise = async () => {
-            let petOwnersData = await loadPetOwners();
-            let searchData = await searchPetOwners();
-
-            search.length === 0 ? 
-            setPetOwnerDetails(petOwnersData) : setPetOwnerDetails(searchData)
+        const dataPromise = async () => {
+            let searchPromise = [];
+            let petOwnerPromise = await loadPetOwners();
+            if(search){
+                searchPromise = await searchPetOwners();
+            }
+            
+            searchPromise.length === 0 ? 
+            setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
         }
         dataPromise();
     },[search]);

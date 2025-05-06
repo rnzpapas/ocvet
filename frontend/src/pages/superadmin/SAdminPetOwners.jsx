@@ -119,12 +119,14 @@ function SAdminPetOwners() {
 
     useEffect(() => {
         const dataPromise = async () => {
-            let petOwnerPromise = loadPetOwners();
-            let searchPromise = searchPetOwners();
+            let searchPromise = [];
+            let petOwnerPromise = await loadPetOwners();
+            if(search){
+                searchPromise = await searchPetOwners();
+            }
             
-            search.length === 0 ? 
+            searchPromise.length === 0 ? 
             setPetOwnerDetails(petOwnerPromise) : setPetOwnerDetails(searchPromise)
-
         }
         dataPromise();
     },[search]);
