@@ -17,7 +17,7 @@ function UserPetGroupRegistration() {
     const [petTypes, setPetTypes] = useState();
     const [nickname, setNickname] = useState();
     const [atypeid, setAtypeId] = useState();
-    const [population, setPopulation] = useState();
+    const [population, setPopulation] = useState(null);
     const [isPetDropdownOpen, setIsPetDropdownOpen] = useState(false);
     const [pets, setPets] = useState();
     const [selectedPets, setSelectedPets] = useState([]);
@@ -218,6 +218,7 @@ function UserPetGroupRegistration() {
                                         onChange={onChangePopulation}
                                         value={!population ? "0" : population}
                                     >
+                                        <option value="0" disabled>Select a population</option>
                                         <option value="1 to 50"> 1 to 50 </option>
                                         <option value="51 to 100"> 51 to 100 </option>
                                         <option value="101 to 200"> 101 to 200 </option>
