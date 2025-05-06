@@ -183,7 +183,7 @@ function UserPetGroupRegistration() {
                                 </section>
                                 <section className={`${isPetDropdownOpen ? 'block' : 'hidden'} z-20 w-full bg-[#ffffff] absolute top-[41px] rounded-[10px] border border-silver min-h-[80px] max-h-[130px] overflow-y-auto`}>
                                     {
-                                        pets && !population && (
+                                        pets && population == undefined? (
                                             pets.map((pet) => (
                                                 <section key={pet.PETID} className="h-[50px] group hover:bg-azure relative">
                                                     <section className=" w-full h-full absolute" onClick={selectPet} id={pet.PETID}></section>
@@ -193,7 +193,8 @@ function UserPetGroupRegistration() {
                                                     </section>
                                                 </section>
                                             ))
-                                        )
+                                        ) :
+                                        <p className="font-lato text-content-md">No pet available.</p>
                                     }
                                 </section>
                             </section>
