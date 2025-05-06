@@ -64,12 +64,12 @@ function UserPetGroupRegistration() {
     }
 
     const onChangeType = (evt) => {
-        setAtypeId((at) => at = evt.target.value);
+        setAtypeId(evt.target.value);
         setSelectedPets([]);
     }
 
     const onChangePopulation = (evt) => {
-        setPopulation((p) => p = evt.target.value)
+        setPopulation(evt.target.value)
     }
 
     const selectPet = (evt) => {
@@ -128,7 +128,6 @@ function UserPetGroupRegistration() {
             setPetTypes((pt) => pt = type);
             setAtypeId((at) => at = type[0].ATYPEID);
         })
-        setPopulation("1 to 50")
     },[]);
 
     useEffect(() => {
