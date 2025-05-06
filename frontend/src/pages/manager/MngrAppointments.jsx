@@ -260,7 +260,7 @@ function MngrAppointments() {
   return (
     <section className="flex w-screen h-screen overflow-hidden">
         <MngrNav />
-        <section className="px-5 py-5 relative w-full h-full">
+        <section className="flex-1 overflow-x-auto px-4">
           <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">appointments</h5>
           <section className='flex gap-0.5 mb-5'>
             <div className={` border-b-4 ${tab === 1 ? ('border-b-azure') : 'border-silver'} cursor-pointer hover:ring-raisin-black-light`} onClick={() => changeTab(1)}>
@@ -273,11 +273,11 @@ function MngrAppointments() {
               <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
             </div>
           </section>
-          <section className="flex flex-wrap justify-between w-fit pr-10">
-            <section className={`${tab === 1 ? 'w-full' : 'hidden'}`}>
+          <section className="flex flex-wrap justify-between min-w-[calc(100vw-280px)]">
+            <section className={`${tab === 1 ? 'block' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
-                    <Table headers={HEADERS} data={UAData} tableW={"w-[100%]"}
+                    <Table headers={HEADERS} data={UAData} tableW={"min-w-[800px] w-full"}
                       acceptAppointment={openAcceptAppointmentModal}
                       rejectAppointment={rejectAppointment }
                       />
