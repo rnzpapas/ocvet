@@ -110,12 +110,13 @@ function SAdminPetList() {
 
     useEffect(() => {
         const dataPromise = async () => {
-            let petsPromise = loadPetDetails();
-            let searchPromise = searchPetDetails();
-    
-            search.length === 0 ? 
+            let searchPromise = [];
+            let petsPromise = await loadPetDetails();
+            if(search){
+                searchPromise = await searchPetDetails();
+            }
+            searchPromise.length === 0 ? 
             setPets(petsPromise) :  setPets(searchPromise) 
-
         }
         dataPromise();
     },[search])

@@ -56,7 +56,7 @@ function StaffPetList() {
 
     const loadPetDetails = async () => {
         try{
-
+            let pets;
             let res = await axiosInstance.get('/api/pets/all', 
                 {
                     headers: {
@@ -64,10 +64,10 @@ function StaffPetList() {
                     }
                 }
             )
-           if(res){
-                let p = res.data.data
-                return p;
+           if(res.data){
+                pets = res.data.data
             }
+            return pets;
         }catch(err){
             let message = err.response?.data?.message || "Fetching of pets data failed.";
             alert(message);
@@ -109,11 +109,16 @@ function StaffPetList() {
     }
 
     useEffect(() => {
-        let petsPromise = loadPetDetails();
-        let searchPromise = searchPetDetails();
-
-        search.length === 0 ? petsPromise.then((pt) => setPets(p => p = pt)) :  searchPromise.then((pt) => setPets(p => p = pt)) 
-
+        const dataPromise = async () => {
+            let searchPromise = [];
+            let petsPromise = await loadPetDetails();
+            if(search){
+                searchPromise = await searchPetDetails();
+            }
+            searchPromise.length === 0 ? 
+            setPets(petsPromise) :  setPets(searchPromise) 
+        }
+        dataPromise();
     },[search])
 
     useEffect(() => {}, [petSelected])

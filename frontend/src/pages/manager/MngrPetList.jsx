@@ -56,7 +56,7 @@ function MngrPetList() {
 
     const loadPetDetails = async () => {
         try{
-
+            let pets;
             let res = await axiosInstance.get('/api/pets/all', 
                 {
                     headers: {
@@ -64,10 +64,10 @@ function MngrPetList() {
                     }
                 }
             )
-           if(res){
-                let p = res.data.data
-                return p;
+           if(res.data){
+                pets = res.data.data
             }
+            return pets;
         }catch(err){
             let message = err.response?.data?.message || "Fetching of pets data failed.";
             alert(message);
@@ -110,10 +110,12 @@ function MngrPetList() {
 
     useEffect(() => {
         const dataPromise = async () => {
+            let searchPromise = [];
             let petsPromise = await loadPetDetails();
-            let searchPromise = await searchPetDetails();
-    
-            search.length === 0 ? 
+            if(search){
+                searchPromise = await searchPetDetails();
+            }
+            searchPromise.length === 0 ? 
             setPets(petsPromise) :  setPets(searchPromise) 
 
         }
