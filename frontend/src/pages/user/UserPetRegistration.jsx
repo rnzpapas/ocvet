@@ -129,7 +129,8 @@ function UserPetRegistration() {
         <>
             <UserNav />
             <section className="h-dvh flex items-center justify-center">
-                <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl">
+                <section className="flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl relative">
+                    <p onClick={backToSelection} className="absolute top-2 left-2 font-lato text-content-md">Back</p>
                     <h5 className={`xl:mt-10 font-instrument-sans font-bold lg:text-headline-md ${isOnSelection ? 'hidden' : 'block'}`}>Pet Registration</h5>
                     {
                         isOnSelection ? 
@@ -142,7 +143,6 @@ function UserPetRegistration() {
                         </div>
                         :
                         <form action="" className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8 relative"  onSubmit={(e) => e.preventDefault()}>
-                            <p onClick={backToSelection} className="absolute top-2 left-2 font-lato text-content-md">Back</p>
                             <section className="flex flex-col gap-3">
                                 <label htmlFor="photo" className="font-instrument-sans text-headline-sm font-semibold">Pet Photo</label>
                                 <section className="flex justify-center">
