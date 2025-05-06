@@ -55,19 +55,24 @@ function StaffPetList() {
     }
 
     const loadPetDetails = async () => {
-        let p;
-        await axiosInstance.get('/api/pets/all', 
-            {
-                headers: {
-                    'Authorization': `Bearer ${sessionToken}`
+        try{
+
+            let res = await axiosInstance.get('/api/pets/all', 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${sessionToken}`
+                    }
                 }
+            )
+           if(res){
+                let p = res.data.data
+                return p;
             }
-        )
-        .then((res) => {
-            p = res.data.data
-        })
-        .catch(err => console.error(err))
-        return p;
+        }catch(err){
+            let message = err.response?.data?.message || "Fetching of pets data failed.";
+            alert(message);
+            console.error(err);
+        }
     }
 
     const searchPetDetails = async () => {
