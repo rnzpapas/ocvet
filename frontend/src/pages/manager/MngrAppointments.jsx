@@ -273,7 +273,7 @@ function MngrAppointments() {
               <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
             </div>
           </section>
-          <section className="flex flex-wrap justify-between min-w-[calc(100vw-280px)]">
+          <section className="flex flex-wrap justify-between max-w-[calc(100vw-280px)] overflow-hidden">
             <section className={`${tab === 1 ? 'w-[95%]' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
