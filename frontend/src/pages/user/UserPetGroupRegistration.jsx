@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { capitalizeFirstLetter } from "../../utils/textUtils";
 import axiosInstance from "@/config/AxiosConfig.jsx"
 import { useNavigate } from "react-router";
+import NoImg from "@/assets/noimg.png";
 
 function UserPetGroupRegistration() {
     useRedirectUser(`pets/group/register`);
@@ -32,21 +33,30 @@ function UserPetGroupRegistration() {
     }
 
     const loadPets = async () => {
-        let sessionToken = sessionStorage.getItem('jwt-token')
-        let pet;
-        await axiosInstance.get(`/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
-            {headers: {'Authorization': `Bearer ${sessionToken}`}})
-        .then(res => pet = res.data.data)
-        .catch(err => console.error(err))
-        return pet;
+        try{
+            let sessionToken = sessionStorage.getItem('jwt-token')
+            let res = await axiosInstance.get(`/api/pets/ownertype?uid=${userParsed.uid}&atypeid=${atypeid}`, 
+                {headers: {'Authorization': `Bearer ${sessionToken}`}});
+
+            let pet = res.data.data;
+            return pet;
+        }catch(err){
+            let message = err.response?.data?.message || "Cannot fetched pets on our server.";
+            alert(message);
+            console.error(err);
+        }
     }
  
     const loadPet = async (id) => {
-        let pet;
-        await axiosInstance.get(`/api/pets/details?petid=${id}`)
-        .then((response) => pet = response.data.data)
-        .catch((err) => console.error(err))
-        return pet
+        try{
+            let response = await axiosInstance.get(`/api/pets/details?petid=${id}`)
+            let pet = response.data.data
+            return pet
+        }catch(err){
+            let message = err.response?.data?.message || "Cannot fetched pets on our server.";
+            alert(message);
+            console.error(err);
+        }
     }
 
     const onChangeNickname = (evt) => {
@@ -183,12 +193,12 @@ function UserPetGroupRegistration() {
                                 </section>
                                 <section className={`${isPetDropdownOpen ? 'block' : 'hidden'} z-20 w-full bg-[#ffffff] absolute top-[41px] rounded-[10px] border border-silver min-h-[80px] max-h-[130px] overflow-y-auto`}>
                                     {
-                                        pets && population == undefined? (
+                                        pets && !population ? (
                                             pets.map((pet) => (
                                                 <section key={pet.PETID} className="h-[50px] group hover:bg-azure relative">
                                                     <section className=" w-full h-full absolute" onClick={selectPet} id={pet.PETID}></section>
                                                     <section className="flex gap-5 items-center px-2 py-2w-full h-full">
-                                                        <img src={`/pet/${pet.image}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
+                                                        <img src={`${pet.image ? `/pet/${pet.image}` : NoImg}`} alt="z" className="h-[30px] w-[30px] aspect-square rounded-full"/>
                                                         <h5 className="font-lato group group-hover:text-white-smoke">{pet.nickname}</h5>
                                                     </section>
                                                 </section>
