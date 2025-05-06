@@ -17,7 +17,7 @@ function AdminNav({navLinks}) {
             <section className="w-full h-[60%] flex flex-col gap-3">
                 {navLinks.map((navLink, index) => (
                     <Link to={navLink.targetElement} key={index}>
-                        <section id={index} className="w-full flex justify-end px-5 py-3 hover:bg-raisin-black-light cursor-pointer"> 
+                        <section id={index} className="w-full flex justify-end px-5 py-3 hover:bg-raisin-black-light/25 cursor-pointer"> 
                                 <h5 className=" font-instrument-sans text-headline-md font-semibold text-raisin-black uppercase cursor-pointer">{navLink.txtContent}</h5>
                         </section>
                     </Link>
