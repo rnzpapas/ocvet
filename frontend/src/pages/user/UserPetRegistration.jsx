@@ -134,8 +134,8 @@ function UserPetRegistration() {
                         <div>
                             <h5 className="font-instrument-sans font-semibold text-headline-md">Choose a Registration Type:</h5>
                             <div className="flex flex-col gap-2">
-                                <Button txtContent={"Single Pet Registration"} onClickFunc={showSinglePetRegistrationForm} style={'px-2 py-4'}/>
-                                <Button txtContent={"Multiple Pets Registration"} onClickFunc={redirectToPetGroupRegistration} style={'px-2 py-4'}/>
+                                <Button txtContent={"Single Pet Registration"} onClickFunc={showSinglePetRegistrationForm} style={'px-2 py-4 text-content-lrg'}/>
+                                <Button txtContent={"Multiple Pets Registration"} onClickFunc={redirectToPetGroupRegistration} style={'px-2 py-4 text-content-lrg'}/>
                             </div>
                         </div>
                         :
