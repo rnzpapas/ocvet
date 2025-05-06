@@ -39,28 +39,34 @@ function SAdminPetOwners() {
 
     const loadPetOwners = async () => {
         let petOwnersArr = [];
-        await axiosInstance.get(`/api/user/account/petowners`, 
-            {
-                headers: {'Authorization': `Bearer ${sessionToken}`}
-            }
-        )
-        .then((res) => {
-            let petOwnerList = res.data.data;
-            if(petOwnerList.length > 0){
-                petOwnerList.map((petOwner, index) => {
-                    let po = {
-                        "ID": petOwner.UAID,
-                        "fullname": `${petOwner.firstname} ${petOwner.surname}`,
-                        "email": petOwner.email,
-                        "usename": petOwner.username,
-                        "joined_date": convertDate( petOwner.date_joined)
-                    }
-
-                    petOwnersArr.push(po);
-                })
-            }
-        }).catch(err => console.error(err))
-        return petOwnersArr;
+        try{
+            let res = await axiosInstance.get(`/api/user/account/petowners`, 
+                {
+                    headers: {'Authorization': `Bearer ${sessionToken}`}
+                }
+            )
+            if(res) {
+                let petOwnerList = res.data.data;
+                if(petOwnerList.length > 0){
+                    petOwnerList.map((petOwner, index) => {
+                        let po = {
+                            "ID": petOwner.UAID,
+                            "fullname": `${petOwner.firstname} ${petOwner.surname}`,
+                            "email": petOwner.email,
+                            "usename": petOwner.username,
+                            "joined_date": convertDate( petOwner.date_joined)
+                        }
+    
+                        petOwnersArr.push(po);
+                    })
+                }
+            }   
+            return petOwnersArr;
+        }catch(err){
+            let message = err.response?.data?.message || "Fetchin of pet owners failed.";
+            alert(message);
+            console.error(err);
+        }
     }
 
     const searchPetOwners = async () => {
