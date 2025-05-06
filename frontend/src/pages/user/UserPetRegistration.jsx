@@ -25,6 +25,8 @@ function UserPetRegistration() {
 
     const showSinglePetRegistrationForm = () => setIsOnSelection(false);
 
+    const backToSelection = () => setIsOnSelection(true);
+
     const loadPetType = async () => {
         let types;
         await axiosInstance.get('/api/atypes/sort')
@@ -139,7 +141,8 @@ function UserPetRegistration() {
                             </div>
                         </div>
                         :
-                        <form action="" className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8" onSubmit={(e) => e.preventDefault()}>
+                        <form action="" className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8 relative"  onSubmit={(e) => e.preventDefault()}>
+                            <p onClick={backToSelection} className="absolute top-2 left-2 font-lato text-content-md">Back</p>
                             <section className="flex flex-col gap-3">
                                 <label htmlFor="photo" className="font-instrument-sans text-headline-sm font-semibold">Pet Photo</label>
                                 <section className="flex justify-center">
