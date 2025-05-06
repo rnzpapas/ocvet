@@ -274,10 +274,10 @@ function MngrAppointments() {
             </div>
           </section>
           <section className="flex flex-wrap justify-between min-w-[calc(100vw-280px)]">
-            <section className={`${tab === 1 ? 'block' : 'hidden'}`}>
+            <section className={`${tab === 1 ? 'w-[95%]' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
-                    <Table headers={HEADERS} data={UAData} tableW={"min-w-[800px] w-full"}
+                    <Table headers={HEADERS} data={UAData} tableW={"w-full"} tableH={'h-fit'}
                       acceptAppointment={openAcceptAppointmentModal}
                       rejectAppointment={rejectAppointment }
                       />
