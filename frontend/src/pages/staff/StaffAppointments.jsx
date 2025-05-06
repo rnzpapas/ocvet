@@ -276,11 +276,11 @@ function StaffAppointments() {
               <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
             </div>
           </section>
-          <section className="flex flex-wrap justify-between w-fit pr-10">
-            <section className={`${tab === 1 ? 'w-full' : 'hidden'}`}>
+          <section className="flex flex-wrap justify-between min-w-[calc(100vw-280px)]">
+            <section className={`${tab === 1 ? 'w-[95%]' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
-                    <Table headers={HEADERS} data={UAData} tableW={"w-[100%]"}
+                    <Table headers={HEADERS} data={UAData} tableW={"w-full"} tableH={'h-fit'}
                       acceptAppointment={openAcceptAppointmentModal}
                       rejectAppointment={rejectAppointment }
                       />
