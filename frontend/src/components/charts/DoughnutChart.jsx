@@ -31,7 +31,11 @@ const DoughnutChart = ({labels, datasetLabel, datasetData, datasetBgColor,
             tooltip: {
                 callbacks: {
                     label: function (tooltipItem) {
-                        return tooltipItem.raw + ' ' + optionTooltipLabel; 
+                        const dataArr = tooltipItem.chart.data.datasets[0].data;
+                        const total = dataArr.reduce((acc, val) => acc + val, 0);
+                        const value = tooltipItem.raw;
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${percentage}% ${optionTooltipLabel}`;
                     },
                 },
             },
