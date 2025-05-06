@@ -131,7 +131,7 @@ function UserPetGroupRegistration() {
             <UserNav />
             <section className="h-dvh flex items-center justify-center">
                 <section className=" flex items-center flex-col shadow-[-1px_-1px_20px_rgba(0,0,0,0.25)] w-[350px] xl:w-[500px] px-5 py-5 rounded-2xl relative">
-                    <p onClick={backToSelection} className={"absolute top-2 left-2 font-lato text-content-md cursor-pointer"}>Back</p>
+                    <p onClick={backToSelection} className={"absolute top-2 left-2 font-lato text-content-md cursor-pointer hover:underline"}>Back to selection</p>
                     <h5 className="mt-10 font-instrument-sans font-bold lg:text-headline-md mb-8">Pet Group Registration</h5>
                     <form className="w-full xl:w-[400px] flex flex-col gap-2 xl:gap-8 " onSubmit={(e) => e.preventDefault()}>
                         <section className="flex flex-col gap-3">
@@ -183,7 +183,7 @@ function UserPetGroupRegistration() {
                                 </section>
                                 <section className={`${isPetDropdownOpen ? 'block' : 'hidden'} z-20 w-full bg-[#ffffff] absolute top-[41px] rounded-[10px] border border-silver min-h-[80px] max-h-[130px] overflow-y-auto`}>
                                     {
-                                        pets && (
+                                        pets && !population && (
                                             pets.map((pet) => (
                                                 <section key={pet.PETID} className="h-[50px] group hover:bg-azure relative">
                                                     <section className=" w-full h-full absolute" onClick={selectPet} id={pet.PETID}></section>
@@ -205,7 +205,7 @@ function UserPetGroupRegistration() {
                                     <select 
                                         className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
                                         onChange={onChangePopulation}
-                                        value={!population ? "1 to 50" : population}
+                                        value={!population ? "0" : population}
                                     >
                                         <option value="1 to 50"> 1 to 50 </option>
                                         <option value="51 to 100"> 51 to 100 </option>
