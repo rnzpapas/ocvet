@@ -6,7 +6,9 @@ import { Link, useNavigate, useParams } from "react-router";
 import useRedirectUser from '../../auth/useRedirectUser';
 import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertDate, convertTime } from "../../utils/datetimeUtils";
-import { capitalizeFirstLetter } from "../../utils/textUtils"
+import { capitalizeFirstLetter } from "../../utils/textUtils";
+import NoImg from '@/assets/noimg.png';
+
 const headers = [
   {
       "key": "ID",
@@ -140,7 +142,7 @@ function UserPetInformation() {
             <section className="py-4 lg:py-6 flex relative items-center justify-center">
               <section className="flex flex-col gap-2 items-center ">
                 <section className="relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] lg:w-[150px] lg:h-[150px]">
-                    <img src={`${imgDirSrc}/pet/${petInfo.image}`} alt="" className=" w-full h-full object-cover bg-azure rounded-full" />
+                    <img src={`${petInfo.image ? `${imgDirSrc}/pet/${petInfo.image}` : NoImg}`} alt="" className=" w-full h-full object-cover bg-azure rounded-full" />
                     <section className="absolute bottom-0 right-0 md:bottom-1 md:right-1 bg-silver rounded-full h-[26px] w-[26px] md:h-[30px] md:w-[30px] lg:h-[38px] lg:w-[38px] flex items-center justify-center cursor-pointer">
                       <input
                         ref={fileInputRef}

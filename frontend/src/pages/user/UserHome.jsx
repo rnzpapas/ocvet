@@ -5,7 +5,7 @@ import useRedirectUser from '../../auth/useRedirectUser';
 import Calendar from "@/components/Calendar";
 import { adjustDayVisuals, adjustMonthVisuals, convertDate, convertTime } from "../../utils/datetimeUtils";
 import axiosInstance from "@/config/AxiosConfig.jsx"
-
+import NoImg from "@/assets/noimg.png";
 
 const timeSlot = [
   '08:00 AM', 
@@ -422,7 +422,7 @@ function UserHome() {
                           <section key={pet.PETID} className="relative group cursor-pointer ">
                             <section id={pet.PETID} className="w-full h-full bg-raisin-black absolute rounded-full opacity-0" onClick={(evt) => selectPetForAppointment(evt)}></section>
                             <section className="flex items-center gap-2 px-2 py-2 rounded-full group-hover:bg-chefchaouen-blue">
-                              <img src={`${imgDirSrc}/pet/${pet.image}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
+                              <img src={`${pet.image ? `${imgDirSrc}/pet/${pet.image}` : NoImg}`} className="w-[48px] h-[48px] aspect-square rounded-full"/>
                               <h5 className="text-content-sm md:text-content-md w-full font-lato text-raisin-black group group-hover:text-white-smoke group-hover:font-semibold">{pet.nickname}</h5>
                             </section>
                           </section>
