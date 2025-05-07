@@ -20,7 +20,10 @@ function LandingPage() {
       {/* Hero */}
       <nav className='absolute top-0 left-0 flex items-center justify-between w-full px-10 py-5 h-[100px] xl:px-24 xxl:px-32 xxxl:px-60'>
           <img src={Logo} alt="logo" className='w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[100px] lg:h-[100px]'/>
-          <Button txtContent={"Login"} style={'h-fit py-2'} onClickFunc={redirectLoginPage}/>
+          <section className='flex gap-1.5'>
+            <Button txtContent={"Sign In"} style={'h-fit py-2'} onClickFunc={redirectLoginPage}/>
+            <p className='h-fit py-2 font-lato hover:underline text-white-smoke' onClick={redirectLoginPage}> Sign Up</p>
+          </section>
       </nav>
       <section className={`h-full w-full bg-[url('/assets/herobg.jpg')] bg-cover bg-center bg-no-repeat`}>
         <section className='px-10 xl:px-24 xxl:px-32 xxxl:px-60 h-[70vh] lg:h-[75vh] w-screen flex flex-col justify-end'>
