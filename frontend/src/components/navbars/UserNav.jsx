@@ -42,8 +42,8 @@ function UserNav() {
             </section>
         </section>
         <section className={`hidden md:flex md:justify-end md:gap-5 md:w-6/12`}>
-          <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"} />
           <NavLink navTitle={"PETS"} toPage={"/user/pets"} />
+          <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"} />
           <NavLink navTitle={"ACCOUNT"} toPage={`/user/account/${userID}`} />
         </section>
         {/* hamburger nav */}
@@ -61,8 +61,8 @@ function UserNav() {
               className="w-[75px] h-[75px] absolute top-5"
               src={OcvetLogo} alt="OCVET Logo"
           />
-          <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"}/>
           <NavLink navTitle={"PETS"} toPage={"/user/pets"}/>
+          <NavLink navTitle={"APPOINTMENTS"} toPage={"/user/home"}/>
           <NavLink navTitle={"ACCOUNT"} toPage={`/user/account/${userID}`}/>
         </section>
     </nav>
