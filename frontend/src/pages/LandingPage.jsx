@@ -22,7 +22,7 @@ function LandingPage() {
           <img src={Logo} alt="logo" className='w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[100px] lg:h-[100px]'/>
           <section className='flex gap-1.5'>
             <Button txtContent={"Sign In"} style={'h-fit py-2'} onClickFunc={redirectLoginPage}/>
-            <p className='h-fit py-2 font-lato hover:underline text-white-smoke' onClick={redirectLoginPage}> Sign Up</p>
+            <p className='h-fit py-2 text-md lg:text-lg cursor-pointer font-lato hover:underline text-white-smoke uppercase' onClick={redirectLoginPage}> Sign Up</p>
           </section>
       </nav>
       <section className={`h-full w-full bg-[url('/assets/herobg.jpg')] bg-cover bg-center bg-no-repeat`}>
