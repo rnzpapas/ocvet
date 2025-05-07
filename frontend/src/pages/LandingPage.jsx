@@ -26,7 +26,7 @@ function LandingPage() {
           <img src={Logo} alt="logo" className='w-[60px] h-[60px] md:w-[80px] md:h-[80px] lg:w-[100px] lg:h-[100px]'/>
           <section className='flex gap-2'>
             <Button txtContent={"Sign In"} style={'h-fit py-2'} onClickFunc={redirectLoginPage}/>
-            <Button txtContent={"Sign Up"} style={'h-fit'} isActive={false} onClickFunc={redirectRegisterPage}/>
+            <Button txtContent={"Sign Up"} style={'h-fit py-2'} isActive={false} onClickFunc={redirectRegisterPage}/>
           </section>
       </nav>
       <section className={`h-full w-full bg-[url('/assets/herobg.jpg')] bg-cover bg-center bg-no-repeat`}>
