@@ -58,7 +58,7 @@ function UserLogin() {
             localStorage.setItem("user", JSON.stringify(userData));
             sessionStorage.setItem('jwt-token', access_token);
             setIsLoading(false);
-            navigate('/user/home');
+            navigate('/user/pets');
 
         }catch(err){
             console.log(err)
