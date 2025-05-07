@@ -119,8 +119,8 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                     </td>
                                                 : 
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
-                                                        <section className=" bg-fire-engine-red flex items-center justify-center px-2 py-1 rounded-sm">
-                                                            <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Missed </p>
+                                                        <section className=" bg-[#515151] flex items-center justify-center px-2 py-1 rounded-sm">
+                                                            <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Pending </p>
                                                         </section>
                                                     </td>
                                             )) }
