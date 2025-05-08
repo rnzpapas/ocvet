@@ -201,6 +201,7 @@ function StaffAppointments() {
   }
 
   const fulfillAppointment = async (fields) => {
+    console.log(fields)
     let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
     if(fields[1].content.length !== 0){
       let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content)[0];
