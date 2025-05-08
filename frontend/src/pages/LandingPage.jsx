@@ -93,7 +93,7 @@ function LandingPage() {
         <iframe 
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3869.8395096098598!2d121.12320017509636!3d14.086649586341105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd6f78866a4815%3A0xfb1182d323581bfa!2sNew%20Tanauan%20City%20Hall!5e0!3m2!1sen!2sph!4v1739272426484!5m2!1sen!2sph" 
         className='w-[300px] h-[300px] md:w-[600px] md:h-[450px] xxl:w-[750px] xxl:h-[500px]' 
-        allowfullscreen={true} 
+        allowFullScreen={true} 
         loading="lazy" 
         referrerPolicy="no-referrer-when-downgrade"
         >
