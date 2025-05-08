@@ -60,15 +60,24 @@ function MngrAppointments() {
   }
 
   const loadVaccines = async () => {
-    let v;
-    let vaccine_names = [];
-    await axiosInstance.get('/api/vaccine')
-    .then(res => {
-      v = res.data.data
-      v.map(vaccine => vaccine_names.push(vaccine.vaccine_name))
-    })
-    .catch(err => console.error(err))
-    return [v, vaccine_names];
+    try{
+      let v;
+      let vaccine_details = [];
+      let res = await axiosInstance.get('/api/vaccine')
+  
+      if(res.data) {
+        v = res.data.data
+        v.map(vaccine => {
+          vaccine_details.push({
+            data_one: vaccine.vaccine_name,
+            data_two: parseInt(vaccine.stock)
+          })
+        })
+      }
+      return [v, vaccine_details];
+    }catch(err){
+      console.error(err);
+    }
   }
 
   const loadAppointmentHistory = async () => {
@@ -193,20 +202,37 @@ function MngrAppointments() {
     onUpdateAppointmentStatus('Rejected', '');
   }
 
+  const updateAppointmentOngoing = () => {
+    console.log(appointmentSelected.asid)
+  }
+
   const fulfillAppointment = async (fields) => {
-    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid)
-    
-    if(fields[1].content.length !== 0){
-      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content)
-      const formData = new FormData();
-      formData.append('vaccid', filteredVaccine[0].VACCID || '');
-      formData.append('petid', filteredUA[0].PETID || null);
-      formData.append('pgid', filteredUA[0].PGID || null);
-      formData.append('asid', appointmentSelected.asid)
-      await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
-      .then(() => {
-        onUpdateAppointmentStatus('Done', fields[0].content || '');
-      })
+    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
+
+    let vaccinesModalValues = fields[1].content;
+    if(vaccinesModalValues && Array.isArray(vaccinesModalValues)){
+      vaccinesModalValues.forEach(async (vcc) => {
+        let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == vcc);
+        let new_stock_count = parseInt(filteredVaccine[0].stock) - 1;
+        let body = {
+          new_count: new_stock_count, 
+          vaccid: filteredVaccine[0].VACCID
+        }
+        let res = await axiosInstance.put("/vaccine/update/stock", body, {headers: {"Content-Type" : 'application/json'}});
+
+        if(res.status == 200){
+          const formData = new FormData();
+          formData.append('vaccid', filteredVaccine[0].VACCID || '');
+          formData.append('petid', filteredUA[0].PETID || null);
+          formData.append('pgid', filteredUA[0].PGID || null);
+          formData.append('asid', appointmentSelected.asid);
+          let res = await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
+          
+          if(res == 200){
+            onUpdateAppointmentStatus('Done', fields[0].content || '');
+          }
+        }
+      });
     }else{
       onUpdateAppointmentStatus('Done', fields[0].content || '');
     }
@@ -244,12 +270,12 @@ function MngrAppointments() {
               "headers": 'Remarks'
             },
             {
-              "type": 'select',
+              "type": 'checkbox',
               "headers": 'Vaccine (If any)',
               "options": v[1],
-              "txtContent": v[1][0]
+              "txtContent": "None"
             }
-          ])
+          ]);
         } catch (error) {
           console.error("Error loading vaccines:", error);
         }
@@ -291,7 +317,7 @@ function MngrAppointments() {
                     onClose={closeAppointmentModal} 
                     fields={vModalFields} 
                     button={{txtContent: 'Complete Appointment', isDisplayed: true}}
-                    onSubmitFunc={fulfillAppointment}
+                    onSubmitFunc={updateAppointmentOngoing}
                     />
                   )
                 }

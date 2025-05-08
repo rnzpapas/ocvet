@@ -21,21 +21,25 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
         const { type, name, checked, value } = event.target;
     
         if (type === "checkbox") {
-            if (!updatedFields[index].txtContent) {
+            if (!Array.isArray(updatedFields[index].txtContent)) {
                 updatedFields[index].txtContent = [];
             }
+        
             if (checked) {
-                updatedFields[index].txtContent.push(name);
+                if (!updatedFields[index].txtContent.includes(name)) {
+                    updatedFields[index].txtContent.push(name);
+                }
             } else {
                 updatedFields[index].txtContent = updatedFields[index].txtContent.filter(item => item !== name);
             }
         } else {
-            // For regular inputs
             updatedFields[index] = {
                 ...updatedFields[index],
                 txtContent: value
             };
         }
+        
+        
     
         setFormFields(updatedFields);
     };
@@ -96,18 +100,51 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                                             <InputField type={field.type} isReadOnly={field.readOnly} value={field.txtContent} name={field.headers} onChangeFunc={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))} style={inputStyle} />
                                                         :
                                                             (
-                                                                field.options && (
-                                                                    field.options.map((option, checkboxIndex) => (
-                                                                        <section key={ checkboxIndex} className="flex gap-2 items-center">
-                                                                            <input type="checkbox" name={option} id="" onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}/>
-                                                                            <label htmlFor={option}>{option}</label>
-                                                                        </section>
-    
-                                                                    ))
-                                                                )
+                                                                field.options && Array.isArray(field.options) && (
+                                                                    field.options.map((option, checkboxIndex) => {
+                                                                      if (typeof option === "object" && !Array.isArray(option)) {
+                                                                        const values = Object.values(option);
+                                                                        const label = `${values[0]} (${values[1]})`;
+                                                                        const isDisabled = values[1] == 0;
+                                                                  
+                                                                        return (
+                                                                          <section key={checkboxIndex} className="flex gap-2 items-center">
+                                                                            <input
+                                                                              type="checkbox"
+                                                                              name={values[0]}
+                                                                              id={values[0]}
+                                                                              onChange={isDisabled ? undefined : (e) => handleFieldChange(index, e)}
+                                                                              disabled={isDisabled}
+                                                                            />
+                                                                            <label htmlFor={values[0]} className="flex items-center gap-2">
+                                                                                {label}  
+                                                                                <span className={values[1] == 0 ? "text-sm italic text-fire-engine-red" : "hidden" }>
+                                                                                    {values[1] == 0 ? "Out of Stock" : "" }
+                                                                                </span>
+                                                                            </label>
+                                                                          </section>
+                                                                        );
+                                                                      } else {
+                                                                        const label = String(option);
+                                                                        return (
+                                                                          <section key={checkboxIndex} className="flex gap-2 items-center">
+                                                                            <input
+                                                                              type="checkbox"
+                                                                              name={label}
+                                                                              id={label}
+                                                                              onChange={(e) => handleFieldChange(index, e)}
+                                                                            />
+                                                                            <label htmlFor={label}>{label}</label>
+                                                                          </section>
+                                                                        );
+                                                                      }
+                                                                    })
+                                                                  )
                                                             )
                                                         :
-                                                        <select className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light" value={field.txtContent} onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}>
+                                                        <select className="font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light" 
+                                                        value={field.txtContent} 
+                                                        onChange={field.readOnly ? undefined : ((e) => handleFieldChange(index, e))}>
                                                             <option value="" >None</option>
                                                             {
                                                                 field.options && (
