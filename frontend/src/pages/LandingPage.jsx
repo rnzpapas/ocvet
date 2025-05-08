@@ -90,8 +90,13 @@ function LandingPage() {
       {/* Where to find us */}
       <section className='py-10 flex flex-col items-center justify-center'>
         <h5 className='font-instrument-sans font-bold text-headline-md md:text-headline-lrg xl:text-headline-xtralrg mb-5 xl:mb-10 text-raisin-black'>Where to find Us</h5>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3869.8395096098598!2d121.12320017509636!3d14.086649586341105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd6f78866a4815%3A0xfb1182d323581bfa!2sNew%20Tanauan%20City%20Hall!5e0!3m2!1sen!2sph!4v1739272426484!5m2!1sen!2sph" 
-        className='w-[300px] h-[300px] md:w-[600px] md:h-[450px] xxl:w-[750px] xxl:h-[500px]' allowfullscreen={true} loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3869.8395096098598!2d121.12320017509636!3d14.086649586341105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd6f78866a4815%3A0xfb1182d323581bfa!2sNew%20Tanauan%20City%20Hall!5e0!3m2!1sen!2sph!4v1739272426484!5m2!1sen!2sph" 
+        className='w-[300px] h-[300px] md:w-[600px] md:h-[450px] xxl:w-[750px] xxl:h-[500px]' 
+        allowfullscreen={true} 
+        loading="lazy" 
+        referrerPolicy="no-referrer-when-downgrade"
+        >
         </iframe>
       </section>
       {/* Footer */}
