@@ -196,22 +196,25 @@ function StaffAppointments() {
   }
 
   const fulfillAppointment = async (fields) => {
-    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid)
-    
+    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
+    // "/vaccine/update/stock"
     if(fields[1].content.length !== 0){
-      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content)
-      const formData = new FormData();
-      formData.append('vaccid', filteredVaccine[0].VACCID || '');
-      formData.append('petid', filteredUA[0].PETID || null);
-      formData.append('pgid', filteredUA[0].PGID || null);
-      formData.append('asid', appointmentSelected.asid)
-      await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
-      .then(() => {
-        onUpdateAppointmentStatus('Done', fields[0].content || '');
-      })
-    }else{
-      onUpdateAppointmentStatus('Done', fields[0].content || '');
+      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content);
+      console.log(filteredVaccine)
     }
+    
+    // else{
+    //   onUpdateAppointmentStatus('Done', fields[0].content || '');
+    // }
+    // const formData = new FormData();
+    // formData.append('vaccid', filteredVaccine[0].VACCID || '');
+    // formData.append('petid', filteredUA[0].PETID || null);
+    // formData.append('pgid', filteredUA[0].PGID || null);
+    // formData.append('asid', appointmentSelected.asid);
+    // await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
+    // .then(() => {
+    //   onUpdateAppointmentStatus('Done', fields[0].content || '');
+    // })
   }
 
   const onUpdateAppointmentStatus = async (status, remarks) => {
@@ -293,7 +296,7 @@ function StaffAppointments() {
                     isActive={isAppModalOpened} 
                     onClose={closeAppointmentModal} 
                     fields={vModalFields} 
-                    button={{txtContent: 'Complete Appointment', isDisplayed: true}}
+                    button={{txtContent: 'Accept Appointment', isDisplayed: true}}
                     onSubmitFunc={fulfillAppointment}
                     />
                   )
