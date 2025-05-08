@@ -67,7 +67,7 @@ function StaffAppointments() {
     await axiosInstance.get('/api/vaccine')
     .then(res => {
       v = res.data.data
-      v.map(vaccine => vaccine_names.push(vaccine.vaccine_name))
+      v.map(vaccine => vaccine_names.push(`${vaccine.vaccine_name} (${vaccine.stock})`));
     })
     .catch(err => console.error(err))
     return [v, vaccine_names];
@@ -190,6 +190,11 @@ function StaffAppointments() {
     setIsAppModalOpened(false)
   }
 
+  const updateVaccineStock = async (new_count, vaccid) => {
+    await axiosInstance.put("/vaccine/update/stock", ) 
+
+  }
+
   const rejectAppointment = (asid) => {
     setAppointmentSelected({asid: asid})
     onUpdateAppointmentStatus('Rejected', '');
@@ -197,9 +202,8 @@ function StaffAppointments() {
 
   const fulfillAppointment = async (fields) => {
     let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
-    // "/vaccine/update/stock"
     if(fields[1].content.length !== 0){
-      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content);
+      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content)[0];
       console.log(filteredVaccine)
     }
     
@@ -248,7 +252,7 @@ function StaffAppointments() {
             "headers": 'Remarks'
           },
           {
-            "type": 'select',
+            "type": 'checkbox',
             "headers": 'Vaccine (If any)',
             "options": v[1],
             "txtContent": v[1][0]
@@ -298,6 +302,7 @@ function StaffAppointments() {
                     fields={vModalFields} 
                     button={{txtContent: 'Accept Appointment', isDisplayed: true}}
                     onSubmitFunc={fulfillAppointment}
+                    
                     />
                   )
                 }
