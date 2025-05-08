@@ -26,3 +26,12 @@ export const getVaccineByVaccineService = async(vaccine) => {
     const result = await pool.query('SELECT * FROM otcv_vaccines WHERE vaccine_name = $1', [vaccine]);
     return result.rows;
 }
+
+export const updateVaccineStockService = async (new_count, vaccid) => {
+    const result = await pool.query(`
+        UPDATE otcv_vaccines 
+        SET stock = $1
+        WHERE "VACCID" = $2
+    `,[new_count, vaccid]);
+    return result.rows;
+}

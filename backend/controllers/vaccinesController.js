@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createVaccineService, deleteVaccineService, getVaccineByVaccineService, getVaccineService } from "../models/vaccineModel.js";
+import { createVaccineService, deleteVaccineService, getVaccineByVaccineService, getVaccineService, updateVaccineStockService } from "../models/vaccineModel.js";
 
 export const createVaccine = async (req, res, next) => {
     const { vaccine } = req.body;
@@ -33,5 +33,15 @@ export const getVaccine = async (req, res, next) => {
         return handleResponse(res, 200, "Vaccine fetched successfully.", result);
     }catch(err){
         return next(err);
+    }
+}
+
+export const updateVaccineStock = async (req, res, next) => {
+    const { new_count, vaccid } = req.body;
+    try{
+        const result = await updateVaccineStockService(new_count, vaccid);
+        return handleResponse(res, 200, "Updated vaccine stock.", result);
+    }catch(err){
+        return next(err)
     }
 }
