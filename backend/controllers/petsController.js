@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
+import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetMedicalRecordsService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
 import { generatePdf } from "../utils/reportUtils.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/storage.js";
@@ -159,6 +159,31 @@ export const getAllPetsPdf = async (req, res, next) => {
         return next(err);
     }
 }
+
+export const getPetMedicalHistory = async (req, res, next) => {
+    const { PETID } = req.query;
+    try{
+        const result = await getAllPetMedicalRecordsService(PETID);
+        return handleResponse(res, 200, "Medical records fetched", result);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getPetMedicalHistoryPdf = async (req, res, next) => {
+    const { PETID } = req.query;
+    const dateObj = new Date();
+    const dateTimeStamp = `${dateObj.getFullYear()}${dateObj.getMonth()+1}${dateObj.getDate()}_${dateObj.getHours()}${dateObj.getMinutes()}`;
+
+    try{
+        const result = await getAllPetMedicalRecordsService(PETID);
+        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Date Registered']
+        generatePdf(res, 'Pets', headers, result, `PetList_${dateTimeStamp}`);
+    }catch(err) {
+        return next(err);
+    }
+}
+
 
 export const getAllPetsAndOwnerByType = async (req, res, next) => {
     const atypeid  = req.query.atypeid;

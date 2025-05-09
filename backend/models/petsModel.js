@@ -97,6 +97,33 @@ export const getAllPetsPdfService = async () => {
     return result.rows;
 }
 
+export const getAllPetMedicalRecordsService = async (PETID) => {
+    const result = await pool.query(`
+        SELECT p."PETID", p.nickname, INITCAP(ant.animal_type) as AnimalType, 
+        ud.firstname || ' ' || ud.surname as fullname, vs.vaccine_name, STRING_AGG(DISTINCT s.service, ', ' ) as service,
+        STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, als.date, als.time, als.remarks
+        FROM otcv_pets p 
+        INNER JOIN otcv_animal_types ant
+        ON p."ATYPEID" = ant."ATYPEID"
+        INNER JOIN otcv_user_details ud
+        ON p."pet_owner" = ud."UID"
+        INNER JOIN otcv_appointment_schedule als
+        ON als."PETID" = p."PETID"
+        LEFT JOIN otcv_service s
+        ON s."SERVICEID" = ANY(als."SERVICEIDS")
+        LEFT JOIN otcv_diagnosis d
+        ON d."DIAGID" = ANY(als."DIAGNOSIS")
+        LEFT JOIN otcv_vaccinations vss
+        ON vss."PETID" = p."PETID"
+        LEFT JOIN otcv_vaccines vs
+        on vs."VACCID" = vss."VACCID"
+        WHERE als."PETID" = $1
+        GROUP BY als."ASID", p."PETID", als."PGID", p.nickname, als.date, als.time, als.remarks, 
+        ant.animal_type, ud.firstname, ud.surname, vs.vaccine_name
+        ORDER BY p.nickname ASC
+    `, [PETID]);
+    return result.rows;
+}
 
 export const getAllPetsByTypeService = async (atypeid) => {
     const result = await pool.query(`
