@@ -177,7 +177,7 @@ export const getAppointmentsScheduleCountByUserService = async (id) => {
 export const getAllUpcomingAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
-    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p
     ON p."PETID" = sched."PETID"
@@ -188,7 +188,7 @@ export const getAllUpcomingAppointmentScheduleService = async () => {
     LEFT JOIN otcv_diagnosis d
     ON d."DIAGID" = ANY(sched."DIAGNOSIS")
     WHERE date >= CURRENT_DATE AND status = 'Scheduled'
-    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status, sched.proof_image
     ORDER BY date ASC, time ASC;
     `);
     return res.rows;
@@ -197,7 +197,7 @@ export const getAllUpcomingAppointmentScheduleService = async () => {
 export const getAllRecentAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
-    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p
     ON p."PETID" = sched."PETID"
@@ -218,7 +218,7 @@ export const getAllRecentAppointmentScheduleService = async () => {
 export const getOngoinglAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
-    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
@@ -236,7 +236,7 @@ export const getOngoinglAppointmentScheduleService = async () => {
 export const getAllAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
-    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image
     FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
@@ -245,7 +245,7 @@ export const getAllAppointmentScheduleService = async () => {
     LEFT JOIN otcv_diagnosis d
     ON d."DIAGID" = ANY(sched."DIAGNOSIS")
     WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
-    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status, sched.proof_image
     ORDER BY date, time ASC;
     `);
     return res.rows;
