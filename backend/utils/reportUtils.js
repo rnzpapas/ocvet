@@ -106,7 +106,7 @@ export const generateLandscapePdf = (res, title = "", headers = [], data = [], f
 
         let x = startX;
         Object.values(row).forEach((value, index) => {
-            doc.text(value.toString(), x, y, { width: columnWidths[index], align: "center" });
+            doc.text(value ? value.toString() : "N/A", x, y, { width: columnWidths[index], align: "center" });
             x += columnWidths[index];
         });
 

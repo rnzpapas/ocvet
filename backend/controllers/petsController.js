@@ -177,8 +177,10 @@ export const getPetMedicalHistoryPdf = async (req, res, next) => {
 
     try{
         const result = await getAllPetMedicalRecordsService(PETID);
-        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Vaccine', 'Service', 'Diagnosis', 'Appointment Date', 'Appointment Time', 'Remarks']
-        generateLandscapePdf(res, `${result[0].nickname} Records`, headers, result, `${result[0].nickname} Records_${dateTimeStamp}`);
+        if(result){
+            const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Vaccine', 'Service', 'Diagnosis', 'Appointment Date', 'Appointment Time', 'Remarks']
+            generateLandscapePdf(res, `${result[0].nickname} Records`, headers, result, `${result[0].nickname} Records_${dateTimeStamp}`);
+        }
     }catch(err) {
         return next(err);
     }

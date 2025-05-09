@@ -101,7 +101,7 @@ export const getAllPetMedicalRecordsService = async (PETID) => {
     const result = await pool.query(`
         SELECT p."PETID", p.nickname, INITCAP(ant.animal_type) as AnimalType, 
         ud.firstname || ' ' || ud.surname as fullname, vs.vaccine_name, STRING_AGG(DISTINCT s.service, ', ' ) as service,
-        STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, als.date, als.time, als.remarks
+        STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, TO_CHAR(als.date, 'MM/DD/YYYY') as date, als.time, als.remarks
         FROM otcv_pets p 
         INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
