@@ -106,11 +106,18 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                             <section className={`border-2 px-3 py-1 border-azure cursor-pointer rounded-2xl group
                                                          hover:bg-azure`} 
                                                             onClick={(el) => acceptAppointment(info.number)}>
-                                                                <h5 className="font-lato text-content-xtrasm lg:text-content-md group-hover:text-white-smoke text-raisin-black">Accept</h5>
+                                                                <h5 className="font-lato text-content-xtrasm lg:text-content-md group-hover:text-white-smoke text-raisin-black text-nowrap">Show Details</h5>
 
                                                             </section>
                                                         </section>
                                                     </td> 
+                                                :
+                                                info.status.isOngoing ? 
+                                                    <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
+                                                        <section className="bg-azure flex items-center justify-center px-2 py-1 rounded-sm">
+                                                            <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Done </p>
+                                                        </section>
+                                                    </td>
                                                 : info.status.isFinished ?
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
                                                         <section className=" bg-lime-green  flex items-center justify-center px-2 py-1 rounded-sm">
