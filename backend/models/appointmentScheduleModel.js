@@ -207,10 +207,28 @@ export const getAllRecentAppointmentScheduleService = async () => {
     ON s."SERVICEID" = ANY(sched."SERVICEIDS")
     LEFT JOIN otcv_diagnosis d
     ON d."DIAGID" = ANY(sched."DIAGNOSIS")
-    WHERE date BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE
-    OR sched.status = 'Done'
+    WHERE (date BETWEEN CURRENT_DATE - INTERVAL '3 days' AND CURRENT_DATE)
+    AND sched.status = 'Done'
     GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
     ORDER BY date DESC, time ASC;
+    `);
+    return res.rows;
+}
+
+export const getOngoinglAppointmentScheduleService = async () => {
+    const res = await pool.query(`
+    SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status
+    FROM otcv_appointment_schedule sched
+    LEFT JOIN otcv_pets p ON p."PETID" = sched."PETID"
+    LEFT JOIN otcv_pet_group pg ON pg."PGID" = sched."PGID"
+    LEFT JOIN otcv_service s
+    ON s."SERVICEID" = ANY(sched."SERVICEIDS")
+    LEFT JOIN otcv_diagnosis d
+    ON d."DIAGID" = ANY(sched."DIAGNOSIS")
+    WHERE sched.status = 'Ongoing'
+    GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status
+    ORDER BY date, time ASC;
     `);
     return res.rows;
 }

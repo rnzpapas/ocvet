@@ -1,5 +1,5 @@
 import handleResponse from "../middleware/responseHandler.js";
-import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentSchedulePdfService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentSchedulePdfService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, getAppointmentStatsService, getAppointmentSuccessStatsService, updateAppointmentScheduleByStatusService, updateAppointmentStatusService } from "../models/appointmentScheduleModel.js";
+import { createAppointmentScheduleService, deleteAppointmentScheduleService, getAllAppointmentSchedulePdfService, getAllAppointmentScheduleService, getAllRecentAppointmentScheduleService, getAllUpcomingAppointmentSchedulePdfService, getAllUpcomingAppointmentScheduleService, getAppointmentScheduleByDateService, getAppointmentScheduleByDateTimeService, getAppointmentScheduleByStatusService, getAppointmentScheduleTimeslotsPerDateService, getAppointmentsScheduleByUserService, getAppointmentsScheduleService, getAppointmentStatsService, getAppointmentSuccessStatsService, getOngoinglAppointmentScheduleService, updateAppointmentScheduleByStatusService, updateAppointmentStatusService } from "../models/appointmentScheduleModel.js";
 import { generatePdf } from "../utils/reportUtils.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
@@ -58,6 +58,15 @@ export const getAllUpcomingAppointmentSchedule = async (req, res, next) => {
 export const getAllRecentAppointmentSchedule = async (req, res, next) => {
     try{
         const q = await getAllRecentAppointmentScheduleService();
+        return handleResponse(res, 200, "Appointment successfully fetched.", q);
+    }catch(err) {
+        return next(err);
+    }
+}
+
+export const getOngoinglAppointmentSchedule = async (req, res, next) => {
+    try{
+        const q = await getOngoinglAppointmentScheduleService();
         return handleResponse(res, 200, "Appointment successfully fetched.", q);
     }catch(err) {
         return next(err);
