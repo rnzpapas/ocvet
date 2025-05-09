@@ -28,7 +28,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-fire-engine-red text-white-smoke text-content-sm rounded hover:bg-lime-green"
+            className="px-4 py-2 bg-fire-engine-red text-white-smoke text-content-sm rounded hover:bg-[#d13333]"
           >
             Confirm
           </button>
