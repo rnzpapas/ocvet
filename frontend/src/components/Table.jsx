@@ -115,7 +115,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                 info.status.isOngoing ? 
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
                                                         <section className="bg-azure flex items-center justify-center px-2 py-1 rounded-sm">
-                                                            <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Done </p>
+                                                            <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Ongoing </p>
                                                         </section>
                                                     </td>
                                                 : info.status.isFinished ?
