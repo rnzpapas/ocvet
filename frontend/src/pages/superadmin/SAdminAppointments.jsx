@@ -4,6 +4,8 @@ import Table from '@/components/Table';
 import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertDate, convertTime } from '../../utils/datetimeUtils'
 import Modal from '@/components/Modal';
+import ConfirmationModal from '@/components/ConfirmationModal';
+import PetRecordsModal from '@/components/PetRecordsModal';
 
 const HEADERS = [
   {
@@ -42,34 +44,112 @@ const HEADERS = [
   }
 ];
 
+const ONGOING_HEADERS = [
+  {
+      "key": "No.",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Client",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+    "key": "Service",
+    "isSortable": true,
+    "isSorted": false
+  },
+  {
+    "key": "Diagnosis",
+    "isSortable": true,
+    "isSorted": false
+  },
+  {
+      "key": "Date",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Time",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Status",
+      "isSortable": true
+  },
+  {
+    "key": "Actions",
+    "isSortable": true
+}
+];
 
 function SAdminAppointments() {
-  let sessionToken = sessionStorage.getItem('jwt-token');
+  let sessionToken = sessionStorage.getItem('jwt-token')
   const [tab, setTab] = useState(1);
   const [UAData, setUADATA] = useState([]);
+  const [OAData, setOAData] = useState([]);
   const [RAData, setRAData] = useState([]);
   const [AHData, setAHData] = useState([]);
   const [UAFull, setUAFull] = useState([]);
+  const [OAFull, setOAFull] = useState([]);
   const [appointmentSelected,setAppointmentSelected] = useState({asid: ''});
   const [isAppModalOpened, setIsAppModalOpened] = useState(false);
   const [vaccineObj, setVaccineObj] = useState([]);
   const [vaccineNames, setVaccineNames] = useState([]);
+  const [proofImage, setProofImage] = useState();
+  const [petMedicalRecords, setPetMedicalRecords] = useState([]);
   const [vModalFields, setVModalFields] = useState();
+  const [isConfirmationModal, setIsConfirmationModal] = useState(false);
+  const [isMedicalRecordsModal, setIsMedicalRecordsModal] = useState(false);
+  const [isProofImageViewer, setIsProofImageViewer] = useState(false);
+  const [currentPetName, setCurrentPetName] = useState("");
+  const [currentPetImage, setCurrentPetImage] = useState("");
+
+
+  const openPetMedicalRecords = (asid) => {
+    let filteredUA = UAFull.filter((uaf) => uaf.ASID === asid);
+    setCurrentPetImage(filteredUA[0].image)
+    setCurrentPetName(filteredUA[0].nickname);
+    setAppointmentSelected({asid: asid});
+    setIsMedicalRecordsModal(true);
+  };
+
+  const closePetMedicalRecords = () => {
+    setCurrentPetName("");
+    setAppointmentSelected({asid: ''});
+    setPetMedicalRecords([]);
+    setIsMedicalRecordsModal(false);
+  };
+
+  const showProofImage = () => setIsProofImageViewer(true);
+
+  const closeProofImage = () => setIsProofImageViewer(false);
 
   const changeTab = (tabNum) => {
     setTab(prev => prev = tabNum)
   }
 
   const loadVaccines = async () => {
-    let v;
-    let vaccine_names = [];
-    await axiosInstance.get('/api/vaccine')
-    .then(res => {
-      v = res.data.data
-      v.map(vaccine => vaccine_names.push(vaccine.vaccine_name))
-    })
-    .catch(err => console.error(err))
-    return [v, vaccine_names];
+    try{
+      let v;
+      let vaccine_details = [];
+      let res = await axiosInstance.get('/api/vaccine')
+  
+      if(res.data) {
+        v = res.data.data
+        v.map(vaccine => {
+          vaccine_details.push({
+            data_one: vaccine.vaccine_name,
+            data_two: parseInt(vaccine.stock)
+          })
+        })
+      }
+      return [v, vaccine_details];
+    }catch(err){
+      console.error(err);
+    }
   }
 
   const loadAppointmentHistory = async () => {
@@ -148,6 +228,34 @@ function SAdminAppointments() {
     return atmt
   }
 
+  const loadOngoingAppointment = async () => {
+    let atmt = [];
+    await axiosInstance.get('/api/appointment/all/ongoing', {headers:{'Authorization': `Bearer ${sessionToken}`}})
+    .then((res) => {
+      let apps = res.data.data;
+      setOAFull(apps);
+      apps.map(app => {
+        let sched = {
+          'number' : app.ASID,
+          'client': app.nickname || app.GROUP_NICKNAME,
+          'service': app.service,
+          'diagnosis': app.diagnosis,
+          'date': convertDate(app.date),
+          'time': convertTime(app.time),
+          "status": {
+            "isOngoing": true,
+            "isFinished": undefined,
+            "withCheckboxes" : false,
+          },
+          "action": true
+        }
+        atmt.push(sched)
+      })
+    })
+    .catch(err => console.error(err))
+    return atmt
+  }
+
   const exportAppointmentHistory = async () => {
     await axiosInstance.get('/api/appointment/all/history/export', {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
     .then(res => {
@@ -180,13 +288,66 @@ function SAdminAppointments() {
     })
   }
 
-  const openAcceptAppointmentModal = (asid) => {
-    setAppointmentSelected({asid: asid})
-    setIsAppModalOpened(true)
+  const loadPetMedicalRecords = async () => {
+    try{
+      let recordArr = [];
+      let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
+
+      let res = await axiosInstance.get(`/api/pet/records?PETID=${filteredUA[0].PETID}`);
+      if(res.data){
+        let records = res.data.data;
+        records.map(record => {
+          let recordObj = {
+            PETID: record.PETID,
+            nickname: record.nickname,
+            animal_type: record.animaltype,
+            owner: record.fullname,
+            vaccine: record.vaccine_name,
+            services: record.service,
+            diagnosis: record.diagnosis,
+            appointment_date: record.date,
+            appointment_time: convertTime(record.time),
+            remarks: record.remarks
+          }
+          recordArr.push(recordObj);
+        });
+        return recordArr;
+      }
+    }catch(err){
+      let message = err.response?.data?.message || 'Error on fetching medical records.';
+      console.error(message);
+      console.error(err);
+    }
   }
 
+  const exportPetMedicalRecords = async () => {
+    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
+
+    await axiosInstance.get(`/api/pet/records/export?PETID=${filteredUA[0].PETID}`, {headers: {'Authorization': `Bearer ${sessionToken}`}, responseType: 'blob'},)
+    .then(res => {
+      const disposition = res.headers['content-disposition'];
+      const matches = /filename="(.+)"/.exec(disposition);
+      const filename = matches != null && matches[1] ? matches[1] : 'pet_records.pdf';
+      const url = window.URL.createObjectURL(res.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename; 
+      link.click();
+      window.URL.revokeObjectURL(url); 
+    })
+  }
+
+  const openAcceptAppointmentModal = () => setIsConfirmationModal(true);
+
+  const openAppointmentModal = (asid) => {
+    setIsAppModalOpened(true);
+    setAppointmentSelected({asid: asid});
+  };
+
   const closeAppointmentModal = () => {
-    setIsAppModalOpened(false)
+    setIsAppModalOpened(false);
+    setAppointmentSelected({asid: ''});
+
   }
 
   const rejectAppointment = (asid) => {
@@ -194,43 +355,82 @@ function SAdminAppointments() {
     onUpdateAppointmentStatus('Rejected', '');
   }
 
+  const closeConfirmationModal = () => setIsConfirmationModal(false);
+
+  const updateAppointmentOngoing = () => {
+    onUpdateAppointmentStatus('Ongoing', '');
+    setIsConfirmationModal(false);
+    window.location.reload();
+  }
+
   const fulfillAppointment = async (fields) => {
-    let filteredUA = UAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid)
-    
-    if(fields[1].content.length !== 0){
-      let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == fields[1].content)
-      const formData = new FormData();
-      formData.append('vaccid', filteredVaccine[0].VACCID || '');
-      formData.append('petid', filteredUA[0].PETID || null);
-      formData.append('pgid', filteredUA[0].PGID || null);
-      formData.append('asid', appointmentSelected.asid)
-      await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
-      .then(() => {
+    try{
+      let filteredOA = OAFull.filter((uaf) => uaf.ASID === appointmentSelected.asid);
+      let vaccinesModalValues = fields[1].content;
+      if(vaccinesModalValues && Array.isArray(vaccinesModalValues)){
+        vaccinesModalValues.forEach(async (vcc) => {
+          let filteredVaccine = vaccineObj.filter(v => v.vaccine_name == vcc);
+          let new_stock_count = parseInt(filteredVaccine[0].stock) - 1;
+          let body = {
+            new_count: new_stock_count, 
+            vaccid: filteredVaccine[0].VACCID
+          }
+          let res = await axiosInstance.put("/api/vaccine/update/stock", body, {headers: {"Content-Type" : 'application/json'}});
+  
+          if(res.status == 200){
+            const formData = new FormData();
+            formData.append('vaccid', filteredVaccine[0].VACCID || '');
+            formData.append('petid', filteredOA[0].PETID || null);
+            formData.append('pgid', filteredOA[0].PGID || null);
+            formData.append('asid', appointmentSelected.asid);
+            let res = await axiosInstance.post('/api/vaccinations/create', formData, {headers: {"Content-Type" : 'application/json'}})
+            
+            if(res.status == 201){
+              console.log('vaccines appointment to update status...')
+              onUpdateAppointmentStatus('Done', fields[0].content || '');
+            }
+          }
+        });
+      }else{
         onUpdateAppointmentStatus('Done', fields[0].content || '');
-      })
-    }else{
-      onUpdateAppointmentStatus('Done', fields[0].content || '');
+      }
+    }catch(err){
+      let message = err.response?.data?.message || "Failed to fullfil appointment.";
+      console.error(message);
+      console.error(err);
     }
   }
   
   const onUpdateAppointmentStatus = async (status, remarks) => {
-    const formData = new FormData();
-    formData.append('status', status);
-    formData.append('remarks', remarks || '');
-
-    await axiosInstance.put(`/api/appointment/status?asid=${appointmentSelected.asid}`, formData, {headers: {'Content-Type': 'application/json'}})
-    .then(() => window.location.reload())
+    try{
+      const formData = new FormData();
+      formData.append('status', status);
+      formData.append('remarks', remarks || '');
+  
+      let res = await axiosInstance.put(`/api/appointment/status?asid=${appointmentSelected.asid}`, formData, {headers: {'Content-Type': 'application/json'}})
+      console.log(res)
+      if(res.status == 200) window.location.reload();
+    }catch(err){
+      let message = err.response?.data?.message || "Failed to update appointment status.";
+      console.error(message);
+      console.error(err);
+    }
   }
 
   useEffect(() => {
-    let ahPromise = loadAppointmentHistory();
-    let raPromise = loadRecentAppointment();
-    let uaPromise = loadUpcomingAppointment();
+    const allPromises = async () => {
+      let ah = await loadAppointmentHistory();
+      let ra = await loadRecentAppointment();
+      let ua = await loadUpcomingAppointment();
+      let oa = await loadOngoingAppointment();
+      
+      setAHData(ah);
+      setRAData(ra);
+      setUADATA(ua);
+      setOAData(oa);
+    }
 
-    ahPromise.then((ahist) => setAHData(ahist))
-    raPromise.then((rce) => setRAData(rce))
-    uaPromise.then((up) => setUADATA(up))
-
+    allPromises();
   },[])
 
   useEffect(() => {
@@ -239,39 +439,52 @@ function SAdminAppointments() {
           const v = await loadVaccines();
           setVaccineNames(v[1]);
           setVaccineObj(v[0]);
-          setVModalFields(prevState => prevState = [
+          setVModalFields([
             {
               "type": 'textarea',
               "headers": 'Remarks'
             },
             {
-              "type": 'select',
+              "type": 'checkbox',
               "headers": 'Vaccine (If any)',
               "options": v[1],
-              "txtContent": v[1][0]
+              "txtContent": "None"
             }
-          ])
+          ]);
         } catch (error) {
           console.error("Error loading vaccines:", error);
         }
       };
       fetchVaccines()
   },[])
-    
+
+  useEffect(() => {
+    let recordsPromise = async () => {
+      if(appointmentSelected.asid && isMedicalRecordsModal){
+        let pm = await loadPetMedicalRecords();
+        setPetMedicalRecords(pm);
+      }
+    }
+    recordsPromise();
+  },[appointmentSelected])
+
   return (
     <section className="flex w-screen h-screen overflow-hidden">
         <SuperAdminNav />
-        <section className="px-5 py-5 relative w-full h-full">
+        <section className="flex-1 overflow-x-auto px-4">
           <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">appointments</h5>
           <section className='flex gap-0.5 mb-5'>
             <div className={` border-b-4 ${tab === 1 ? ('border-b-azure') : 'border-silver'} cursor-pointer hover:ring-raisin-black-light`} onClick={() => changeTab(1)}>
               <h5 className={`font-lato px-2 py-4 ${tab === 1 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Upcoming Appointments</h5>
             </div>
             <div className={` border-b-4 ${tab === 2 ? ('border-b-azure') : 'border-silver'} cursor-pointer hover:ring-raisin-black-light`} onClick={() => changeTab(2)}>
-              <h5 className={`font-lato px-2 py-4 ${tab === 2 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Recent Appointments</h5>
+              <h5 className={`font-lato px-2 py-4 ${tab === 2 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Ongoing Appointments</h5>
             </div>
             <div className={` border-b-4 ${tab === 3 ? ('border-b-azure') : 'border-silver'} cursor-pointer hover:ring-raisin-black-light`} onClick={() => changeTab(3)}>
-              <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
+              <h5 className={`font-lato px-2 py-4 ${tab === 3 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Recent Appointments</h5>
+            </div>
+            <div className={` border-b-4 ${tab === 4 ? ('border-b-azure') : 'border-silver'} cursor-pointer hover:ring-raisin-black-light`} onClick={() => changeTab(4)}>
+              <h5 className={`font-lato px-2 py-4 ${tab === 4 ? ('text-raisin-black font-semibold') : 'text-silver'}`}>Appointment History</h5>
             </div>
           </section>
           <section className="flex flex-wrap justify-between max-w-[calc(100vw-280px)] overflow-hidden relative h-[80%]">
@@ -279,13 +492,39 @@ function SAdminAppointments() {
                 {
                   UAData.length > 0 && (
                     <Table headers={HEADERS} data={UAData} tableW={"w-full"} tableH={'h-fit'}
-                      acceptAppointment={openAcceptAppointmentModal}
-                      rejectAppointment={rejectAppointment }
-                      />
+                      acceptAppointment={openPetMedicalRecords}
+                      rejectAppointment={rejectAppointment}
+                    />
                   )
                 }
                 {
-                  vModalFields && (
+                  isMedicalRecordsModal && (
+                    <PetRecordsModal 
+                    headline={`${currentPetName}'s Medical Records`} 
+                    tableData={petMedicalRecords} 
+                    isActive={isMedicalRecordsModal} 
+                    onClose={closePetMedicalRecords} 
+                    img={currentPetImage} 
+                    onSubmitFunc={openAcceptAppointmentModal}
+                    button={{isDisplayed:true, txtContent: 'Begin Appointment'}}
+                    exportPetRecords={exportPetMedicalRecords}
+                    />
+                  )
+                }
+                {
+                  isConfirmationModal && (
+                    <ConfirmationModal title={"Confirm Appointment Status"} message={"Mark this appointment as ongoing?"} isOpen={isConfirmationModal} onClose={closeConfirmationModal} onConfirm={updateAppointmentOngoing}/>
+                  )
+                }
+            </section>
+            <section className={`${tab === 2 ? 'w-[95%]' : 'hidden'}`}>
+              {
+                OAData.length > 0 && (
+                  <Table headers={ONGOING_HEADERS} data={OAData} tableW={"w-full"} tableH={'h-fit'} markAsCompleted={openAppointmentModal}/>
+                )
+              }
+              {
+                  isAppModalOpened && vModalFields && (
                     <Modal 
                     headline={''} 
                     isActive={isAppModalOpened} 
@@ -295,17 +534,16 @@ function SAdminAppointments() {
                     onSubmitFunc={fulfillAppointment}
                     />
                   )
-                }
-                
+              }
             </section>
-            <section className={`${tab === 2 ? 'w-[90%]' : 'hidden'}`}>
+            <section className={`${tab === 3 ? 'w-[95%]' : 'hidden'}`}>
               {
                 RAData.length > 0 && (
                   <Table headers={HEADERS} data={RAData} tableW={"w-full"} tableH={'h-fit'}/>
                 )
               }
             </section>
-            <section className={`${tab === 3 ? 'w-[90%]' : 'hidden'}`}>
+            <section className={`${tab === 4 ? 'w-[95%]' : 'hidden'}`}>
               {
                 AHData.length > 0 && (
                   <Table headers={HEADERS} data={AHData} tableW={"w-full"} tableH={'h-fit'}/>
@@ -323,5 +561,4 @@ function SAdminAppointments() {
     </section>
   )
 }
-
 export default SAdminAppointments

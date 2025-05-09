@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { convertObjectArrayToString } from "../utils/textUtils";
 
-function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment}) {
+function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment, markAsCompleted}) {
     const MAX_ROWS = 10;
     const [pageData, setPageData] = useState([]);
     const [sorted, setSorted] = useState({keyToSort: "", sortMode: "asc"});
@@ -58,7 +58,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                             {headers.map((header, index) => (
                                 <th key={`${index+1}-${header.key}`} className={` text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 ${header.isSortable ? 'cursor-pointer' : ''}`} onClick={() => sortCol(header.key)}> 
                                     <section className="flex gap-2 items-center justify-center relative text-nowrap">
-                                        <p>{header.key} </p>
+                                        <p>{header.key}</p>
                                         {header.isSortable ? 
                                             <section>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className={`fill-white-smoke w-[10px] ${header.key === sorted.keyToSort && sorted.sortMode === "asc" && header.isSortable ? 'block' : 'hidden'}`}>
@@ -87,9 +87,19 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                     <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
                                                         {convertObjectArrayToString(info[key])} 
                                                     </td>
+                                                : key === "action" ?
+                                                <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
+                                                    <section 
+                                                        className={`border-2 px-3 py-1 border-azure cursor-pointer rounded-2xl group hover:bg-azure`} 
+                                                        onClick={(el) => markAsCompleted(info.number)}
+                                                    >
+                                                        <h5 className="font-lato text-content-xtrasm lg:text-content-md group-hover:text-white-smoke text-raisin-black text-nowrap">Mark As Completed</h5>
+                                                    </section>
+                                                </td>
                                                 : key !== "status" ?
                                                     <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap" key={`${key}-${index}`}> {info[key]} </td>
-                                                :info.status.status == 'Scheduled' ? 
+                                                
+                                                : info.status.status == 'Scheduled' ? 
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
                                                         <section className=" bg-raisin-black  flex items-center justify-center px-2 py-1 rounded-sm">
                                                             <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Scheduled </p>
@@ -111,8 +121,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                             </section>
                                                         </section>
                                                     </td> 
-                                                :
-                                                info.status.isOngoing ? 
+                                                : info.status.isOngoing ? 
                                                     <td className="py-2 px-2 lg:px-14" key={`${key}-${index}`}> 
                                                         <section className="bg-azure flex items-center justify-center px-2 py-1 rounded-sm">
                                                             <p className="font-lato font-semibold uppercase text-content-xtrasm text-white-smoke"> Ongoing </p>
@@ -130,6 +139,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                             <p className="font-lato font-bold uppercase text-content-xtrasm text-white-smoke"> Pending </p>
                                                         </section>
                                                     </td>
+                                                
                                             )) }
                                         </tr>
                                     )
