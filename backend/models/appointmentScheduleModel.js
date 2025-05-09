@@ -177,8 +177,8 @@ export const getAppointmentsScheduleCountByUserService = async (id) => {
 export const getAllUpcomingAppointmentScheduleService = async () => {
     const res = await pool.query(`
     SELECT sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME", STRING_AGG(DISTINCT s.service, ', ' ) as service,
-    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image
-    FROM otcv_appointment_schedule sched, p.image
+    STRING_AGG(DISTINCT d.diagnosis, ', ' ) as diagnosis, sched.date, sched.time, sched.status, sched.proof_image, p.image
+    FROM otcv_appointment_schedule sched
     LEFT JOIN otcv_pets p
     ON p."PETID" = sched."PETID"
     LEFT JOIN otcv_pet_group pg
