@@ -1,6 +1,6 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { createPetService, deletePetService, getAllCountPetsByOwnerAndPetsService, getAllCountPetsByOwnerService, getAllPetMedicalRecordsService, getAllPetsAndOwnerByTypeService, getAllPetsByDateService, getAllPetsByOwnerDescendingService, getAllPetsByOwnerService, getAllPetsByRangeDateService, getAllPetsByTypeDescendingService, getAllPetsByTypeService, getAllPetsCountService, getAllPetsPdfService, getAllPetsService, getPetByNicknameAdminService, getPetByNicknameService, getPetsCountByTypeService, getPetService, updatePetImageService, updatePetService } from "../models/petsModel.js";
-import { generatePdf } from "../utils/reportUtils.js";
+import { generateLandscapePdf, generatePdf } from "../utils/reportUtils.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/storage.js";
 
@@ -177,8 +177,8 @@ export const getPetMedicalHistoryPdf = async (req, res, next) => {
 
     try{
         const result = await getAllPetMedicalRecordsService(PETID);
-        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Date Registered']
-        generatePdf(res, 'Pets', headers, result, `PetList_${dateTimeStamp}`);
+        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Vaccine', 'Service', 'Diagnosis', 'Appointment Date', 'Appointment Time', 'Remarks']
+        generateLandscapePdf(res, `${result[0].nickname} Records`, headers, result, `${result[0].nickname} Records_${dateTimeStamp}`);
     }catch(err) {
         return next(err);
     }
