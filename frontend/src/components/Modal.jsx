@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import InputField from "./InputField"
 import Button from "./Button"
 import Link from "./Link"
+import NoImg from '@/assets/noimg.png';
 
 function Modal({headline, fields, isActive = false, onClose, img, inputStyle, 
     onChangeFunc, isReadOnly = false, isDisabled = false, isTextBox = false,
@@ -77,7 +78,8 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                         <section className="flex justify-center">
                                             <img 
                                                 className="bg-fire-engine-red w-[100px] h-[100px] rounded-full aspect-square" 
-                                                src={`/pet/${field.img}`}
+                                                src={`${imgSrc ? `${imgDirSrc}/pet/${imgSrc}` : NoImg}`}
+                                                a lt={`${imgSrc ? imgSrc : "No Image"}`}
                                             />
                                         </section>
                                         : field.type === "password" ? 
