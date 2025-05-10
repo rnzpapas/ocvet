@@ -68,7 +68,7 @@ export const getRecentVaccinationsByOwner = async (req, res, next) => {
 
 export const getVaccinesBaseOnDemand = async (req, res, next) => {
     try{
-        const result = getVaccinesBaseOnDemandService();
+        const result = await getVaccinesBaseOnDemandService();
         return handleResponse(res, 200, "Success", result);
     }catch(err){
         return next(err);
