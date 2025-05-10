@@ -39,7 +39,7 @@ export const getVaccine = async (req, res, next) => {
 export const updateVaccineStock = async (req, res, next) => {
     const { new_count, vaccid } = req.body;
     try{
-        const result = await updateVaccineStockService(new_count, vaccid);
+        const result = await updateVaccineStockService(parseInt(new_count), vaccid);
         return handleResponse(res, 200, "Updated vaccine stock.", result);
     }catch(err){
         return next(err)
