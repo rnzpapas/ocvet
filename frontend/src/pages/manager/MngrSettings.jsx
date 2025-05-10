@@ -436,7 +436,7 @@ function MngrSettings() {
     }, [isMailGroupModalOpen]);
 
     return (
-        <section className="flex w-full">
+      <section className="flex w-full">
         <MngrNav />
         <section className='h-screen overflow-y-auto w-full'>
           {/* user info */}
@@ -683,7 +683,7 @@ function MngrSettings() {
             </section>
           </section>
         </section>
-    </section>
+      </section>
     )
 }
 

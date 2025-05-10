@@ -34,6 +34,7 @@ import ForbiddenAccess from "./pages/ForbiddenAccess"
 import MngrSettings from "./pages/manager/MngrSettings"
 import SAdminSettings from "./pages/superadmin/SAdminSettings"
 import SAdminAnnouncements from "./pages/superadmin/SAdminAnnouncements"
+import MngrVaccines from "./pages/manager/MngrVaccines"
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
           <Route index path="dashboard" element={<MngrHome />}/>
           <Route path="pets" element={<MngrPetList />}/>
           <Route path="owners" element={<MngrPetOwners />}/>
+          <Route path="vaccines" element={<MngrVaccines />}/>
           <Route path="appointments" element={<MngrAppointments />}/>
           <Route path="announcements" element={<MngrAnnouncements />}/>
           <Route path="settings" element={<MngrSettings />}/>
