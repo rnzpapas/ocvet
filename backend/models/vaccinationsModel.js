@@ -46,3 +46,18 @@ export const getRecentVaccinationsByOwnerService = async (uid) => {
         ORDER BY vcs."DATE" DESC LIMIT 5`, [uid]);
     return q.rows;
 }
+
+export const getVaccinesBaseOnDemandService = async () => {
+    const q = await pool.query(`
+        SELECT 
+        "VACCID", 
+        COUNT(*) AS demand_count
+        FROM 
+        public.otcv_vaccinations
+        GROUP BY 
+        "VACCID"
+        ORDER BY 
+        demand_count DESC
+    `);
+    return q.rows;
+}
