@@ -30,7 +30,7 @@ export const getVaccineByVaccineService = async(vaccine) => {
 export const updateVaccineStockService = async (new_count, vaccid) => {
     const result = await pool.query(`
         UPDATE otcv_vaccines 
-        SET stock = $1
+        SET stock = $1, last_restock_date = NOW()
         WHERE "VACCID" = $2
     `,[new_count, vaccid]);
     return result.rows;
