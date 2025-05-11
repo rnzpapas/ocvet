@@ -10,6 +10,8 @@ import { convertEmailDate, convertTime } from '../../utils/datetimeUtils'
 function MngrHome() {
   const userParsed = JSON.parse(localStorage.getItem('user'))
   const [emails, setEmails] = useState([]);
+  const [vaccines, setVaccines] = useState([]);
+
   const [stats, setStats] = useState({ totalToday: 0, totalThisWeek: 0, totalThisMonth: 0 });
   const [successStats, setSuccessStats] = useState({ totalCompleted: 0, totalMissed: 0});
 
@@ -27,6 +29,20 @@ function MngrHome() {
     .then(response => a = response.data.data)
     .catch(error => console.error("Error fetching data:", error));
     return a;
+  }
+
+  const loadVaccineStats = async () => {
+    try{
+      let res = await axiosInstance.get("/api/vaccinations/demand");
+      if(res.data){
+        console.log(res.data.data)
+        return res.data.data;
+      }
+    }catch(err){
+      let message = 'Failed to fetch vaccine data';
+      console.error(message);
+      console.error(err);
+    }
   }
 
   const loadEmails = async () => {
@@ -50,12 +66,17 @@ function MngrHome() {
   }
 
   useEffect(() => {
-    let appointmentStatsPromise = loadAppointmentStats();
-    appointmentStatsPromise.then((astats) => setStats(st => st = astats));
-    let appointmentSuccessStatsPromise = loadAppointmentSuccessStats();
-    appointmentSuccessStatsPromise.then((astats) => setSuccessStats(st => st = astats));
-    let emailPromise = loadEmails();
-    emailPromise.then((ep) => setEmails(ep))
+    const dataPromise = async () => {
+      let appointmentStatsPromise = await loadAppointmentStats();
+      setStats(appointmentStatsPromise);
+      let appointmentSuccessStatsPromise = await loadAppointmentSuccessStats();
+      setSuccessStats(appointmentSuccessStatsPromise);
+      let emailPromise = await loadEmails();
+      setEmails(emailPromise);
+      let vaccinePromise = await loadVaccineStats();
+      setVaccines(vaccinePromise);;
+    }
+    dataPromise();
   },[])
 
   return (
@@ -95,6 +116,22 @@ function MngrHome() {
                       )
                     }
                 </section>
+                </section>
+                <section className="flex flex-col gap-5 items-center">
+                    <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
+                    <section className="h-60">
+                      {
+                        vaccines && (
+                          <BarChart 
+                          chartH={'h-full'}
+                          labels={vaccines.map((v) => v.vaccine_name)} 
+                          datasetLabel={"Number of Injections"}
+                          datasetData={vaccines.map((v) => v.demand_count)}
+                          optionTooltipLabel={'Injected'}
+                          />
+                        )
+                      }
+                    </section>
                 </section>
             </section>
             <section className="flex flex-col gap-5">

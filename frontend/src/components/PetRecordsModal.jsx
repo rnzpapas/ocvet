@@ -56,26 +56,29 @@ function Modal({headline,
                                             <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Remarks </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        {
-                                            tableData.length > 0 && (
-                                                tableData.map((data, index) => (
-                                                    <tr key={index}>
-                                                        <td className="text-center font-lato"> {data.PETID} </td>
-                                                        <td className="text-center font-lato"> {data.nickname} </td>
-                                                        <td className="text-center font-lato"> {data.animal_type} </td>
-                                                        <td className="text-center font-lato"> {data.owner} </td>
-                                                        <td className="text-center font-lato"> {data.vaccine || "No vaccine injected."} </td>
-                                                        <td className="text-center font-lato"> {data.services} </td>
-                                                        <td className="text-center font-lato"> {data.diagnosis} </td>
-                                                        <td className="text-center font-lato"> {data.appointment_date} </td>
-                                                        <td className="text-center font-lato"> {data.appointment_time} </td>
-                                                        <td className="text-center font-lato"> {data.remarks} </td>
-                                                    </tr>
-                                                ))
-                                            )
-                                        }
-                                    </tbody>
+                                    {
+                                        tableData.length > 0 ? (
+                                            <tbody>
+                                                {
+                                                    tableData.map((data, index) => (
+                                                        <tr key={index}>
+                                                            <td className="text-center font-lato"> {data.PETID} </td>
+                                                            <td className="text-center font-lato"> {data.nickname} </td>
+                                                            <td className="text-center font-lato"> {data.animal_type} </td>
+                                                            <td className="text-center font-lato"> {data.owner} </td>
+                                                            <td className="text-center font-lato"> {data.vaccine || "No vaccine injected."} </td>
+                                                            <td className="text-center font-lato"> {data.services} </td>
+                                                            <td className="text-center font-lato"> {data.diagnosis} </td>
+                                                            <td className="text-center font-lato"> {data.appointment_date} </td>
+                                                            <td className="text-center font-lato"> {data.appointment_time} </td>
+                                                            <td className="text-center font-lato"> {data.remarks} </td>
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                            ) :
+                                            <tr> <td className="font-lato text-center" colSpan={6}> No pet medical records.</td> </tr>
+                                    }
                                 </table>            
                             </section>
                             {

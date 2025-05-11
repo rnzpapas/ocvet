@@ -117,7 +117,7 @@ export const getAllPetMedicalRecordsService = async (PETID) => {
         ON vss."PETID" = p."PETID"
         LEFT JOIN otcv_vaccines vs
         on vs."VACCID" = vss."VACCID"
-        WHERE als."PETID" = $1
+        WHERE als."PETID" = $1 AND als.status != 'Scheduled' AND als.status != 'Ongoing'
         GROUP BY als."ASID", p."PETID", als."PGID", p.nickname, als.date, als.time, als.remarks, 
         ant.animal_type, ud.firstname, ud.surname, vs.vaccine_name
         ORDER BY p.nickname ASC

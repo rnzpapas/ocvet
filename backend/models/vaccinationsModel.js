@@ -50,12 +50,15 @@ export const getRecentVaccinationsByOwnerService = async (uid) => {
 export const getVaccinesBaseOnDemandService = async () => {
     const q = await pool.query(`
         SELECT 
-        "VACCID", 
+        vt."VACCID", vc.vaccine_name,
         COUNT(*) AS demand_count
         FROM 
-        public.otcv_vaccinations
+        otcv_vaccinations vt
+        INNER JOIN 
+        otcv_vaccines vc
+        on vt."VACCID" = vc."VACCID"
         GROUP BY 
-        "VACCID"
+        vt."VACCID", vc.vaccine_name
         ORDER BY 
         demand_count DESC
     `);
