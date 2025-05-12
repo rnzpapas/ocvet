@@ -6,12 +6,12 @@ const getLatestAppointmentID = async () => {
     return latest_appointment_id.rows;
 }
 
-export const createAppointmentScheduleService = async (petid, pgid, servid, diagid, remarks, status, date, time ) => {
+export const createAppointmentScheduleService = async (petid, pgid, servid, diagid, remarks, status, date, time, proof_image) => {
     let new_appointment_id;
     let latest_appointment_id = getLatestAppointmentID();
     (await latest_appointment_id).length > 0 ? new_appointment_id = generateNewId(await latest_appointment_id, "ASID") : new_appointment_id = generateInitialId("ASID");
-    const res = await pool.query('INSERT INTO otcv_appointment_schedule ("ASID", "PETID", "PGID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)', 
-        [new_appointment_id, petid, pgid, servid, diagid, remarks, status, date, time]);
+    const res = await pool.query('INSERT INTO otcv_appointment_schedule ("ASID", "PETID", "PGID", "SERVICEIDS", "DIAGNOSIS", remarks, status, date, time, proof_image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', 
+        [new_appointment_id, petid, pgid, servid, diagid, remarks, status, date, time, proof_image || null]);
 }
 
 export const deleteAppointmentScheduleService = async (id) => {

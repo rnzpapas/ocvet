@@ -16,6 +16,22 @@ export const createAppointmentSchedule = async (req, res, next) => {
     }
 }
 
+export const createAppointmentScheduleWithImage = async (req, res, next) => {
+    const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
+    const imageFile = req.file;
+    const image_name = imageFile.originalname
+    const sched = new Date(date);
+    const dateConverted = `${sched.getFullYear()}-${sched.getMonth()+1}-${sched.getDate()}`;
+    // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+
+    try{
+        const q = await createAppointmentScheduleService(PETID || null, PGID || null, SERVICEIDS.split(','), DIAGNOSIS.split(','), remarks, status, dateConverted, time, image_name);
+        return handleResponse(res, 201, "Appointment created.");
+    }catch(err) {
+        return next(err);
+    }
+}
+
 export const deleteAppointmentSchedule = async (req, res, next) => {
     const asid = req.query.asid;
     try{

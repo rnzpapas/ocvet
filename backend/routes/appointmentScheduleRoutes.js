@@ -8,14 +8,17 @@ generateUpcomingAppointmentPdf,
 getAppointmentStats,
 getAppointmentSuccessStats,
 updateAppointmentStatus,
-getOngoinglAppointmentSchedule} from '../controllers/appointmentScheduleController.js';
-import { authenticateAdminJwt } from '../middleware/authHandler.js'
+getOngoinglAppointmentSchedule,
+createAppointmentScheduleWithImage} from '../controllers/appointmentScheduleController.js';
+import { authenticateAdminJwt } from '../middleware/authHandler.js';
+import upload from '../config/storage.js';
 const ROUTER = express.Router();
 
 ROUTER.get("/appointment/pet", getAppointmentsSchedule);
 ROUTER.put("/appointment/update", updateAppointmentScheduleByStatus);
 ROUTER.post("/appointment/pet", createAppointmentSchedule);
 ROUTER.post("/appointment/create", createAppointmentSchedule);
+ROUTER.post("/appointment/create/image", upload.single('image') , createAppointmentScheduleWithImage);
 ROUTER.delete("/appointment/delete", deleteAppointmentSchedule);
 ROUTER.get("/appointment/all",  getAllAppointmentSchedule);
 ROUTER.get("/appointment/datetime",  getAppointmentScheduleTimeslotsPerDate);

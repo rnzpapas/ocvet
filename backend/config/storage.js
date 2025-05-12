@@ -22,7 +22,8 @@ const upload = multer({
           cb(null, { fieldName: file.fieldname });
         },
         key: (req, file, cb) => {
-          cb(null, `pet/${file.originalname.split(".")[0] + path.extname(file.originalname)}`)
+          const folder = req.query.folder;
+          cb(null, `${folder}/${file.originalname.split(".")[0] + path.extname(file.originalname)}`)
         },
       }),
 });
