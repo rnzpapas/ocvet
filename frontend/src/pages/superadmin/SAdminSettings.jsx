@@ -40,18 +40,19 @@ function SAdminSettings() {
   const [services, setServices] = useState([]);
   const [diagnosis, setDiagnosis] = useState([]);
   const [animalType, setAnimalType] = useState([]);
+  const [animalBreed, setAnimalBreed] = useState([]);
   const [vaccines, setVaccines] = useState([]);
   const [emailGroups, setEmailGroups] = useState([]);
   const [serviceField, setServiceField] = useState();
   const [diagnosisField, setDiagnosisField] = useState();
   const [animalTypeField, setAnimalTypeField] = useState();
+  const [animalBreedField, setAnimalBreedField] = useState();
+  const [typeSelected, setTypeSelected] = useState();
   const [vaccineField, setVaccineField] = useState();
-  const [emailGroupField, setEmailGroupField] = useState();
   const [isMailGroupModalOpen, setIsMailGroupModalOpen] = useState(false);
   const [mailGroupFields, setMailGroupFields] = useState([]);
   const [adminObj, setAdminObj] = useState([])
   
-  // useRedirectUser(``);
   let userParsed = JSON.parse(localStorage.getItem('user'));
   let sessionToken = sessionStorage.getItem('jwt-token');
 
@@ -72,26 +73,23 @@ function SAdminSettings() {
   }
   
   const onOpenMailGroup = () => {
-    
     setIsMailGroupModalOpen(true)
-
   }
 
-
   const onOpenAccountEdit = () => {
-      setIsAccModalNotOpen(true);
-      document.body.style.overflow = 'hidden';
+    setIsAccModalNotOpen(true);
+    document.body.style.overflow = 'hidden';
   }
 
   const onOpenPersonalEdit = () => {
-      setIsPersonalModalNotOpen(true);
-      document.body.style.overflow = 'hidden';
+    setIsPersonalModalNotOpen(true);
+    document.body.style.overflow = 'hidden';
   }
   
   const onOpenChangePwEdit = () => {
-      setIsChangePwModalNotOpen(true);
-      setIsAccModalNotOpen(false);
-      document.body.style.overflow = 'hidden';
+    setIsChangePwModalNotOpen(true);
+    setIsAccModalNotOpen(false);
+    document.body.style.overflow = 'hidden';
   }
 
   const onCloseOpenMailGroup = (process) => {
@@ -99,88 +97,88 @@ function SAdminSettings() {
   }
 
   const onCloseAccountEdit = () => {
-      setIsAccModalNotOpen(false);
-      document.body.style.overflow = '';
+    setIsAccModalNotOpen(false);
+    document.body.style.overflow = '';
   }
 
   const onClosePwEdit = () => {
-      setIsChangePwModalNotOpen(false);
-      document.body.style.overflow = '';
+    setIsChangePwModalNotOpen(false);
+    document.body.style.overflow = '';
   }
 
   const onClosePersonalEdit = () => {
-      setIsPersonalModalNotOpen(false);
-      document.body.style.overflow = '';
+    setIsPersonalModalNotOpen(false);
+    document.body.style.overflow = '';
   }
 
   const updateAccInfo = async (info) => {
-      let sessionToken = sessionStorage.getItem('jwt-token');
-  
-      let formData = new FormData();
-      formData.append('old_username', userData.username);
-      formData.append('username', info[1].content);
-      formData.append('email', info[0].content);
+    let sessionToken = sessionStorage.getItem('jwt-token');
 
-      await axiosInstance.put(`/api/user/account/details/update`, formData, 
-      {
-          headers: {
-          'Authorization': `Bearer ${sessionToken}`,
-          'Content-Type': 'application/json'
-          }
-      } 
-      )
-      .then(() => window.location.reload())
+    let formData = new FormData();
+    formData.append('old_username', userData.username);
+    formData.append('username', info[1].content);
+    formData.append('email', info[0].content);
+
+    await axiosInstance.put(`/api/user/account/details/update`, formData, 
+    {
+        headers: {
+        'Authorization': `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json'
+        }
+    } 
+    )
+    .then(() => window.location.reload())
   }
 
   const updateDetailsInfo = async (info) => {
-      let sessionToken = sessionStorage.getItem('jwt-token');
+    let sessionToken = sessionStorage.getItem('jwt-token');
 
-      let formData = new FormData();
-      let fn = info[0].content.split(',')[1].trim().split(' ')[0] + ' ' + info[0].content.split(',')[1].trim().split(' ')[1]
-      formData.append('firstname', fn)
-      formData.append('middlename', info[0].content.split(',')[1].trim().split(' ')[2])
-      formData.append('surname', info[0].content.split(',')[0])
-      formData.append('address', info[1].content);
-      formData.append('gender', info[2].content);
+    let formData = new FormData();
+    let fn = info[0].content.split(',')[1].trim().split(' ')[0] + ' ' + info[0].content.split(',')[1].trim().split(' ')[1]
+    formData.append('firstname', fn)
+    formData.append('middlename', info[0].content.split(',')[1].trim().split(' ')[2])
+    formData.append('surname', info[0].content.split(',')[0])
+    formData.append('address', info[1].content);
+    formData.append('gender', info[2].content);
 
-      await axiosInstance.put(`/api/user/${userData.UID}`, formData, 
-      {
-          headers: {
-          'Authorization': `Bearer ${sessionToken}`,
-          'Content-Type': 'application/json'
-          }
-      }
-      )
-      .then(() => window.location.reload());
+    await axiosInstance.put(`/api/user/${userData.UID}`, formData, 
+    {
+        headers: {
+        'Authorization': `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json'
+        }
+    }
+    )
+    .then(() => window.location.reload());
   }
 
   const updateChangePwInfo = async (info) => {
-      let sessionToken = sessionStorage.getItem('jwt-token');
-      let formData = new FormData();
-      formData.append('old_pw', info[0].content)
-      formData.append('pw', info[1].content)
-      formData.append('cpw', info[2].content)
-      formData.append('uaid', userParsed.uaid)
+    let sessionToken = sessionStorage.getItem('jwt-token');
+    let formData = new FormData();
+    formData.append('old_pw', info[0].content)
+    formData.append('pw', info[1].content)
+    formData.append('cpw', info[2].content)
+    formData.append('uaid', userParsed.uaid)
 
 
-      await axiosInstance.put(`/api/user/account/pw`, formData, 
-      {
-          headers: {
-          'Authorization': `Bearer ${sessionToken}`,
-          'Content-Type': 'application/json'
-          }
-      }
-      )
-      .then(() => {
-      alert('Successfully updated your password.');
-      window.location.reload();
-      });
+    await axiosInstance.put(`/api/user/account/pw`, formData, 
+    {
+        headers: {
+        'Authorization': `Bearer ${sessionToken}`,
+        'Content-Type': 'application/json'
+        }
+    }
+    )
+    .then(() => {
+    alert('Successfully updated your password.');
+    window.location.reload();
+    });
   }
 
   const logout = () => {
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate('/admin/role');
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/admin/role');
   }
   
   const loadService = async () => {
@@ -211,6 +209,18 @@ function SAdminSettings() {
     let arr = [];
 
     await axiosInstance.get('/api/atypes/sort')
+    .then(res => {
+      let apiRes = res.data.data;
+      apiRes.map(result => arr.push(result))
+    })
+    .catch(err => console.error(err));
+    return arr;
+  }
+
+  const loadAnimalBreeds = async (ATYPEID) => {
+    let arr = [];
+
+    await axiosInstance.get(`/api/breed?ATYPEID=${ATYPEID}`)
     .then(res => {
       let apiRes = res.data.data;
       apiRes.map(result => arr.push(result))
@@ -254,12 +264,18 @@ function SAdminSettings() {
 
   const onChangeAnimalTypeField = async (evt) => {
     setAnimalTypeField(evt.target.value)
-    
+  }
+
+  const onChangeAnimalBreedField = async (evt) => {
+    setTypeSelected(evt.target.value)
+  }
+
+  const onChangeAnimalBreedInput = async (evt) => {
+    setAnimalBreedField(evt.target.value);
   }
 
   const onChangeVaccinesField = async (evt) => {
     setVaccineField(evt.target.value)
-    
   }
 
   const addService = async () => {
@@ -268,31 +284,40 @@ function SAdminSettings() {
     formData.append('service', serviceField);
     await axiosInstance.post('/api/service/add', formData, {headers: {"Content-Type": 'application/json'}})
     .then(() => window.location.reload())
-
   }
 
   const addDiagnosis = async () => {
     if(!diagnosisField || diagnosisField.trim().length === 0) return alert('Please fill out fields.')
-      const formData = new FormData();
-      formData.append('diagnosis', diagnosisField);
-      await axiosInstance.post('/api/diagnosis/add', formData, {headers: {"Content-Type": 'application/json'}})
-      .then(() => window.location.reload())
+    const formData = new FormData();
+    formData.append('diagnosis', diagnosisField);
+    await axiosInstance.post('/api/diagnosis/add', formData, {headers: {"Content-Type": 'application/json'}})
+    .then(() => window.location.reload())
   }
 
   const addAnimalType = async () => {
     if(!animalTypeField || animalTypeField.trim().length === 0) return alert('Please fill out fields.')
-      const formData = new FormData();
-      formData.append('animal_type', animalTypeField);
-      await axiosInstance.post('/api/atypes/add', formData, {headers: {"Content-Type": 'application/json'}})
-      .then(() => window.location.reload())
+    const formData = new FormData();
+    formData.append('animal_type', animalTypeField);
+    await axiosInstance.post('/api/atypes/add', formData, {headers: {"Content-Type": 'application/json'}})
+    .then(() => window.location.reload())
+  }
+
+  const addAnimalBreed = async () => {
+    if(!animalBreedField || animalBreedField.trim().length === 0) return alert('Please fill out fields.')
+    const formData = new FormData();
+    formData.append('ATYPEID', typeSelected);
+    formData.append('breed_name', animalBreedField);
+
+    await axiosInstance.post('/api/breed/create', formData, {headers: {"Content-Type": 'application/json'}})
+    .then(() => window.location.reload())
   }
 
   const addVaccines = async () => {
     if(!vaccineField || vaccineField.trim().length === 0) return alert('Please fill out fields.')
-      const formData = new FormData();
-      formData.append('vaccine', vaccineField);
-      await axiosInstance.post('/api/vaccine/add', formData, {headers: {"Content-Type": 'application/json'}})
-      .then(() => window.location.reload())
+    const formData = new FormData();
+    formData.append('vaccine', vaccineField);
+    await axiosInstance.post('/api/vaccine/add', formData, {headers: {"Content-Type": 'application/json'}})
+    .then(() => window.location.reload())
   }
 
   const addMailGroup = async(fields) => {
@@ -331,6 +356,11 @@ function SAdminSettings() {
     .then(() => window.location.reload())
   }
 
+  const removeAnimalBreed = async (id) => {
+    await axiosInstance.delete(`/api/breed/delete?PBID=${id}`)
+    .then(() => window.location.reload())
+  }
+
   const removeVaccine = async (id) => {
     await axiosInstance.delete(`/api/vaccine/remove/${id}`)
     .then(() => window.location.reload())
@@ -350,52 +380,52 @@ function SAdminSettings() {
   }
 
   useEffect( () => {
-      let userPromise = getUserFullDetails();
-      !userData && (
-      userPromise.then((user) => {
-          setUserData(ud => ud = user);
-          
-          setAccFields(af => af = [
-          {
-              "headers": "E-Mail",
-              "txtContent": user.email,
-              "type": "text",
-              "readOnly": false
-          },
-          {
-              "headers": "Username",
-              "txtContent": user.username,
-              "type": "text",
-              "readOnly": false
-          },
-          {
-              "headers": "Date Joined",
-              "txtContent": convertDate(user.date_joined),
-              "type": "text",
-              "readOnly": true
-          }
-          ]);
-      
-          setPersonalFields(pf => pf = [
-          {
-              "headers": "Full Name",
-              "txtContent": `${user.surname}, ${user.firstname} ${user.middlename}`,
-              "type": "text",
-          },
-          {
-              "headers": "Address",
-              "txtContent": user.address,
-              "type": "textarea",
-          },
-          {
-              "headers": "Gender",
-              "txtContent": user.gender,
-              "type": "select",
-              "options": ["Male", "Female"],
-          }
-          ]);
-      })
-      )
+    let userPromise = getUserFullDetails();
+    !userData && (
+    userPromise.then((user) => {
+        setUserData(ud => ud = user);
+        
+        setAccFields(af => af = [
+        {
+            "headers": "E-Mail",
+            "txtContent": user.email,
+            "type": "text",
+            "readOnly": false
+        },
+        {
+            "headers": "Username",
+            "txtContent": user.username,
+            "type": "text",
+            "readOnly": false
+        },
+        {
+            "headers": "Date Joined",
+            "txtContent": convertDate(user.date_joined),
+            "type": "text",
+            "readOnly": true
+        }
+        ]);
+    
+        setPersonalFields(pf => pf = [
+        {
+            "headers": "Full Name",
+            "txtContent": `${user.surname}, ${user.firstname} ${user.middlename}`,
+            "type": "text",
+        },
+        {
+            "headers": "Address",
+            "txtContent": user.address,
+            "type": "textarea",
+        },
+        {
+            "headers": "Gender",
+            "txtContent": user.gender,
+            "type": "select",
+            "options": ["Male", "Female"],
+        }
+        ]);
+    })
+    )
   },[accFields, personalFields, userData])
 
   useEffect(() => {
@@ -404,14 +434,13 @@ function SAdminSettings() {
     let typePromise = loadAnimalTypes();
     let vaccinePromise = loadVaccines();
     let mailGroupPromise = loadMailGroups();
-
+    
     servicePromise.then(res => setServices(res));
     diagnosisPromise.then(res => setDiagnosis(res));
     typePromise.then(res => setAnimalType(res));
     vaccinePromise.then(res => setVaccines(res));
     mailGroupPromise.then(res => setEmailGroups(res));
     
-
   },[])
 
   useEffect(() => {
@@ -435,256 +464,314 @@ function SAdminSettings() {
 
   }, [isMailGroupModalOpen]);
 
-    return (
-        <section className="flex w-full">
-        <SuperAdminNav />
-        <section className='h-screen overflow-y-auto w-full'>
-          {/* user info */}
-          <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Account and Personal Details</h5>
-            {userData && (
-            <section className="gap-10 flex">
-              <section className="flex flex-col gap-5">
-                <section>
-                  <AccountInfo style={""} 
-                    eMail={userData.email}
-                    username={userData.username}
-                    onEditClick={onOpenAccountEdit}
-                  />
-                  <Modal 
-                    headline={"Edit Account Information"}
-                    isActive={isAccModalNotOpen}
-                    fields={accFields}
-                    onClose={onCloseAccountEdit}
-                    button={{
-                      txtContent: 'Update Account Information',
-                      isActive: true,
-                      isDisplayed: true
-                    }}
-                    onSubmitFunc={updateAccInfo}
-                    clickableLink={{"txtContent" : "Change Password?", "isActive" : true, "isDisplayed": true, "onClickFunc": onOpenChangePwEdit}}
-                  />
-                  <h5 className="text-azure cursor-pointer hover:underline w-fit" onClick={logout}>Logout</h5>
-                  <Modal 
-                    headline={"Update Password"}
-                    isActive={isChangePwModalNotOpen}
-                    fields={pwFields}
-                    onClose={onClosePwEdit}
-                    button={{
-                      txtContent: 'Change Password',
-                      isActive: true,
-                      isDisplayed: true
-                    }}
-                    onSubmitFunc={updateChangePwInfo}
-                  />
-                </section>
-                <section>
-                  <PersonalDetails style={""}
-                    fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
-                    address={userData.address}
-                    gender={userData.gender}
-                    onEditClick={onOpenPersonalEdit}
-                  />
-                  <Modal 
-                    headline={"Edit Personal Information"}
-                    isActive={isPersonalModalNotOpen}
-                    fields={personalFields}
-                    onClose={onClosePersonalEdit}
-                    button={{
-                      txtContent: 'Update Personal Information',
-                      isActive: true,
-                      isDisplayed: true
-                    }}
-                    onSubmitFunc={updateDetailsInfo}
-                  />
-                </section>
+  useEffect(() => {
+    const dataPromise = async () => {
+      if(typeSelected){
+        let breeds = await loadAnimalBreeds(typeSelected);
+        setAnimalBreed(breeds);
+      }
+    }
+    dataPromise();
+  }, [typeSelected])
+  return (
+    <section className="flex w-full">
+      <SuperAdminNav />
+      <section className='h-screen overflow-y-auto w-full'>
+        {/* user info */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Account and Personal Details</h5>
+          {userData && (
+          <section className="gap-10 flex">
+            <section className="flex flex-col gap-5">
+              <section>
+                <AccountInfo style={""} 
+                  eMail={userData.email}
+                  username={userData.username}
+                  onEditClick={onOpenAccountEdit}
+                />
+                <Modal 
+                  headline={"Edit Account Information"}
+                  isActive={isAccModalNotOpen}
+                  fields={accFields}
+                  onClose={onCloseAccountEdit}
+                  button={{
+                    txtContent: 'Update Account Information',
+                    isActive: true,
+                    isDisplayed: true
+                  }}
+                  onSubmitFunc={updateAccInfo}
+                  clickableLink={{"txtContent" : "Change Password?", "isActive" : true, "isDisplayed": true, "onClickFunc": onOpenChangePwEdit}}
+                />
+                <h5 className="text-azure cursor-pointer hover:underline w-fit" onClick={logout}>Logout</h5>
+                <Modal 
+                  headline={"Update Password"}
+                  isActive={isChangePwModalNotOpen}
+                  fields={pwFields}
+                  onClose={onClosePwEdit}
+                  button={{
+                    txtContent: 'Change Password',
+                    isActive: true,
+                    isDisplayed: true
+                  }}
+                  onSubmitFunc={updateChangePwInfo}
+                />
+              </section>
+              <section>
+                <PersonalDetails style={""}
+                  fullName={`${userData.surname}, ${userData.firstname} ${userData.middlename}`}
+                  address={userData.address}
+                  gender={userData.gender}
+                  onEditClick={onOpenPersonalEdit}
+                />
+                <Modal 
+                  headline={"Edit Personal Information"}
+                  isActive={isPersonalModalNotOpen}
+                  fields={personalFields}
+                  onClose={onClosePersonalEdit}
+                  button={{
+                    txtContent: 'Update Personal Information',
+                    isActive: true,
+                    isDisplayed: true
+                  }}
+                  onSubmitFunc={updateDetailsInfo}
+                />
               </section>
             </section>
-            )}
           </section>
-          {/* services */}
-          <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Clinic Service</h5>
-            <section>
-              <section className='flex gap-3 mb-3'>
-                <InputField onChangeFunc={(e) => onChangeServiceField(e)}/>
-                <Button txtContent={"add"} style={`h-11`} onClickFunc={addService}/>
-              </section>
-              <table className='border-collapse'>
-                <thead>
-                  <tr>
-                    <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Service</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    services.length > 0 && (
-                      services.map(s => (
-                        <tr>
-                          <td className='border border-raisin-black font-lato text-center'>{s.service}</td>
-                          <td 
-                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
-                          onClick={() => removeService(s.SERVICEID)}
-                          >Remove</td>
-                        </tr>
-                      ))
-                    )
-                  }
-                  
-                </tbody>
-              </table>
+          )}
+        </section>
+        {/* services */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Clinic Service</h5>
+          <section>
+            <section className='flex gap-3 mb-3'>
+              <InputField onChangeFunc={(e) => onChangeServiceField(e)}/>
+              <Button txtContent={"add"} style={`h-11`} onClickFunc={addService}/>
             </section>
-          </section>
-          {/* diagnosis */}
-          <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Diagnosis List</h5>
-            <section>
-              <section className='flex gap-3 mb-3'>
-                <InputField onChangeFunc={(e) => onChangeDiagnosisField(e)}/>
-                <Button txtContent={"add"} style={`h-11`} onClickFunc={addDiagnosis}/>
-              </section>
-              <table className='border-collapse'>
-                <thead>
-                  <tr>
-                    <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Service</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    diagnosis.length > 0 && (
-                      diagnosis.map(d => (
-                        <tr>
-                          <td className='border border-raisin-black font-lato text-center'>{d.diagnosis}</td>
-                          <td 
-                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
-                          onClick={() => removeDiagnosis(d.DIAGID)}
-                          >Remove</td>
-                        </tr>
-                      ))
-                    )
-                  }
-                  
-                </tbody>
-              </table>
-            </section>
-          </section>
-          {/* animal type */}
-          <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Animal Types</h5>
-            <section>
-              <section className='flex gap-3 mb-3'>
-                <InputField onChangeFunc={(e) => onChangeAnimalTypeField(e)}/>
-                <Button txtContent={"add"} style={`h-11`} onClickFunc={addAnimalType}/>
-              </section>
-              <table className='border-collapse'>
-                <thead>
-                  <tr>
-                    <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Animal Type</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    animalType.length > 0 && (
-                      animalType.map(a => (
-                        <tr>
-                          <td className='border border-raisin-black font-lato text-center'>{capitalizeFirstLetter(a.animal_type)}</td>
-                          <td 
-                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
-                          onClick={() => removeAnimalType(a.ATYPEID)}
-                          >Remove</td>
-                        </tr>
-                      ))
-                    )
-                  }
-                  
-                </tbody>
-              </table>
-            </section>
-          </section>
-          {/* vaccines */}
-          <section className='px-5 py-5'>
-            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Vaccines</h5>
-            <section>
-              <section className='flex gap-3 mb-3'>
-                <InputField onChangeFunc={(e) => onChangeVaccinesField(e)}/>
-                <Button txtContent={"add"} style={`h-11`} onClickFunc={addVaccines}/>
-              </section>
-              <table className='border-collapse'>
-                <thead>
-                  <tr>
-                    <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Vaccine</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    vaccines.length > 0 && (
-                      vaccines.map(v => (
-                        <tr>
-                          <td className='border border-raisin-black font-lato text-center'>{v.vaccine_name}</td>
-                          <td 
-                          className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
-                          onClick={() => removeVaccine(v.VACCID)}
-                          >Remove</td>
-                        </tr>
-                      ))
-                    )
-                  }
-                 
-                </tbody>
-              </table>
-            </section>
-          </section>
-          {/* email group */}
-          <section className='px-5 py-5'>
-            <section className='flex items-center gap-3'>
-              <h5 className='font-instrument-sans text-headline-lrg font-bold'>Email Groups</h5>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
-              className="w-[24px] fill-azure hover:fill-chefchaouen-blue cursor-pointer"
-              onClick={onOpenMailGroup}
-              >
-                  <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
-              </svg>
-              {
-                mailGroupFields.length > 0 && (
-                  <Modal headline={'E-Mail Group'} isActive={isMailGroupModalOpen} fields={mailGroupFields} onClose={onCloseOpenMailGroup} button={{isDisplayed: true, txtContent:'REGISTER GROUP'}} onSubmitFunc={addMailGroup}/>
-
-                )
-              }
-
-            </section>
-            <section>
-              <table className='border-collapse'>
-                <thead>
-                  <tr>
-                    <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Group Nickname</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[500px] text-center font-instrument-sans font-semibold text-white-smoke'>Group Members</th>
-                    <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {
-                      emailGroups.length > 0 && (
-                        emailGroups.map(eg => (
-                          <tr>
-                            <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.group_nickname}</td>
-                            <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.email}</td>
-                            <td className='px-2 py-2 border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer' onClick={() => removeMailGroup(eg.TGID)}>Remove</td>
-                          </tr>
-                        ))
-                      )
-                    }
-                  
-                </tbody>
-              </table>
-            </section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Service</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  services.length > 0 && (
+                    services.map(s => (
+                      <tr>
+                        <td className='border border-raisin-black font-lato text-center'>{s.service}</td>
+                        <td 
+                        className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                        onClick={() => removeService(s.SERVICEID)}
+                        >Remove</td>
+                      </tr>
+                    ))
+                  )
+                }
+                
+              </tbody>
+            </table>
           </section>
         </section>
+        {/* diagnosis */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Diagnosis List</h5>
+          <section>
+            <section className='flex gap-3 mb-3'>
+              <InputField onChangeFunc={(e) => onChangeDiagnosisField(e)}/>
+              <Button txtContent={"add"} style={`h-11`} onClickFunc={addDiagnosis}/>
+            </section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Service</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  diagnosis.length > 0 && (
+                    diagnosis.map((d,index) => (
+                      <tr key={index}>
+                        <td className='border border-raisin-black font-lato text-center'>{d.diagnosis}</td>
+                        <td 
+                        className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                        onClick={() => removeDiagnosis(d.DIAGID)}
+                        >Remove</td>
+                      </tr>
+                    ))
+                  )
+                }
+                
+              </tbody>
+            </table>
+          </section>
+        </section>
+        {/* animal type */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Animal Types</h5>
+          <section>
+            <section className='flex gap-3 mb-3'>
+              <InputField onChangeFunc={(e) => onChangeAnimalTypeField(e)}/>
+              <Button txtContent={"add"} style={`h-11`} onClickFunc={addAnimalType}/>
+            </section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Animal Type</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  animalType.length > 0 && (
+                    animalType.map(a => (
+                      <tr>
+                        <td className='border border-raisin-black font-lato text-center'>{capitalizeFirstLetter(a.animal_type)}</td>
+                        <td 
+                        className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                        onClick={() => removeAnimalType(a.ATYPEID)}
+                        >Remove</td>
+                      </tr>
+                    ))
+                  )
+                }
+                
+              </tbody>
+            </table>
+          </section>
+        </section>
+        {/* animal breeds */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Animal Breeds</h5>
+          <section>
+            <section className='flex gap-3 mb-3'>
+              <select name="" id="" 
+              className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato '
+              onChange={onChangeAnimalBreedField}
+              >
+                <option value={""}>None</option>
+                {
+                  animalType.length > 0 && (
+                    animalType.map((a, index) => (
+                      <option value={a.ATYPEID} key={index}>{capitalizeFirstLetter(a.animal_type)}</option>
+                    ))
+                  )
+                }
+              </select>
+            </section>
+            <section className={`${typeSelected ? 'flex gap-3 mb-3' : 'hidden'}`}>
+              <InputField onChangeFunc={(e) => onChangeAnimalBreedInput(e)}/>
+              <Button txtContent={"add"} style={`h-11`} onClickFunc={addAnimalBreed}/>
+            </section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Animal Breed</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  animalBreed.length > 0 && (
+                    animalBreed.map((a, index) => (
+                      <tr key={index}>
+                        <td className='border border-raisin-black font-lato text-center'>{capitalizeFirstLetter(a.breed_name)}</td>
+                        <td 
+                        className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                        onClick={() => removeAnimalBreed(a.PBID)}
+                        >Remove</td>
+                      </tr>
+                    ))
+                  )
+                }
+                
+              </tbody>
+            </table>
+          </section>
+        </section>
+        {/* vaccines */}
+        <section className='px-5 py-5'>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Vaccines</h5>
+          <section>
+            <section className='flex gap-3 mb-3'>
+              <InputField onChangeFunc={(e) => onChangeVaccinesField(e)}/>
+              <Button txtContent={"add"} style={`h-11`} onClickFunc={addVaccines}/>
+            </section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Vaccine</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  vaccines.length > 0 && (
+                    vaccines.map(v => (
+                      <tr>
+                        <td className='border border-raisin-black font-lato text-center'>{v.vaccine_name}</td>
+                        <td 
+                        className='border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer'
+                        onClick={() => removeVaccine(v.VACCID)}
+                        >Remove</td>
+                      </tr>
+                    ))
+                  )
+                }
+                
+              </tbody>
+            </table>
+          </section>
+        </section>
+        {/* email group */}
+        <section className='px-5 py-5'>
+          <section className='flex items-center gap-3'>
+            <h5 className='font-instrument-sans text-headline-lrg font-bold'>Email Groups</h5>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" 
+            className="w-[24px] fill-azure hover:fill-chefchaouen-blue cursor-pointer"
+            onClick={onOpenMailGroup}
+            >
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+            </svg>
+            {
+              mailGroupFields.length > 0 && (
+                <Modal headline={'E-Mail Group'} isActive={isMailGroupModalOpen} fields={mailGroupFields} onClose={onCloseOpenMailGroup} button={{isDisplayed: true, txtContent:'REGISTER GROUP'}} onSubmitFunc={addMailGroup}/>
+
+              )
+            }
+
+          </section>
+          <section>
+            <table className='border-collapse'>
+              <thead>
+                <tr>
+                  <th className='border border-raisin-black border-r-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Group Nickname</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[500px] text-center font-instrument-sans font-semibold text-white-smoke'>Group Members</th>
+                  <th className='border border-raisin-black border-l-white-smoke bg-raisin-black px-2 py-2 w-[200px] text-center font-instrument-sans font-semibold text-white-smoke'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {
+                    emailGroups.length > 0 && (
+                      emailGroups.map(eg => (
+                        <tr>
+                          <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.group_nickname}</td>
+                          <td className='px-2 py-2 border border-raisin-black font-lato text-center'>{eg.email}</td>
+                          <td className='px-2 py-2 border border-raisin-black font-lato text-center text-fire-engine-red hover:underline cursor-pointer' onClick={() => removeMailGroup(eg.TGID)}>Remove</td>
+                        </tr>
+                      ))
+                    )
+                  }
+                
+              </tbody>
+            </table>
+          </section>
+        </section>
+      </section>
     </section>
-    )
+  )
 }
 
 export default SAdminSettings
