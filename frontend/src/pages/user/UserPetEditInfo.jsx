@@ -18,7 +18,8 @@ function UserPetEditInfo() {
     const [petTypes, setPetTypes] = useState();
     const [nickname, setNickname]= useState();
     const [atypeId, setAtypeId] = useState();
-    const [atype, setAtype] = useState("Pet");
+    const [petBreeds, setPetBreeds] = useState();
+    const [pbid, setPbid] = useState();
 
     const loadPetInfo = async () => {
         let pet;
@@ -36,6 +37,18 @@ function UserPetEditInfo() {
         return types;
     }
 
+    const loadAnimalBreeds = async (ATYPEID) => {
+        let arr = [];
+
+        await axiosInstance.get(`/api/breed?ATYPEID=${ATYPEID}`)
+        .then(res => {
+        let apiRes = res.data.data;
+        apiRes.map(result => arr.push(result))
+        })
+        .catch(err => console.error(err));
+        return arr;
+    }
+
     const onChangeNickname = (evt) => {
         setNickname(evt.target.value);
     }
@@ -44,11 +57,16 @@ function UserPetEditInfo() {
         setAtypeId(evt.target.value);
     }
 
+    const onChangeBreed = (evt) => {
+        setPbid(evt.target.value);
+    }
+
     const updatePetDetails = async () => {
         const body = {
             "pet_owner": petInfo.pet_owner, 
             "atypeid": atypeId || petInfo.ATYPEID, 
-            "nickname": nickname || petInfo.nickname
+            "nickname": nickname || petInfo.nickname,
+            "pbid": pbid
         }
         await axiosInstance.put(`/api/pets/update?petid=${id}`, body,
             {headers: {
@@ -77,6 +95,15 @@ function UserPetEditInfo() {
 
     },[]);
     
+    useEffect(() => {
+        if(atypeId){
+            let breedPromise = loadAnimalBreeds(atypeId);
+            breedPromise.then(breed => {
+                setPetBreeds(breed);
+            })
+        }
+    }, [atypeId]);
+
     return (
         <>
             <UserNav />
@@ -106,6 +133,22 @@ function UserPetEditInfo() {
                                         petTypes && (
                                             petTypes.map((pt) => (
                                                 <option key={pt.ATYPEID} value={pt.ATYPEID} selected={pt.ATYPEID === petInfo.ATYPEID ? true : false}>{capitalizeFirstLetter(pt.animal_type)}</option>
+                                            ))
+                                        )
+                                    }
+                                </select>
+                            </section>
+                            <section className="flex flex-col gap-3">
+                                <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
+                                <select 
+                                    className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                    onChange={(e) => onChangeBreed(e)}
+                                >
+                                    <option value={""}>None</option>
+                                    {
+                                        petBreeds && (
+                                            petBreeds.map((pb) => (
+                                                <option key={pb.PBID} value={pb.PBID}>{capitalizeFirstLetter(pb.breed_name)}</option>
                                             ))
                                         )
                                     }

@@ -44,7 +44,7 @@ export const createPetNoImage = async (req, res, next) => {
 
 export const updatePet = async (req, res, next) => {
     const petid = req.query.petid;
-    const { pet_owner, atypeid, nickname } = req.body;
+    const { pet_owner, atypeid, nickname, pbid} = req.body;
     const pet = await getPetService(petid);
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
     try{
@@ -59,7 +59,7 @@ export const updatePet = async (req, res, next) => {
         if(nickname.length > 10){
             return handleResponse(res, 400, "Pet nickname is too long. Maximum of 10 characters only.");
         }
-        const query = await updatePetService(petid, atypeid, nickname );
+        const query = await updatePetService(petid, atypeid, nickname, pbid );
         return handleResponse(res, 200 , "Pet successfully updated.");
     }catch(err) {
         return next(err);
