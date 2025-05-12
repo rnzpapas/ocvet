@@ -90,7 +90,7 @@ function UserPetRegistration() {
             formData.append("image", imgFile);
     
             data = formData;
-            api = '/api/pets/register';
+            api = '/api/pets/register?folder=pet';
             headers['Content-Type'] = 'multipart/form-data';
     
         } else {

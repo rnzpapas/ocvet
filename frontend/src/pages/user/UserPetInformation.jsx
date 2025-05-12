@@ -100,7 +100,7 @@ function UserPetInformation() {
         let formData = new FormData();
         formData.append("image", file)
 
-        await axiosInstance.put(`/api/pets/update/image/${id}`, formData,
+        await axiosInstance.put(`/api/pets/update/image/${id}?folder=pet`, formData,
           {
             headers: {
               'Authorization': `Bearer ${sessionToken}`,
