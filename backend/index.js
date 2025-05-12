@@ -12,6 +12,8 @@ import appointmentScheduleRoutes from './routes/appointmentScheduleRoutes.js';
 import animalGroupRoutes from './routes/animalGroupRoutes.js';
 import vaccinationsRoutes from './routes/vaccinationsRoutes.js';
 import announcementsRouter from './routes/announcementsRouter.js';
+import animalBreedRoutes from './routes/animalBreedRoutes.js';
+
 import errorHandling from './middleware/errorHandler.js';
 
 const app = express();
@@ -39,6 +41,7 @@ app.use("/api", appointmentScheduleRoutes);
 app.use("/api", animalGroupRoutes);
 app.use("/api", vaccinationsRoutes);
 app.use("/api", announcementsRouter);
+app.use('/api', animalBreedRoutes);
 
 app.get("/", async(req,res) => {
     console.log("it is working")

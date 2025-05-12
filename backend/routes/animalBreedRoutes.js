@@ -3,8 +3,8 @@ import { createPetBreed, deletePetBreed, getPetBreed } from '../controllers/anim
 
 const ROUTER = express.Router();
 
+ROUTER.get("/breed", getPetBreed);
 ROUTER.post("/breed/create", createPetBreed);
-ROUTER.get("/breed/delete", deletePetBreed);
-ROUTER.get("/breed/all", getPetBreed);
+ROUTER.delete("/breed/delete", deletePetBreed);
 
 export default ROUTER;
