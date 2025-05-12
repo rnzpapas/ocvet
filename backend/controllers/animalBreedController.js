@@ -12,8 +12,9 @@ export const createPetBreed = async () => {
 }
 
 export const getPetBreed = async () => {
+    const ATYPEID = req.query.ATYPEID;
     try{
-        let result = await getPetBreedService();
+        let result = await getPetBreedService(ATYPEID);
         return handleResponse(res, 200, 'Success', result);
     }catch(err){
         return next(err);

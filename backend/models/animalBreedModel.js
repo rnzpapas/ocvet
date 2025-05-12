@@ -14,8 +14,8 @@ export const createPetBreedService = async (ATYPEID, breed_name) => {
     return result.rows[0];
 }
 
-export const getPetBreedService = async () => {
-    const result = await pool.query(`SELECT * FROM otcv_pet_breeds ORDER breed_name ASC`, []);
+export const getPetBreedService = async (ATYPEID) => {
+    const result = await pool.query(`SELECT * FROM otcv_pet_breeds WHERE "ATYPEID" = $1 ORDER breed_name ASC`, [ATYPEID]);
     return result.rows;
 }
 
