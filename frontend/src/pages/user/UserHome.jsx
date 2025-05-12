@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Footer from "@/components/Footer"
 import UserNav from "@/components/navbars/UserNav"
 import useRedirectUser from '../../auth/useRedirectUser';
@@ -22,8 +22,9 @@ const timeSlot = [
 
 function UserHome() {
   let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
-
+  const fileInputRef = useRef(null);
   useRedirectUser();
+
   let userParsed = JSON.parse(localStorage.getItem('user'));
   let sessionToken = sessionStorage.getItem('jwt-token');
 
@@ -35,15 +36,16 @@ function UserHome() {
   const [appointments, setAppointments] = useState();
   const [services, setServices] = useState();
   const [servicesSelected, setServicesSelected] = useState([]);
-  const [isServicesDpOpened, setIsServicesDpOpened] = useState();
   const [diagnosis, setDiagnosis] = useState();
   const [diagnosisSelected, setDiagnosisSelected] = useState([]);
-  const [isDiagnosisDpOpened, setIsDiagnosisDpOpened] = useState();
   const [dateOfAppointment, setDateOfAppointment] = useState();
   const [timeOfAppointment, setTimeOfAppointment] = useState();
   const [appointmentPage, setAppointmentPage] = useState(1);
   const [isPetsDpOpened, setIsPetsDpOpened] = useState(false);
   const [isPetGroupDpOpened, setIsPetGroupDpOpened] = useState(false);
+  const [proofImage, setProofImage] = useState('');
+  const [proofImageFile, setProofImageFile] = useState('');
+
 
   const loadPets = async () => {
     let p;
@@ -205,37 +207,84 @@ function UserHome() {
     setAppointmentPage(appointmentPage + 1)
   }
 
+  const handleEvidenceFile = async (evt)  => {
+    const file = evt.target.files[0];
+    if (file && (file.type === "image/jpeg" || file.type === "image/png")){
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setProofImage(reader.result); 
+      };
+      reader.readAsDataURL(file);
+      setProofImageFile(file);
+    }else{
+        alert('Invalid file type');
+    }
+  }
+
   const bookAppointment = async () => {
+
     if(diagnosisSelected.length === 0){
       alert('Choose at least one clinical signs to proceed.');
       return;
     }
-    const formData = new FormData();
-    formData.append("PETID", petSelected || null)
-    formData.append("PGID", petGroupSelected || null)
-    formData.append("SERVICEIDS", servicesSelected || [])
-    formData.append("DIAGNOSIS", diagnosisSelected || [])
-    formData.append("remarks", "")
-    formData.append("status", "Scheduled")
-    formData.append("date", dateOfAppointment)
-    formData.append("time", timeOfAppointment)
 
-    await axiosInstance.post('/api/appointment/create', formData, 
-    {
-      headers:{
-        'Content-Type': 'application/json'
+    if(proofImageFile){
+      const formData = new FormData();
+      formData.append("PETID", petSelected || null);
+      formData.append("PGID", petGroupSelected || null);
+      formData.append("SERVICEIDS", servicesSelected || []);
+      formData.append("DIAGNOSIS", diagnosisSelected || []);
+      formData.append("remarks", "");
+      formData.append("status", "Scheduled");
+      formData.append("date", dateOfAppointment);
+      formData.append("time", timeOfAppointment);
+      formData.append("image", proofImageFile);
+
+      let res = await axiosInstance.post("/appointment/create/image?folder=appointment", formData, {
+        headers: {"Content-Type": 'multipart/form-data'}
+      });
+
+      if(res.status == 200){
+        setPetSelected([]);
+        setPetGroupSelected([]);
+        setServicesSelected([]);
+        setDiagnosisSelected([]);
+        setDateOfAppointment("");
+        setTimeOfAppointment("");
+        setProofImage("");
+        alert('Appointment success.');
+        window.location.reload();
       }
-    })
-    .then(() => {
-      setPetSelected([]);
-      setPetGroupSelected([]);
-      setServicesSelected([]);
-      setDiagnosisSelected([]);
-      setDateOfAppointment("");
-      setTimeOfAppointment("");
-      alert('Appointment success.');
-      window.location.reload();
-    })
+
+    }else{
+      const body = {
+        "PETID": petSelected || null,
+        "PGID": petGroupSelected || null,
+        "SERVICEIDS": servicesSelected || [],
+        "DIAGNOSIS": diagnosisSelected || [],
+        "remarks": "",
+        "status": "Scheduled",
+        "date": dateOfAppointment,
+        "time": timeOfAppointment
+      }
+      let res = await axiosInstance.post('/api/appointment/create', body, 
+      {
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      });
+      if(res.status == 200) {
+        setPetSelected([]);
+        setPetGroupSelected([]);
+        setServicesSelected([]);
+        setDiagnosisSelected([]);
+        setDateOfAppointment("");
+        setTimeOfAppointment("");
+        alert('Appointment success.');
+        window.location.reload();
+      }
+    }
   }
 
   useEffect(() => {
@@ -364,6 +413,21 @@ function UserHome() {
                     </section>
                   }
                   <p className={`${appointmentPage === 4 && ('font-semibold')} text-content-sm text-nowrap`}>Select Pet Diagnosis</p>
+                  <span className={`w-[40px] mt-1 h-[2px] ${appointmentPage > 5? ' bg-chefchaouen-blue' : ' bg-silver' }`}></span>
+                </section>
+                {/* step 6 */}
+                <section className="flex items-center justify-center gap-2">
+                  {
+                    appointmentPage > 6 ?  
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-[16px] h-[16px] fill-azure rounded-full">
+                    <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg> 
+                    : 
+                    <section className="bg-raisin-black rounded-full px-2 py-2 w-[16px] h-[16px] flex justify-center items-center">
+                      <h5 className="text-white-smoke font-lato font-semibold text-[8px]">6</h5>
+                    </section>
+                  }
+                  <p className={`${appointmentPage === 6 && ('font-semibold')} text-content-sm text-nowrap`}>Attach Proof of Symptoms</p>
                 </section>
             </section>
             {/* Appointment pages */}
@@ -477,12 +541,35 @@ function UserHome() {
                 }
                 
               </section>
+              {/* proof */}
+              <section className={`${appointmentPage == 6 ? 'max-w-fit max-h-[200px] px-3 py-3 gap-4 rounded-md grid grid-cols-2 lg:grid-cols-3 overflow-y-auto overflow-x-hidden' : 'hidden'} `}>
+                <section className="w-full">
+                  {
+                    proofImage && (
+                      <img src={proofImage} />
+                    )
+                  }
+                  <label htmlFor="proof" className="flex text-nowrap gap-2 cursor-pointer text-raisin-black w-fit hover:underline">
+                    Click here to upload an image. 
+                    <span className="text-fire-engine-red font-lato italic">(Optional)</span>
+                  </label>
+                  <input 
+                  type="file" 
+                  name="proof" 
+                  id="proof" 
+                  className="hidden" 
+                  onChange={(evt) => handleEvidenceFile(evt)} 
+                  ref={fileInputRef}
+                  accept="image/jpeg, image/png"
+                  />
+                </section>
+              </section>
             </section>
             {/* form controls */}
             <section className="absolute left-0 bottom-0 px-2 py-2 flex justify-between w-full">
               <button className={`${appointmentPage == 1 ? 'hidden' : 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light'}`} onClick={prevAppointmentPage}> Back </button>
-              <button className={`${appointmentPage == 3 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={nextAppointmentPage}> Next </button>
-              <button className={`${appointmentPage == 5 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={bookAppointment}> Book Appointment </button>
+              <button className={`${appointmentPage < 6 && appointmentPage > 2 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={nextAppointmentPage}> Next </button>
+              <button className={`${appointmentPage == 6 ? 'bg-raisin-black text-white-smoke px-6 py-1.5 font-lato rounded-sm hover:bg-raisin-black-light' : 'hidden'}`} onClick={bookAppointment}> Book Appointment </button>
             </section>
           </section>
         </section>
