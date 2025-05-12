@@ -241,7 +241,7 @@ function UserHome() {
       formData.append("time", timeOfAppointment);
       formData.append("image", proofImageFile);
 
-      let res = await axiosInstance.post("/appointment/create/image?folder=appointment", formData, {
+      let res = await axiosInstance.post("/api/appointment/create/image?folder=appointment", formData, {
         headers: {"Content-Type": 'multipart/form-data'}
       });
 
