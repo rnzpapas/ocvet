@@ -1,7 +1,7 @@
 import handleResponse from "../middleware/responseHandler.js";
 import { createPetBreedService, deletePetBreedService, getPetBreedService } from "../models/animalBreedModel.js";
 
-export const createPetBreed = async () => {
+export const createPetBreed = async (req, res, next) => {
     const { ATYPEID, breed_name } = req.body;
     try{
         await createPetBreedService(ATYPEID, breed_name);
@@ -11,7 +11,7 @@ export const createPetBreed = async () => {
     }
 }
 
-export const getPetBreed = async () => {
+export const getPetBreed = async (req, res, next) => {
     const ATYPEID = req.query.ATYPEID;
     try{
         let result = await getPetBreedService(ATYPEID);
@@ -22,7 +22,7 @@ export const getPetBreed = async () => {
 }
 
 
-export const deletePetBreed = async () => {
+export const deletePetBreed = async (req, res, next) => {
     const PBID = req.query.PBID;
     try{
         await deletePetBreedService(PBID);
