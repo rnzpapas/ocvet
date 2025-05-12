@@ -20,6 +20,7 @@ function MngrPetList() {
         document.body.style.overflow = 'hidden';
         const petId = evt.target.parentElement.id;
         let pet = pets.filter((p) => p.PETID === petId);
+        console.log(pet)
         let modalInfo = [
             {
                 "type": 'image',
@@ -40,6 +41,12 @@ function MngrPetList() {
             },
             {
                 "type": 'text',
+                "txtContent": pet[0].breed_name ? capitalizeFirstLetter(pet[0].breed_name) : "n/a",
+                "headers": "Breed",
+                "readOnly": true
+            },
+            {
+                "type": 'text',
                 "txtContent": `${pet[0].firstname} ${pet[0].surname}`,
                 "headers": "Owner",
                 "readOnly": true
@@ -50,7 +57,8 @@ function MngrPetList() {
     }
 
     const closeModal = () => {
-        setIsPetModalOpened(false)
+        setIsPetModalOpened(false);
+        setPetSelected("");
         document.body.style.overflow = '';
     }
 
@@ -117,7 +125,6 @@ function MngrPetList() {
             }
             searchPromise.length === 0 ? 
             setPets(petsPromise) :  setPets(searchPromise) 
-
         }
         dataPromise();
     },[search])

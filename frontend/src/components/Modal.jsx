@@ -11,6 +11,8 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
     link = {"txtContent" : "", "isActive" : true, "isDisplayed": true},
     clickableLink = {"txtContent" : "", "isActive" : true, "isDisplayed": true, "onClickFunc": undefined}
     }) {
+    let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
+
     const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [isModalActive, setIsModalActive]= useState(isActive);
     const [isExitModalClicked, setIsExitModalClicked] = useState(false);
@@ -39,8 +41,6 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                 txtContent: value
             };
         }
-        
-        
     
         setFormFields(updatedFields);
     };
@@ -78,8 +78,8 @@ function Modal({headline, fields, isActive = false, onClose, img, inputStyle,
                                         <section className="flex justify-center">
                                             <img 
                                                 className="bg-fire-engine-red w-[100px] h-[100px] rounded-full aspect-square" 
-                                                src={`${imgSrc ? `${imgDirSrc}/pet/${imgSrc}` : NoImg}`}
-                                                a lt={`${imgSrc ? imgSrc : "No Image"}`}
+                                                src={`${field.img ? `${imgDirSrc}/pet/${field.img}` : NoImg}`}
+                                                alt={`${field.img ? field.img : "No Image"}`}
                                             />
                                         </section>
                                         : field.type === "password" ? 

@@ -154,7 +154,7 @@ export const getAllPetsPdf = async (req, res, next) => {
 
     try{
         const result = await getAllPetsPdfService();
-        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Pet Owner', 'Date Registered']
+        const headers = ['PET ID', 'Nickname', 'Animal Type', 'Animal Breed', 'Pet Owner', 'Date Registered']
         generatePdf(res, 'Pets', headers, result, `PetList_${dateTimeStamp}`)
     }catch(err) {
         return next(err);

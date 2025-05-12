@@ -20,6 +20,7 @@ function SAdminPetList() {
         document.body.style.overflow = 'hidden';
         const petId = evt.target.parentElement.id;
         let pet = pets.filter((p) => p.PETID === petId);
+        console.log(pet)
         let modalInfo = [
             {
                 "type": 'image',
@@ -40,6 +41,12 @@ function SAdminPetList() {
             },
             {
                 "type": 'text',
+                "txtContent": pet[0].breed_name ? capitalizeFirstLetter(pet[0].breed_name) : "n/a",
+                "headers": "Breed",
+                "readOnly": true
+            },
+            {
+                "type": 'text',
                 "txtContent": `${pet[0].firstname} ${pet[0].surname}`,
                 "headers": "Owner",
                 "readOnly": true
@@ -50,13 +57,14 @@ function SAdminPetList() {
     }
 
     const closeModal = () => {
-        setIsPetModalOpened(false)
+        setIsPetModalOpened(false);
+        setPetSelected("");
         document.body.style.overflow = '';
     }
 
     const loadPetDetails = async () => {
         try{
-
+            let pets;
             let res = await axiosInstance.get('/api/pets/all', 
                 {
                     headers: {
@@ -64,10 +72,10 @@ function SAdminPetList() {
                     }
                 }
             )
-           if(res){
-                let p = res.data.data
-                return p;
+           if(res.data){
+                pets = res.data.data
             }
+            return pets;
         }catch(err){
             let message = err.response?.data?.message || "Fetching of pets data failed.";
             alert(message);
@@ -106,7 +114,7 @@ function SAdminPetList() {
           window.URL.revokeObjectURL(url); 
       
         })
-      }
+    }
 
     useEffect(() => {
         const dataPromise = async () => {
@@ -123,9 +131,8 @@ function SAdminPetList() {
 
     useEffect(() => {}, [petSelected])
 
-
     return (
-        <section className="flex w-screen h-screen overflow-hidden">
+        <section className="flex w-full">
             <SuperAdminNav />
             <section className="px-5 py-5 w-full">
                 <section className="flex gap-5">
