@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { convertObjectArrayToString } from "../utils/textUtils";
 
-function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment, markAsCompleted}) {
+function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectAppointment, markAsCompleted, showProofImage}) {
     const MAX_ROWS = 10;
     const [pageData, setPageData] = useState([]);
     const [sorted, setSorted] = useState({keyToSort: "", sortMode: "asc"});
@@ -91,10 +91,19 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
                                                 <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
                                                     <section 
                                                         className={`border-2 px-3 py-1 border-azure cursor-pointer rounded-2xl group hover:bg-azure`} 
-                                                        onClick={(el) => markAsCompleted(info.number)}
+                                                        onClick={() => markAsCompleted(info.number)}
                                                     >
                                                         <h5 className="font-lato text-content-xtrasm lg:text-content-md group-hover:text-white-smoke text-raisin-black text-nowrap">Mark As Completed</h5>
                                                     </section>
+                                                </td>
+                                                : key == 'hasEvidence' ?
+                                                <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md whitespace-nowrap" key={`${key}-${index}`}> 
+                                                    <h5 
+                                                    className={`${info[key] ? 'font-lato text-content-xtrasm lg:text-content-md text-azure text-nowrap cursor-pointer hover:underline' : 'hidden'}`}
+                                                    onClick={() => showProofImage(info.number)}
+                                                    >
+                                                        Show Image
+                                                    </h5>
                                                 </td>
                                                 : key !== "status" ?
                                                     <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap" key={`${key}-${index}`}> {info[key]} </td>

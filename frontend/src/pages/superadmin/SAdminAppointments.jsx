@@ -39,7 +39,54 @@ const HEADERS = [
       "isSorted": false
   },
   {
+      "key": "Evidence",
+      "isSortable": false,
+      "isSorted": false
+  },
+  {
       "key": "Status",
+      "isSortable": true
+  }
+];
+
+const UPCOMING_HEADERS = [
+  {
+      "key": "No.",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Client",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+    "key": "Service",
+    "isSortable": true,
+    "isSorted": false
+  },
+  {
+    "key": "Diagnosis",
+    "isSortable": true,
+    "isSorted": false
+  },
+  {
+      "key": "Date",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Time",
+      "isSortable": true,
+      "isSorted": false
+  },
+  {
+      "key": "Evidence",
+      "isSortable": false,
+      "isSorted": false
+  },
+  {
+      "key": "Actions",
       "isSortable": true
   }
 ];
@@ -76,17 +123,24 @@ const ONGOING_HEADERS = [
       "isSorted": false
   },
   {
+      "key": "Evidence",
+      "isSortable": false,
+      "isSorted": false
+  },
+  {
       "key": "Status",
       "isSortable": true
   },
   {
     "key": "Actions",
     "isSortable": true
-}
+  }
 ];
 
 function SAdminAppointments() {
-  let sessionToken = sessionStorage.getItem('jwt-token')
+  let imgDirSrc = import.meta.env.VITE_AWS_BUCKET_CONNECTION;
+  let sessionToken = sessionStorage.getItem('jwt-token');
+  
   const [tab, setTab] = useState(1);
   const [UAData, setUADATA] = useState([]);
   const [OAData, setOAData] = useState([]);
@@ -94,6 +148,7 @@ function SAdminAppointments() {
   const [AHData, setAHData] = useState([]);
   const [UAFull, setUAFull] = useState([]);
   const [OAFull, setOAFull] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [appointmentSelected,setAppointmentSelected] = useState({asid: ''});
   const [isAppModalOpened, setIsAppModalOpened] = useState(false);
   const [vaccineObj, setVaccineObj] = useState([]);
@@ -123,9 +178,16 @@ function SAdminAppointments() {
     setIsMedicalRecordsModal(false);
   };
 
-  const showProofImage = () => setIsProofImageViewer(true);
+  const showProofImage = (ASID) => {
+    const ahistory = appointments.filter(d => d.ASID == ASID);
+    setProofImage(ahistory[0].proof_image);
+    setIsProofImageViewer(true);
+  };
 
-  const closeProofImage = () => setIsProofImageViewer(false);
+  const closeProofImage = () => {
+    setProofImage("");
+    setIsProofImageViewer(false);
+  }
 
   const changeTab = (tabNum) => {
     setTab(prev => prev = tabNum)
@@ -157,6 +219,7 @@ function SAdminAppointments() {
     await axiosInstance.get('/api/appointment/all', {headers:{'Authorization': `Bearer ${sessionToken}`}})
     .then((res) => {
       let apps = res.data.data;
+      setAppointments(apps);
       apps.map(app => {
         let sched = {
           'number' : app.ASID,
@@ -165,6 +228,7 @@ function SAdminAppointments() {
           'diagnosis': app.diagnosis,
           'date': convertDate(app.date),
           'time': convertTime(app.time),
+          'hasEvidence': app.proof_image ? true : false,
           "status": {
             "isFinished": app.status.trim() === 'Done' ? true : false,
             "withCheckboxes" : false,
@@ -190,6 +254,7 @@ function SAdminAppointments() {
           'diagnosis': app.diagnosis,
           'date': convertDate(app.date),
           'time': convertTime(app.time),
+          'hasEvidence': app.proof_image ? true : false,
           "status": {
             "isFinished": app.status.trim() === 'Done' ? true : false,
             "withCheckboxes" : false,
@@ -216,6 +281,7 @@ function SAdminAppointments() {
           'diagnosis': app.diagnosis,
           'date': convertDate(app.date),
           'time': convertTime(app.time),
+          'hasEvidence': app.proof_image ? true : false,
           "status": {
             "isFinished": false,
             "withCheckboxes" : true,
@@ -242,6 +308,7 @@ function SAdminAppointments() {
           'diagnosis': app.diagnosis,
           'date': convertDate(app.date),
           'time': convertTime(app.time),
+          'hasEvidence': app.proof_image ? true : false,
           "status": {
             "isOngoing": true,
             "isFinished": undefined,
@@ -491,9 +558,10 @@ function SAdminAppointments() {
             <section className={`${tab === 1 ? 'w-[95%]' : 'hidden'}`}>
                 {
                   UAData.length > 0 && (
-                    <Table headers={HEADERS} data={UAData} tableW={"w-full"} tableH={'h-fit'}
+                    <Table headers={UPCOMING_HEADERS} data={UAData} tableW={"w-full"} tableH={'h-fit'}
                       acceptAppointment={openPetMedicalRecords}
                       rejectAppointment={rejectAppointment}
+                      showProofImage={showProofImage}
                     />
                   )
                 }
@@ -532,6 +600,8 @@ function SAdminAppointments() {
                     fields={vModalFields} 
                     button={{txtContent: 'Complete Appointment', isDisplayed: true}}
                     onSubmitFunc={fulfillAppointment}
+                    showProofImage={showProofImage}
+
                     />
                   )
               }
@@ -539,14 +609,14 @@ function SAdminAppointments() {
             <section className={`${tab === 3 ? 'w-[95%]' : 'hidden'}`}>
               {
                 RAData.length > 0 && (
-                  <Table headers={HEADERS} data={RAData} tableW={"w-full"} tableH={'h-fit'}/>
+                  <Table headers={HEADERS} data={RAData} tableW={"w-full"} tableH={'h-fit'} showProofImage={showProofImage} />
                 )
               }
             </section>
             <section className={`${tab === 4 ? 'w-[95%]' : 'hidden'}`}>
               {
                 AHData.length > 0 && (
-                  <Table headers={HEADERS} data={AHData} tableW={"w-full"} tableH={'h-fit'}/>
+                  <Table headers={HEADERS} data={AHData} tableW={"w-full"} tableH={'h-fit'} showProofImage={showProofImage}/>
                 )
               }
             </section>
@@ -557,6 +627,16 @@ function SAdminAppointments() {
               <path d="M128 0C92.7 0 64 28.7 64 64l0 96 64 0 0-96 226.7 0L384 93.3l0 66.7 64 0 0-66.7c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0L128 0zM384 352l0 32 0 64-256 0 0-64 0-16 0-16 256 0zm64 32l32 0c17.7 0 32-14.3 32-32l0-96c0-35.3-28.7-64-64-64L64 192c-35.3 0-64 28.7-64 64l0 96c0 17.7 14.3 32 32 32l32 0 0 64c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-64zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
             </svg>
           </section>
+          {
+            isProofImageViewer && (
+              <section className='absolute top-0 left-0 bg-raisin-black/50 flex items-center justify-center w-screen h-screen'>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className='absolute top-3 right-3 fill-white-smoke cursor-pointer h-10 w-10' onClick={closeProofImage}>
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                </svg>
+                <img src={`${imgDirSrc}/appointment/${proofImage}`} className='h-[500px]'/>
+              </section>
+            )
+          }
         </section>
     </section>
   )
