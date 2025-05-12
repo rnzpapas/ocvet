@@ -265,7 +265,7 @@ function UserPetGroupPage() {
                         <section className="w-full xxl:h-[15%] border-b-2 border-silver relative">
                             <h5 className="font-instrument-sans xl:text-headline-md xxl:text-headline-lrg font-bold">{petGroup.GROUP_NICKNAME}</h5>
                             <section className="flex gap-2">
-                                <p className="font-lato text-silver font-semibold xxl:text-content-lrg">{animalType}</p>
+                                <p className="font-lato text-silver font-semibold xxl:text-content-lrg">{petGroup.breed_name ? `${petGroup.breed_name} (${animalType})` : animalType} </p>
                                 {
                                     petGroup.POPULATION !== '0' && (
                                         <>

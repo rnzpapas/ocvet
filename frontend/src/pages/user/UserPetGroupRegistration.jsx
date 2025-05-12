@@ -18,7 +18,9 @@ function UserPetGroupRegistration() {
     const [petTypes, setPetTypes] = useState();
     const [nickname, setNickname] = useState();
     const [atypeid, setAtypeId] = useState();
+    const [petBreeds, setPetBreeds] = useState();
     const [population, setPopulation] = useState(null);
+    const [pbid, setPbid] = useState();
     const [isPetDropdownOpen, setIsPetDropdownOpen] = useState(false);
     const [pets, setPets] = useState();
     const [selectedPets, setSelectedPets] = useState([]);
@@ -60,6 +62,18 @@ function UserPetGroupRegistration() {
         }
     }
 
+    const loadAnimalBreeds = async (ATYPEID) => {
+        let arr = [];
+
+        await axiosInstance.get(`/api/breed?ATYPEID=${ATYPEID}`)
+        .then(res => {
+        let apiRes = res.data.data;
+        apiRes.map(result => arr.push(result))
+        })
+        .catch(err => console.error(err));
+        return arr;
+    }
+
     const onChangeNickname = (evt) => {
         setNickname(evt.target.value);
     }
@@ -67,6 +81,10 @@ function UserPetGroupRegistration() {
     const onChangeType = (evt) => {
         setAtypeId(evt.target.value);
         setSelectedPets([]);
+    }
+
+    const onChangeBreed = (evt) => {
+        setPbid(evt.target.value);
     }
 
     const onChangePopulation = (evt) => {
@@ -108,9 +126,13 @@ function UserPetGroupRegistration() {
         formData.append("ATYPEID", atypeid);
         formData.append("GROUP_NICKNAME", nickname || '');
         formData.append("PET_OWNER", userParsed.uid);
-        pets.length > 0 ?
-        formData.append("POPULATION", 0) :
-        formData.append("POPULATION", population)
+
+        if(pets.length > 0 ){
+            formData.append("POPULATION", 0) 
+        }else{
+            formData.append("POPULATION", population)
+            formData.append("pbid", pbid)
+        }
         
         await axiosInstance.post(`/api/animal/group/create`, formData, 
             {
@@ -133,8 +155,14 @@ function UserPetGroupRegistration() {
     },[]);
 
     useEffect(() => {
-        let petsPromise = loadPets();
-        petsPromise.then((p) => setPets(p));
+        if(atypeid){
+            let petsPromise = loadPets();
+            petsPromise.then((p) => setPets(p));
+            let breedPromise = loadAnimalBreeds(atypeid);
+            breedPromise.then(breed => {
+                setPetBreeds(breed);
+            })
+        }
     },[atypeid]);
 
     return (
@@ -215,6 +243,26 @@ function UserPetGroupRegistration() {
                             )
                         }
                         {
+                            selectedPets.length === 0 && population && (
+                                <section className="flex flex-col gap-3">
+                                    <label htmlFor="population" className="font-instrument-sans text-headline-sm font-semibold">Pet Breed <i className="text-fire-engine-red text-content-xtrasm">(Optional)</i></label>
+                                    <select 
+                                        className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                        onChange={onChangeBreed}
+                                    >
+                                        <option value="">None</option>
+                                        {
+                                            petBreeds && (
+                                                petBreeds.map((pb) => (
+                                                    <option key={pb.PBID} value={pb.PBID}>{capitalizeFirstLetter(pb.breed_name)}</option>
+                                                ))
+                                            )
+                                        }
+                                    </select>
+                                </section>
+                            )
+                        }
+                        {
                             selectedPets.length === 0 && (
                                 <section className="flex flex-col gap-3">
                                     <label htmlFor="population" className="font-instrument-sans text-headline-sm font-semibold">Population <i className="text-fire-engine-red text-content-xtrasm">(Optional)</i></label>
@@ -240,6 +288,7 @@ function UserPetGroupRegistration() {
                                 </section>
                             )
                         }
+                        
                         <Button txtContent={"Register Pet Group"} onClickFunc={registerPet}/>                
                     </form>
                 </section>

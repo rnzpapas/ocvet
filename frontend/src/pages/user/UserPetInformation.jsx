@@ -157,7 +157,9 @@ function UserPetInformation() {
                     </section>
                 </section>
                 <h5 className="font-instrument-sans font-semibold text-headline-md"> {petInfo.nickname} </h5>
-                <h5 className="font-instrument-sans text-content-md italic"> {capitalizeFirstLetter(petInfo.animal_type)} </h5>
+                <h5 className="font-lato text-content-md text-white-smoke bg-raisin-black rounded-full p-2 capitalize font-medium"> 
+                  {petInfo.breed_name ? `${capitalizeFirstLetter(petInfo.breed_name)} (${capitalizeFirstLetter(petInfo.animal_type)})` : capitalizeFirstLetter(petInfo.animal_type)}   
+                </h5>
               </section>
               <section className="absolute top-10 right-10  flex flex-col gap-2">
                 <section className="flex items-center cursor-pointer">

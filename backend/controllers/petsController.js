@@ -5,7 +5,8 @@ import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/storage.js";
 
 export const createPet = async (req, res, next) => {
-    const { atypeid, pet_owner, nickname} = req.body;
+    const { atypeid, pet_owner, nickname, pbid} = req.body;
+    console.log(pbid)
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
     const imageFile = req.file;
     const image_name = imageFile.originalname
@@ -18,7 +19,7 @@ export const createPet = async (req, res, next) => {
         if(!imageFile) {
             return handleResponse(res, 400, "No pet image is not uploaded.");
         }
-        const query = await createPetService(atypeid, pet_owner, nickname, image_name, registration_timestamp);
+        const query = await createPetService(atypeid, pet_owner, nickname, image_name, registration_timestamp, pbid);
         return handleResponse(res, 201, "Pet successfully registered.");
     }catch(err) {
         return next(err);
@@ -26,7 +27,7 @@ export const createPet = async (req, res, next) => {
 }
 
 export const createPetNoImage = async (req, res, next) => {
-    const { atypeid, pet_owner, nickname} = req.body;
+    const { atypeid, pet_owner, nickname, pbid} = req.body;
     const existing_nickname = await getPetByNicknameService(nickname, pet_owner);
     const registration_timestamp = Date.now() / 1000.0;
 
@@ -34,7 +35,7 @@ export const createPetNoImage = async (req, res, next) => {
         if(existing_nickname.length > 0){
             return handleResponse(res, 400, "Pet nickname already taken.");
         }
-        await createPetService(atypeid, pet_owner, nickname, null, registration_timestamp);
+        await createPetService(atypeid, pet_owner, nickname, null, registration_timestamp, pbid);
         return handleResponse(res, 201, "Pet successfully registered.");
     }catch(err) {
         return next(err);

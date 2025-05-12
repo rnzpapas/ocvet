@@ -6,14 +6,14 @@ const generateLatestPetId = async () => {
     return latest_pet_id.rows;
 }
 
-export const createPetService = async (atypeid, pet_owner, nickname, image, registration_timestamp) => {
+export const createPetService = async (atypeid, pet_owner, nickname, image, registration_timestamp, breed) => {
     let new_pet_id = "";
     const latest_pet_id = await generateLatestPetId();
 
     (latest_pet_id).length > 0 ? new_pet_id = generateNewId(latest_pet_id, "PETID") : new_pet_id = generateInitialId("PETID");
 
-    const query = await pool.query('INSERT INTO otcv_pets ("PETID", "ATYPEID", pet_owner, nickname, registration_timestamp, image) VALUES ($1, $2, $3, $4, to_timestamp($5), $6)',
-        [new_pet_id, atypeid, pet_owner, nickname, registration_timestamp, image]
+    const query = await pool.query('INSERT INTO otcv_pets ("PETID", "ATYPEID", pet_owner, nickname, registration_timestamp, image, "PBID") VALUES ($1, $2, $3, $4, to_timestamp($5), $6, $7)',
+        [new_pet_id, atypeid, pet_owner, nickname, registration_timestamp, image, breed]
     );
     return query.rows;
 }
@@ -41,7 +41,10 @@ export const getPetService = async (petid) => {
         SELECT * FROM 
         otcv_pets p INNER JOIN otcv_animal_types ant
         ON p."ATYPEID" = ant."ATYPEID"
-        WHERE p."PETID" = $1`
+        LEFT JOIN otcv_pet_breeds pb
+        ON p."PBID" = pb."PBID"
+        WHERE p."PETID" = $1
+    `
     ,[petid]);
     return result.rows[0];
 }

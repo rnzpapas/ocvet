@@ -2,15 +2,15 @@ import handleResponse from "../middleware/responseHandler.js";
 import { createAnimalGroupService, deleteAnimalGroupService, getAnimalGroupByIdService, getAnimalGroupByOwnerService, getAnimalGroupByPopulationService, getAnimalGroupDetailsByPetOwnerService, getAnimalGroupService, registerPetToPetGroupService, removePetToPetGroupService, updateAnimalGroupService } from "../models/animalGroupModel.js";
 
 export const createAnimalGroup = async (req, res, next) => {
-    const { PETS, ATYPEID, POPULATION, GROUP_NICKNAME, PET_OWNER } = req.body;
+    const { PETS, ATYPEID, POPULATION, GROUP_NICKNAME, PET_OWNER, pbid } = req.body;
     const CREATED_TIMESTAMP = new Date();
     try{
         GROUP_NICKNAME.length === 0 && (GROUP_NICKNAME = "MyPets");
         if(PETS.length > 0){
-            await createAnimalGroupService(PETS.split(','), ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
+            await createAnimalGroupService(PETS.split(','), ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER, pbid);
             return handleResponse(res, 201, "Pet group successfully created.");
         }else{
-            await createAnimalGroupService([], ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER);
+            await createAnimalGroupService([], ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER, pbid);
             return handleResponse(res, 201, "Pet group successfully created.");
         }
     }catch(err){

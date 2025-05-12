@@ -6,12 +6,12 @@ const getLatestAnimalGroupId = async () => {
     return latest_pgid.rows;
 }
 
-export const createAnimalGroupService = async (PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER) => {
+export const createAnimalGroupService = async (PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER, pbid) => {
     let new_pgid;
     let latest_pgid = getLatestAnimalGroupId();
     (await latest_pgid).length > 0 ? new_pgid = generateNewId(await latest_pgid, "PGID") : new_pgid = generateInitialId("PGID");
-    const res = await pool.query('INSERT INTO otcv_pet_group ("PGID", "PETS", "ATYPEID", "POPULATION", "GROUP_NICKNAME", "CREATED_TIMESTAMP", "PET_OWNER") VALUES ($1, $2, $3, $4, $5, $6, $7)', 
-        [new_pgid, PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER]);
+    const res = await pool.query('INSERT INTO otcv_pet_group ("PGID", "PETS", "ATYPEID", "POPULATION", "GROUP_NICKNAME", "CREATED_TIMESTAMP", "PET_OWNER", "PBID") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)', 
+        [new_pgid, PETS, ATYPEID, POPULATION, GROUP_NICKNAME, CREATED_TIMESTAMP, PET_OWNER, pbid]);
 }
 
 export const updateAnimalGroupService = async (PGID, GROUP_NICKNAME) => {
@@ -44,7 +44,13 @@ export const getAnimalGroupDetailsByPetOwnerService = async(uid) => {
 }
 
 export const getAnimalGroupByIdService = async(pgid) => {
-    const result = await pool.query('SELECT * FROM otcv_pet_group WHERE "PGID" = $1', [pgid]);
+    const result = await pool.query(`
+        SELECT pg.*, pb.breed_name
+        FROM otcv_pet_group pg
+        LEFT JOIN otcv_pet_breeds pb
+        on pg."PBID" = pb."PBID"
+        WHERE pg."PGID" = $1
+    `, [pgid]);
     return result.rows;
 }
 

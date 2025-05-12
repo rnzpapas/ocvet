@@ -16,8 +16,10 @@ function UserPetRegistration() {
 
     const [imageSrc, setImageSrc] = useState();
     const [petTypes, setPetTypes] = useState();
+    const [petBreeds, setPetBreeds] = useState();
     const [nickname, setNickname] = useState();
     const [atypeid, setAtypeId] = useState();
+    const [pbid, setPbid] = useState();
     const [imgFile, setImgFile] = useState();
     const [isOnSelection, setIsOnSelection] = useState(true);
 
@@ -35,12 +37,28 @@ function UserPetRegistration() {
         return types;
     }
 
+    const loadAnimalBreeds = async (ATYPEID) => {
+        let arr = [];
+
+        await axiosInstance.get(`/api/breed?ATYPEID=${ATYPEID}`)
+        .then(res => {
+        let apiRes = res.data.data;
+        apiRes.map(result => arr.push(result))
+        })
+        .catch(err => console.error(err));
+        return arr;
+    }
+
     const onChangeNickname = (evt) => {
         setNickname(evt.target.value);
     }
 
     const onChangeType = (evt) => {
         setAtypeId((at) => at = evt.target.value);
+    }
+
+    const onChangeBreed = (evt) => {
+        setPbid(evt.target.value);
     }
 
     const handleImgBtnClick = () => {
@@ -88,6 +106,7 @@ function UserPetRegistration() {
             formData.append("nickname", nickname);
             formData.append("pet_owner", userParsed.uid);
             formData.append("image", imgFile);
+            formData.append("pbid", pbid);
     
             data = formData;
             api = '/api/pets/register?folder=pet';
@@ -97,7 +116,8 @@ function UserPetRegistration() {
             data = {
                 atypeid,
                 nickname,
-                pet_owner: userParsed.uid
+                pet_owner: userParsed.uid,
+                pbid: pbid
             };
             headers['Content-Type'] = 'application/json';
         }
@@ -122,8 +142,17 @@ function UserPetRegistration() {
             setPetTypes((pt) => pt = type);
             setAtypeId((at) => at = type[0].ATYPEID);
         })
-
     },[]);
+
+
+    useEffect(() => {
+        if(atypeid){
+            let breedPromise = loadAnimalBreeds(atypeid);
+            breedPromise.then(breed => {
+                setPetBreeds(breed);
+            })
+        }
+    }, [atypeid]);
 
     return (
         <>
@@ -184,6 +213,22 @@ function UserPetRegistration() {
                                         petTypes && (
                                             petTypes.map((pt) => (
                                                 <option key={pt.ATYPEID} value={pt.ATYPEID}>{capitalizeFirstLetter(pt.animal_type)}</option>
+                                            ))
+                                        )
+                                    }
+                                </select>
+                            </section>
+                            <section className="flex flex-col gap-3">
+                                <label htmlFor="pet_breed" className="font-instrument-sans text-headline-sm font-semibold">Pet Type</label>
+                                <select 
+                                    className='font-lato border rounded-[5px] border-silver py-2 px-2 focus:outline-raisin-black-light placeholder:font-lato' 
+                                    onChange={(e) => onChangeBreed(e)}
+                                >
+                                    <option value={""}>None</option>
+                                    {
+                                        petBreeds && (
+                                            petBreeds.map((pb) => (
+                                                <option key={pb.PBID} value={pb.PBID}>{capitalizeFirstLetter(pb.breed_name)}</option>
                                             ))
                                         )
                                     }
