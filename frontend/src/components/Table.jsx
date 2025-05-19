@@ -51,7 +51,7 @@ function Table({headers, data, tableW, tableH, style, acceptAppointment, rejectA
     },[sorted])
     return (
         <section className={`flex flex-col max-h-fit ${tableW} ${tableH} ${style}`}>
-            <section className="overflow-y-auto overflow-x-auto">
+            <section className="overflow-y-auto overflow-x-auto max-h-96">
                 <table className="w-full border-collapse"> 
                     <thead className="bg-raisin-black sticky top-0 z-20">
                         <tr>

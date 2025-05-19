@@ -105,7 +105,7 @@ function MngrVaccines() {
         <MngrNav />
         <section className="px-5 py-5 w-full">
             <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">VACCINES</h5>
-            <section className="overflow-y-auto overflow-x-auto w-[95%]">
+            <section className="overflow-y-auto overflow-x-auto w-[95%] max-h-96">
                 <table className="w-full border-collapse">
                     <thead className="bg-raisin-black sticky top-0 z-20">
                         <tr>
@@ -120,12 +120,12 @@ function MngrVaccines() {
                         {
                             vaccines && (
                                 vaccines.map((vacc) => (
-                                    <tr key={vacc.VACCID}>
+                                    <tr key={vacc.VACCID} className="border-b-2 border-silver hover:bg-silver h-20">
                                         <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap text-center"> {vacc.VACCID} </td>
                                         <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap text-center"> {vacc.vaccine_name} </td>
                                         <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap text-center"> {vacc.stock} </td>
                                         <td className="py-2 px-2 lg:px-14 items-center font-lato text-content-xtrasm lg:text-content-md text-nowrap text-center"> {vacc.last_restock_date ? convertDate(vacc.last_restock_date) : ''} </td>
-                                        <td className='flex items-center'>
+                                        <td className='flex items-center justify-center h-20'>
                                             <section 
                                                 className={`border-2 px-3 py-1 border-azure cursor-pointer rounded-2xl group hover:bg-azure w-fit`} 
                                                 onClick={() => openStockModal(vacc.VACCID)}
