@@ -38,9 +38,9 @@ const HEADERS = [
         "isSortable": true,
         "isSorted": false
     },
-    {
-        "key": "Role",
-        "isSortable": false,
+     {
+        "key": "Action",
+        "isSortable": true,
         "isSorted": false
     },
 ]
@@ -77,6 +77,7 @@ const ADMIN_REGISTER_FIELDS = [
         'options': ['Staff', 'Manager', 'Super Administrator']
     },
 ]
+
 function SAdminListAdmin() {
     let sessionToken = sessionStorage.getItem('jwt-token')
     const [adminDetails, setAdminDetails] = useState([]);
@@ -125,7 +126,7 @@ function SAdminListAdmin() {
                     username: admin.username,
                     joined: convertDate(admin.date_joined),
                     role: admin.role,
-                    action: admin.UAID === 'UAID100007' ? '' : (
+                    delete: admin.UAID === 'UAID100007' ? '' : (
                         <p className="font-lato text-fire-engine-red cursor-pointer hover:underline" 
                         onClick={() => {deleteAdmin(admin.UAID)}}>
                             Delete
@@ -155,6 +156,10 @@ function SAdminListAdmin() {
         if(firstname.trim().length === 0 || surname.trim().length === 0 || email.trim().length === 0 || username.trim().length === 0 || 
         password.trim().length === 0 || role.trim().length === 0) return alert('Please fill out all fields.');
 
+        if(username.length > 12){
+            alert("Username can be up to 12 characters long.");
+            return;
+        }
         const formData = new FormData();
         formData.append('firstname', firstname);
         formData.append('surname', surname);
@@ -165,8 +170,17 @@ function SAdminListAdmin() {
         formData.append('date_joined', dateStr)
 
         await axiosInstance.post('/api/admin/register', formData, {headers: {'Authorization': `Bearer ${sessionToken}`, 'Content-Type': 'application/json'}})
-        .then(() => window.location.reload())
-        .catch(err => alert(err.data.message))
+        .then((res) => {
+            if(res.status == 201){
+                alert("Administrator is successfully added.");
+                window.location.reload();
+            }
+        })
+        .catch(err => {
+            let message = err.response?.data?.message || "Server error";
+            console.error(err);
+            alert(message);
+        })
     }
 
     useEffect(() => {
