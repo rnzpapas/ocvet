@@ -118,7 +118,7 @@ function MngrHome() {
                 </section>
                 </section>
                 <section className="flex flex-col gap-5 items-center">
-                    <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
+                    <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Vaccines Summary </h5>
                     <section className="h-60">
                       {
                         vaccines && (
