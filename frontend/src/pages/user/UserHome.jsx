@@ -31,8 +31,8 @@ function UserHome() {
   const [pets, setPets] = useState();
   const [petGroup, setPetGroup] = useState();
   const [clinicAppointments, setClinicAppointments] = useState([]);
-  const [petSelected, setPetSelected] = useState([]);
-  const [petGroupSelected, setPetGroupSelected] = useState([]);
+  const [petSelected, setPetSelected] = useState("");
+  const [petGroupSelected, setPetGroupSelected] = useState("");
   const [appointments, setAppointments] = useState();
   const [services, setServices] = useState();
   const [servicesSelected, setServicesSelected] = useState([]);
@@ -224,8 +224,6 @@ function UserHome() {
 
   const bookAppointment = async () => {
 
-    let petid = petSelected.length > 0 ? petSelected : null;
-    let pgid = petGroupSelected.length > 0 ? petGroupSelected : null;
     if(diagnosisSelected.length === 0){
       alert('Choose at least one clinical signs to proceed.');
       return;
@@ -233,8 +231,8 @@ function UserHome() {
 
     if(proofImageFile){
       const formData = new FormData();
-      formData.append("PETID", petid);
-      formData.append("PGID", pgid);
+      formData.append("PETID", petSelected);
+      formData.append("PGID", petGroupSelected);
       formData.append("SERVICEIDS", servicesSelected || []);
       formData.append("DIAGNOSIS", diagnosisSelected || []);
       formData.append("remarks", "");
@@ -248,8 +246,8 @@ function UserHome() {
       });
 
       if(res.status == 201){
-        setPetSelected([]);
-        setPetGroupSelected([]);
+        setPetSelected("");
+        setPetGroupSelected("");
         setServicesSelected([]);
         setDiagnosisSelected([]);
         setDateOfAppointment("");
@@ -261,8 +259,8 @@ function UserHome() {
 
     }else{
       const body = {
-        "PETID": petid,
-        "PGID": pgid,
+        "PETID": petSelected,
+        "PGID": petGroupSelected,
         "SERVICEIDS": servicesSelected || [],
         "DIAGNOSIS": diagnosisSelected || [],
         "remarks": "",
@@ -277,8 +275,8 @@ function UserHome() {
         }
       });
       if(res.status == 201) {
-        setPetSelected([]);
-        setPetGroupSelected([]);
+        setPetSelected("");
+        setPetGroupSelected("");
         setServicesSelected([]);
         setDiagnosisSelected([]);
         setDateOfAppointment("");
