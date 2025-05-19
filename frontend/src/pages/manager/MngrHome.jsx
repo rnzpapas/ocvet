@@ -35,7 +35,6 @@ function MngrHome() {
     try{
       let res = await axiosInstance.get("/api/vaccinations/demand");
       if(res.data){
-        console.log(res.data.data)
         return res.data.data;
       }
     }catch(err){
@@ -74,24 +73,24 @@ function MngrHome() {
       let emailPromise = await loadEmails();
       setEmails(emailPromise);
       let vaccinePromise = await loadVaccineStats();
-      setVaccines(vaccinePromise);;
+      setVaccines(vaccinePromise);
     }
     dataPromise();
   },[])
 
   return (
-    <section className="flex w-full">
+    <section className="flex w-screen h-screen overflow-hidden">
         <MngrNav />
         <section className="px-5 py-5 w-full">
             <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">dashboard</h5>
-            <section className="grid grid-cols-3 gap-7">
-                <section className="flex flex-col gap-5 items-center">
+            <section className="grid grid-cols-2">
+                <section className="flex flex-col gap-5 col-span-1">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
-                    <section className="h-60">
+                    <section className="h-fit overflow-x-auto max-w-full">
                       {
                         stats && (
                           <BarChart 
-                          chartH={'h-full'}
+                          chartH={'h-fit'}
                           labels={["Today", "This Week", "This Month"]} 
                           datasetLabel={"Total Appointments"}
                           datasetData={[stats.totalToday, stats.totalThisWeek, stats.totalThisMonth]}
@@ -101,13 +100,13 @@ function MngrHome() {
                       }
                     </section>
                 </section>
-                <section className="flex flex-col gap-5  items-center">
+                <section className="flex flex-col gap-5 col-span-1">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold">Appointment Completion Overview</h5>
-                    <section className="h-60 flex justify-center">
+                    <section className="h-60">
                     {
                       successStats && (
                         <DoughnutChart 
-                        chartH={'h-48'}
+                        chartH={'h-full'}
                         labels={["Total Completed", "Total Missed"]} 
                         datasetLabel={"Total Appointments"}
                         datasetData={[successStats.totalCompleted, successStats.totalMissed]}
@@ -117,15 +116,15 @@ function MngrHome() {
                     }
                 </section>
                 </section>
-                <section className="flex flex-col gap-5 items-center">
+                <section className="flex flex-col gap-5 col-span-2 ">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Vaccines Summary </h5>
-                    <section className="h-60">
+                    <section className="xxl:h-fit xxl:max-h-40 overflow-x-auto min-w-fit max-w-[90%]">
                       {
                         vaccines && (
                           <BarChart 
                           chartH={'h-full'}
                           labels={vaccines.map((v) => v.vaccine_name)} 
-                          datasetLabel={"Number of Injections"}
+                          datasetLabel={"Injected Vaccines"}
                           datasetData={vaccines.map((v) => v.demand_count)}
                           optionTooltipLabel={'Injected'}
                           />
@@ -134,7 +133,7 @@ function MngrHome() {
                     </section>
                 </section>
             </section>
-            <section className="flex flex-col gap-5">
+            <section className="flex flex-col gap-5 max-h-64 min-h-40">
                 <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Announcements</h5>
                 <Emails mails={emails} isRecipientsIncluded={false} isBodyIncluded={true}/>
             </section>

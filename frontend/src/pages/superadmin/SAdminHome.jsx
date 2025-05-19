@@ -5,6 +5,7 @@ import BarChart from "@/components/charts/BarChart";
 import axiosInstance from "@/config/AxiosConfig.jsx"
 import { convertEmailDate, convertTime } from "../../utils/datetimeUtils";
 import { capitalizeFirstLetter } from '../../utils/textUtils'
+import Emails from "@/components/Emails";
 
 function SAdminHome() {
   const userParsed = JSON.parse(localStorage.getItem('user'));
@@ -84,8 +85,8 @@ function SAdminHome() {
         <SuperAdminNav/>
         <section className="px-5 py-5 w-full">
             <h5 className="font-instrument-sans font-bold text-headline-lrg uppercase text-raisin-black">dashboard</h5>
-            <section className="grid grid-cols-2 gap-7h-[90%]">
-                <section className="flex flex-col gap-5 items-center">
+            <section className="grid grid-cols-3 gap-7">
+                <section className="flex flex-col gap-5">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Appointments Summary </h5>
                     <section className="h-60">
                       {
@@ -117,16 +118,16 @@ function SAdminHome() {
                     }
                 </section>
                 </section>
-                <section className="flex flex-col gap-5 items-center">
+                <section className="flex flex-col gap-5">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Employee Summary </h5>
-                    <section className="h-60 flex flex-col items-center justify-center bg-raisin-black w-6/12 rounded-xl">
-                      <h5 className="font-lato font-semibold text-[90px] text-white-smoke">{employeePopulation}</h5>
-                      <p className="font-lato text-white-smoke capitalize font-medium italic">Active employees</p>
+                    <section className="h-40 flex flex-col items-center justify-center bg-raisin-black p-10 rounded-xl">
+                      <h5 className="font-lato font-semibold text-[40px] text-white-smoke">{employeePopulation}</h5>
+                      <p className="font-lato text-white-smoke capitalize font-medium italic mb-4">Active employees</p>
                     </section>
                 </section>
-                <section className="flex flex-col gap-5 items-center">
+                <section className="flex flex-col gap-5 items-center col-span-2">
                     <h5 className="font-lato text-raisin-black text-headline-sm font-semibold"> Animal Population </h5>
-                    <section className="h-60">
+                    <section className="xxl:h-fit xxl:max-h-40 overflow-x-auto min-w-[50%] max-w-[90%]">
                       {
                         animalPopulation && (
                           <BarChart 
@@ -141,10 +142,10 @@ function SAdminHome() {
                     </section>
                 </section>
             </section>
-            {/* <section className="flex flex-col gap-5">
+            <section className="flex flex-col gap-5 max-h-64 min-h-40">
                 <h5 className="font-lato text-raisin-black text-headline-md font-semibold">Announcements</h5>
                 <Emails mails={emails} isRecipientsIncluded={false} isBodyIncluded={true}/>
-            </section> */}
+            </section>
         </section>
     </section>
   )
