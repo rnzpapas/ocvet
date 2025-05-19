@@ -246,7 +246,7 @@ export const getAllAppointmentScheduleService = async () => {
     ON d."DIAGID" = ANY(sched."DIAGNOSIS")
     WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', CURRENT_DATE)
     GROUP BY sched."ASID", sched."PETID", sched."PGID", p.nickname, pg."GROUP_NICKNAME",sched.date, sched.time, sched.status, sched.proof_image
-    ORDER BY date, time ASC;
+    ORDER BY date, time DESC;
     `);
     return res.rows;
 }
