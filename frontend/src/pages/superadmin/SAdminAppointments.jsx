@@ -427,7 +427,6 @@ function SAdminAppointments() {
   const updateAppointmentOngoing = () => {
     onUpdateAppointmentStatus('Ongoing', '');
     setIsConfirmationModal(false);
-    window.location.reload();
   }
 
   const fulfillAppointment = async (fields) => {
