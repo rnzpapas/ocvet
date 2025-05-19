@@ -224,6 +224,8 @@ function UserHome() {
 
   const bookAppointment = async () => {
 
+    let petid = petSelected.length > 0 ? petSelected : null;
+    let pgid = petGroupSelected.length > 0 ? petGroupSelected : null;
     if(diagnosisSelected.length === 0){
       alert('Choose at least one clinical signs to proceed.');
       return;
@@ -231,8 +233,8 @@ function UserHome() {
 
     if(proofImageFile){
       const formData = new FormData();
-      formData.append("PETID", petSelected || null);
-      formData.append("PGID", petGroupSelected || null);
+      formData.append("PETID", petid);
+      formData.append("PGID", pgid);
       formData.append("SERVICEIDS", servicesSelected || []);
       formData.append("DIAGNOSIS", diagnosisSelected || []);
       formData.append("remarks", "");
@@ -245,7 +247,7 @@ function UserHome() {
         headers: {"Content-Type": 'multipart/form-data'}
       });
 
-      if(res.status == 200){
+      if(res.status == 201){
         setPetSelected([]);
         setPetGroupSelected([]);
         setServicesSelected([]);
@@ -259,8 +261,8 @@ function UserHome() {
 
     }else{
       const body = {
-        "PETID": petSelected || null,
-        "PGID": petGroupSelected || null,
+        "PETID": petid,
+        "PGID": pgid,
         "SERVICEIDS": servicesSelected || [],
         "DIAGNOSIS": diagnosisSelected || [],
         "remarks": "",
@@ -274,7 +276,7 @@ function UserHome() {
           'Content-Type': 'application/json'
         }
       });
-      if(res.status == 200) {
+      if(res.status == 201) {
         setPetSelected([]);
         setPetGroupSelected([]);
         setServicesSelected([]);

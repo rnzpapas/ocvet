@@ -4,12 +4,16 @@ import { generatePdf } from "../utils/reportUtils.js";
 
 export const createAppointmentSchedule = async (req, res, next) => {
     const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
+
     const sched = new Date(date);
     const dateConverted = `${sched.getFullYear()}-${sched.getMonth()+1}-${sched.getDate()}`;
     // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+    console.log("petid: ", PETID)
+    const services = Array.isArray(SERVICEIDS) ? SERVICEIDS : SERVICEIDS.split(',');
+    const diagnosis = Array.isArray(DIAGNOSIS) ? DIAGNOSIS : DIAGNOSIS.split(',');
 
     try{
-        const q = await createAppointmentScheduleService(PETID || null, PGID || null, SERVICEIDS.split(','), DIAGNOSIS.split(','), remarks, status, dateConverted, time);
+        const q = await createAppointmentScheduleService(PETID, PGID, services, diagnosis, remarks, status, dateConverted, time);
         return handleResponse(res, 201, "Appointment created.");
     }catch(err) {
         return next(err);
@@ -18,14 +22,17 @@ export const createAppointmentSchedule = async (req, res, next) => {
 
 export const createAppointmentScheduleWithImage = async (req, res, next) => {
     const { PETID, PGID, SERVICEIDS, DIAGNOSIS, remarks, status, date, time } = req.body;
+    console.log('with image: ', SERVICEIDS)
     const imageFile = req.file;
     const image_name = imageFile.originalname
     const sched = new Date(date);
     const dateConverted = `${sched.getFullYear()}-${sched.getMonth()+1}-${sched.getDate()}`;
     // const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+    const services = Array.isArray(SERVICEIDS) ? SERVICEIDS : SERVICEIDS.split(',');
+    const diagnosis = Array.isArray(DIAGNOSIS) ? DIAGNOSIS : DIAGNOSIS.split(',');
 
     try{
-        const q = await createAppointmentScheduleService(PETID || null, PGID || null, SERVICEIDS.split(','), DIAGNOSIS.split(','), remarks, status, dateConverted, time, image_name);
+        const q = await createAppointmentScheduleService(PETID, PGID, services, diagnosis, remarks, status, dateConverted, time, image_name);
         return handleResponse(res, 201, "Appointment created.");
     }catch(err) {
         return next(err);
