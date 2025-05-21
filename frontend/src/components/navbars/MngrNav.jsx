@@ -15,7 +15,7 @@ function MngrNav() {
             "targetElement": "/mngr/pets"
         },
         {
-            "txtContent": "Vaccines",
+            "txtContent": "Vaccines / Medicine",
             "targetElement": "/mngr/vaccines"
         },
         {

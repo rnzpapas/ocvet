@@ -53,7 +53,7 @@ function Modal({headline,
                                             <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Diagnosis </th>
                                             <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Appointment Date </th>
                                             <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Appointment Time </th>
-                                            <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Remarks </th>
+                                            <th className="text-white-smoke font-lato text-content-xtrasm lg:text-content-md py-2 px-2 lg:px-14 text-nowrap"> Assessment </th>
                                         </tr>
                                     </thead>
                                     {

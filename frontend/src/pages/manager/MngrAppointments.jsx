@@ -508,11 +508,11 @@ function MngrAppointments() {
           setVModalFields([
             {
               "type": 'textarea',
-              "headers": 'Remarks'
+              "headers": 'Assessment'
             },
             {
               "type": 'checkbox',
-              "headers": 'Vaccine (If any)',
+              "headers": 'Vaccine / Medicine (If any)',
               "options": v[1],
               "txtContent": "None"
             }
