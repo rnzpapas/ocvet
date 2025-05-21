@@ -693,7 +693,7 @@ function SAdminSettings() {
         </section>
         {/* vaccines */}
         <section className='px-5 py-5'>
-          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Vaccines</h5>
+          <h5 className='font-instrument-sans text-headline-lrg font-bold'>Vaccines / Medicines</h5>
           <section>
             <section className='flex gap-3 mb-3'>
               <InputField onChangeFunc={(e) => onChangeVaccinesField(e)}/>
